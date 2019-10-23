@@ -1,4 +1,7 @@
+*.root
+plotting/plots/
 
+plotting/setup_env/
+! plotting/setup_env/setup.sh
 *.ipynb_checkpoints*
-
 *.pyc
