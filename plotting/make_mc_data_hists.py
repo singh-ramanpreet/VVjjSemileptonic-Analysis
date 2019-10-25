@@ -9,7 +9,6 @@ import awkward
 import uproot
 import argparse
 
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
@@ -227,9 +226,12 @@ for key in samples_dict:
             (df["PuppiAK8_jet_mass_so_corr"] > 65) &
             (df["PuppiAK8_jet_mass_so_corr"] < 105) &
             (df["vbf_maxpt_jj_m"] > 800) &
-            (np.abs(df["vbf_maxpt_j2_eta"] - df["vbf_maxpt_j1_eta"]) > 4.0)
+            (np.abs(df["vbf_maxpt_j2_eta"] - df["vbf_maxpt_j1_eta"]) > 4.0) &
+            (df["BosonCentrality_type0"] > 1.0) &
+            (np.abs(df["ZeppenfeldWL_type0"])/(np.abs(df["vbf_maxpt_j2_eta"] - df["vbf_maxpt_j1_eta"])) < 0.3) &
+            (np.abs(df["ZeppenfeldWH"])/(np.abs(df["vbf_maxpt_j2_eta"] - df["vbf_maxpt_j1_eta"])) < 0.3)
         )
-            
+
         if args.boson == "W":
 
             boson_channel_sel = W_channel
