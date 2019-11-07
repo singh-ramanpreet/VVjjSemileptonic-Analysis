@@ -1,17 +1,17 @@
 {    
     "dataM": {
-        "location": "/eos/cms/store/user/jlawhorn/WWTreeWithFixedJEC/",
+        "location": "/afs/cern.ch/user/r/rasharma/work/public/aQGC_Ntuples/WWTree_CommonNtuple_For1and2Lepton_MuonPtScale_2018_07_24_10h36/",
         "lumi": 1.0,
         "filelist": [
-            {"name": "WWTree_SingleMuon_Run2016_03Feb2017.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
+            {"name": "SingleMuon.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
         ]
     },
     
     "dataE": {
-        "location": "/eos/cms/store/user/jlawhorn/WWTreeWithFixedJEC/",
+        "location": "/afs/cern.ch/user/r/rasharma/work/public/aQGC_Ntuples/WWTree_CommonNtuple_For1and2Lepton_MuonPtScale_2018_07_24_10h36/",
         "lumi": 1.0,
         "filelist": [
-            {"name": "WWTree_SingleElectron_Run2016_03Feb2017.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
+            {"name": "SingleElectron.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
         ]
     },
     
@@ -91,15 +91,16 @@
     },
     
     "WJets": {
-        "location": "/eos/cms/store/user/jlawhorn/WWTreeWithFixedJEC/",
+        "location": "/afs/cern.ch/user/r/rasharma/work/public/aQGC_Ntuples/WWTree_CommonNtuple_For1and2Lepton_MuonPtScale_2018_07_24_10h36/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WWTree_WJetsToLNu_Pt-0To50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root"   , "xs": 57280 , "nMC": 49881336, "nMCneg": 7320922 },
-            {"name": "WWTree_WJetsToLNu_Pt-50To100_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root" , "xs": 3258  , "nMC": 49173944, "nMCneg": 15471634},
-            {"name": "WWTree_WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root", "xs": 676.3 , "nMC": 9904293 , "nMCneg": 3163552 },
-            {"name": "WWTree_WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root", "xs": 23.94 , "nMC": 952187  , "nMCneg": 300405  },
-            {"name": "WWTree_WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root", "xs": 3.031 , "nMC": 951589  , "nMCneg": 293581  },
-            {"name": "WWTree_WJetsToLNu_Pt-600ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root", "xs": 0.4524, "nMC": 989246  , "nMCneg": 296455  }
+            {"name": "WJetsToLNu_HT_100To200.root",   "xs": 1627.45  , "nMC": 79165700,  "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_200To400.root",   "xs": 435.24   , "nMC": 38925814,  "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_400To600.root",   "xs": 59.18    , "nMC": 7754249.5, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_600To800.root",   "xs": 14.58    , "nMC": 18578602,  "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_800To1200.root",  "xs": 6.655    , "nMC": 7688954.5, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_1200To2500.root", "xs": 1.60809  , "nMC": 6708653.5, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_2500ToInf.root",  "xs": 0.0389136, "nMC": 2520615.5, "nMCneg": 0}
         ]
     }
 }
