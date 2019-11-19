@@ -165,6 +165,18 @@ h2_mass_V_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_key
 h2 = ROOT.TH2F("pt_V_tau2tau1", ";pt_V;tau2tau1", 80, 200.0, 600.0, 100, 0.0, 1.0)
 h2_pt_V_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
 
+#
+h2 = ROOT.TH2F("rho_n2_sdb1", ";mass_V;n2_sdb1", 70, -8.0, -1.0, 100, 0.0, 0.5)
+h2_rho_n2_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
+
+h2 = ROOT.TH2F("rho_prime_n2_sdb1", ";pt_V;n2_sdb1", 45, 0.0, 4.5, 100, 0.0, 0.5)
+h2_rho_prime_n2_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
+
+h2 = ROOT.TH2F("rho_tau2tau1", ";mass_V;tau2tau1", 70, -8.0, -1.0, 100, 0.0, 1.0)
+h2_rho_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
+
+h2 = ROOT.TH2F("rho_prime_tau2tau1", ";pt_V;tau2tau1", 45, 0.0, 4.5, 100, 0.0, 1.0)
+h2_rho_prime_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
 
 
 # fill ROOT histogram with numpy array
@@ -465,6 +477,19 @@ for key in samples_dict:
         fill_hist_array_2d(h2_mass_V_tau2tau1[key], PuppiAK8_jet_mass_so_corr, PuppiAK8jet_tau2tau1, total_weight)
         fill_hist_array_2d(h2_pt_V_tau2tau1[key], ungroomed_PuppiAK8_jet_pt, PuppiAK8jet_tau2tau1, total_weight)
 
+        # --------------------------------------------------------------
+        # DDT
+        rho_mu = 1.0
+        ratio1 = (PuppiAK8_jet_mass_so_corr) ** 2 / (ungroomed_PuppiAK8_jet_pt) ** 2
+        ratio2 = (PuppiAK8_jet_mass_so_corr) ** 2 / (ungroomed_PuppiAK8_jet_pt * rho_mu)
+        rho = np.log(ratio1)
+        rho_prime = np.log(ratio2)
+
+        fill_hist_array_2d(h2_rho_n2_sdb1[key], rho, PuppiAK8jet_n2_sdb1, total_weight)
+        fill_hist_array_2d(h2_rho_prime_n2_sdb1[key], rho_prime, PuppiAK8jet_n2_sdb1, total_weight)
+        fill_hist_array_2d(h2_rho_tau2tau1[key], rho, PuppiAK8jet_tau2tau1, total_weight)
+        fill_hist_array_2d(h2_rho_prime_tau2tau1[key], rho_prime, PuppiAK8jet_tau2tau1, total_weight)
+
 # write hists to root file
 # ========================
 out_hist_file = ROOT.TFile(f"{args.region}_{args.boson}_{args.channel}.root", "RECREATE")
@@ -508,6 +533,11 @@ for k in samples_dict:
     h2_pt_V_n2_sdb1[k].Write()
     h2_mass_V_tau2tau1[k].Write()
     h2_pt_V_tau2tau1[k].Write()
+
+    h2_rho_n2_sdb1[k].Write()
+    h2_rho_prime_n2_sdb1[k].Write()
+    h2_rho_tau2tau1[k].Write()
+    h2_rho_prime_tau2tau1[k].Write()
 
 out_hist_file.Write()
 out_hist_file.Close()
