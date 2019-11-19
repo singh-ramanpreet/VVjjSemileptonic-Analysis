@@ -159,18 +159,12 @@ def fill_hist_array(hist, array, weight=1.0):
         return None
 
     if type(weight) == float:
-        hist.FillN(
-            len(array),
-            np.array(array, np.float64),
-            np.full(array.shape, weight)
-        )
+        for v in array:
+            hist.Fill(v, weight)
 
     else:
-        hist.FillN(
-            len(array),
-            np.array(array, np.float64),
-            np.array(weight, np.float64)
-        )
+        for v, w in zip(array, weight):
+            hist.Fill(v, w)
 
     return None
 
@@ -261,7 +255,7 @@ for key in samples_dict:
             (df["isResolved"] == False) &
             (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
             (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-            (df["PuppiAK8_jet_tau2tau1"] < 0.55) &
+            #(df["PuppiAK8_jet_tau2tau1"] < 0.55) &
             (df["PuppiAK8_jet_mass_so_corr"] > 65) &
             (df["PuppiAK8_jet_mass_so_corr"] < 105) &
             (df["vbf_maxpt_jj_m"] > 800) &
