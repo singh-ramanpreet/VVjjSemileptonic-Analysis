@@ -150,12 +150,26 @@ h2_e2_sdb1_e3_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_key
 h2 = ROOT.TH2F("e2_sdb1_e3_v1_sdb1", ";e2_sdb1;e3_v1_sdb1", 40, 0.0, 0.4, 120, 0.0, 0.06)
 h2_e2_sdb1_e3_v1_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
 
+h_PuppiAK8_jet_mass_so_corr = book_hist_dict(50, 50.0, 150.0, titleX="PuppiAK8_jet_mass_so_corr", keys=hist_keys).clone()
+h_ungroomed_PuppiAK8_jet_pt = book_hist_dict(80, 200.0, 600.0, titleX="ungroomed_PuppiAK8_jet_pt", keys=hist_keys).clone()
+
+h2 = ROOT.TH2F("mass_V_n2_sdb1", ";mass_V;n2_sdb1", 50, 50.0, 150.0, 100, 0.0, 0.5)
+h2_mass_V_n2_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
+
+h2 = ROOT.TH2F("pt_V_n2_sdb1", ";pt_V;n2_sdb1", 80, 200.0, 600.0, 100, 0.0, 0.5)
+h2_pt_V_n2_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
+
+h2 = ROOT.TH2F("mass_V_tau2tau1", ";mass_V;tau2tau1", 50, 50.0, 150.0, 100, 0.0, 1.0)
+h2_mass_V_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
+
+h2 = ROOT.TH2F("pt_V_tau2tau1", ";pt_V;tau2tau1", 80, 200.0, 600.0, 100, 0.0, 1.0)
+h2_pt_V_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
 
 
 
 # fill ROOT histogram with numpy array
 # ===================================
-def fill_hist_array(hist, array, weight=1.0):
+def fill_hist_array(hist, array, weight=1.0, overflow_in_last_bin=False):
 
     if len(array) == 0:
         return None
@@ -167,6 +181,29 @@ def fill_hist_array(hist, array, weight=1.0):
     else:
         for v, w in zip(array, weight):
             hist.Fill(v, w)
+
+    if overflow_in_last_bin:
+        last_bin = hist.GetNbinsX()
+        last_content = hist.GetBinContent(last_bin)
+        overflow_bin = last_bin + 1
+        overflow_content = hist.GetBinContent(overflow_bin)
+
+        hist.SetBinContent(last_bin, last_content + overflow_content)
+
+    return None
+
+def fill_hist_array_2d(hist, array1, array2, weight=1.0):
+
+    if len(array1) == 0:
+        return None
+
+    if type(weight) == float:
+        for v1, v2 in zip(array1, array2):
+            hist.Fill(v1, v2, weight)
+
+    else:
+        for v1, v2, w in zip(array1, array2, weight):
+            hist.Fill(v1, v2, w)
 
     return None
 
@@ -253,6 +290,17 @@ for key in samples_dict:
             (np.abs(df["vbf_maxpt_j2_eta"] - df["vbf_maxpt_j1_eta"]) > 2.0)
         )
 
+        region_loose_no_V_mass_cut = (
+            (df["isResolved"] == False) &
+            (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
+            (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
+            #(df["PuppiAK8_jet_tau2tau1"] < 0.55) &
+            #(df["PuppiAK8_jet_mass_so_corr"] > 65) &
+            #(df["PuppiAK8_jet_mass_so_corr"] < 105) &
+            (df["vbf_maxpt_jj_m"] > 300) &
+            (np.abs(df["vbf_maxpt_j2_eta"] - df["vbf_maxpt_j1_eta"]) > 2.0)
+        )
+
         signal_region_tight = (
             (df["isResolved"] == False) &
             (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
@@ -300,6 +348,10 @@ for key in samples_dict:
 
             region_sel = signal_region_loose
 
+        if args.region == "loose_no_V_mass_cut":
+
+            region_sel = region_loose_no_V_mass_cut
+
         if args.region == "signal_tight":
 
             region_sel = signal_region_tight
@@ -344,6 +396,7 @@ for key in samples_dict:
         mass_ZV = skim_df["mass_llj_PuppiAK8"]
         fill_hist_array(h_mass_ZV[key], mass_ZV, total_weight)
 
+        # --------------------------------------------------------------
         PuppiAK8jet_e2_sdb1 = skim_df["PuppiAK8jet_e2_sdb1"]
         fill_hist_array(h_PuppiAK8jet_e2_sdb1[key], PuppiAK8jet_e2_sdb1, total_weight)
 
@@ -395,27 +448,22 @@ for key in samples_dict:
         PuppiAK8jet_tau2tau1 = skim_df["PuppiAK8_jet_tau2tau1"]
         fill_hist_array(h_PuppiAK8jet_tau2tau1[key], PuppiAK8jet_tau2tau1, total_weight)
 
-        if len(PuppiAK8jet_n2_sdb1) != 0:
-            h2_n2_sdb1_tau2tau1[key].FillN(len(PuppiAK8jet_n2_sdb1),
-                                           np.array(PuppiAK8jet_n2_sdb1, np.float64),
-                                           np.array(PuppiAK8jet_tau2tau1, np.float64),
-                                           np.array(total_weight, np.float64))
+        fill_hist_array_2d(h2_n2_sdb1_tau2tau1[key], PuppiAK8jet_n2_sdb1, PuppiAK8jet_tau2tau1, total_weight)
+        fill_hist_array_2d(h2_n2_sdb2_tau2tau1[key], PuppiAK8jet_n2_sdb2, PuppiAK8jet_tau2tau1, total_weight)
+        fill_hist_array_2d(h2_e2_sdb1_e3_sdb1[key], PuppiAK8jet_e2_sdb1, PuppiAK8jet_e3_sdb1, total_weight)
+        fill_hist_array_2d(h2_e2_sdb1_e3_v1_sdb1[key], PuppiAK8jet_e2_sdb1, PuppiAK8jet_e3_v1_sdb1, total_weight)
 
-        if len(PuppiAK8jet_n2_sdb2) != 0:
-            h2_n2_sdb2_tau2tau1[key].FillN(len(PuppiAK8jet_n2_sdb2),
-                                       np.array(PuppiAK8jet_n2_sdb2, np.float64),
-                                       np.array(PuppiAK8jet_tau2tau1, np.float64),
-                                       np.array(total_weight, np.float64))
-        if len(PuppiAK8jet_e2_sdb1) != 0:
-            h2_e2_sdb1_e3_sdb1[key].FillN(len(PuppiAK8jet_e2_sdb1),
-                                      np.array(PuppiAK8jet_e2_sdb1, np.float64),
-                                      np.array(PuppiAK8jet_e3_sdb1, np.float64),
-                                      np.array(total_weight, np.float64))
-        if len(PuppiAK8jet_e2_sdb1) != 0:
-            h2_e2_sdb1_e3_v1_sdb1[key].FillN(len(PuppiAK8jet_e2_sdb1),
-                                         np.array(PuppiAK8jet_e2_sdb1, np.float64),
-                                         np.array(PuppiAK8jet_e3_v1_sdb1, np.float64),
-                                         np.array(total_weight, np.float64))
+        # --------------------------------------------------------------
+        PuppiAK8_jet_mass_so_corr = skim_df["PuppiAK8_jet_mass_so_corr"]
+        fill_hist_array(h_PuppiAK8_jet_mass_so_corr[key], PuppiAK8_jet_mass_so_corr, total_weight, overflow_in_last_bin=True)
+
+        ungroomed_PuppiAK8_jet_pt = skim_df["ungroomed_PuppiAK8_jet_pt"]
+        fill_hist_array(h_ungroomed_PuppiAK8_jet_pt[key], ungroomed_PuppiAK8_jet_pt, total_weight, overflow_in_last_bin=True)
+
+        fill_hist_array_2d(h2_mass_V_n2_sdb1[key], PuppiAK8_jet_mass_so_corr, PuppiAK8jet_n2_sdb1, total_weight)
+        fill_hist_array_2d(h2_pt_V_n2_sdb1[key], ungroomed_PuppiAK8_jet_pt, PuppiAK8jet_n2_sdb1, total_weight)
+        fill_hist_array_2d(h2_mass_V_tau2tau1[key], PuppiAK8_jet_mass_so_corr, PuppiAK8jet_tau2tau1, total_weight)
+        fill_hist_array_2d(h2_pt_V_tau2tau1[key], ungroomed_PuppiAK8_jet_pt, PuppiAK8jet_tau2tau1, total_weight)
 
 # write hists to root file
 # ========================
@@ -453,6 +501,13 @@ for k in samples_dict:
     h2_n2_sdb2_tau2tau1[k].Write()
     h2_e2_sdb1_e3_sdb1[k].Write()
     h2_e2_sdb1_e3_v1_sdb1[k].Write()
+
+    h_PuppiAK8_jet_mass_so_corr[k].Write()
+    h_ungroomed_PuppiAK8_jet_pt[k].Write()
+    h2_mass_V_n2_sdb1[k].Write()
+    h2_pt_V_n2_sdb1[k].Write()
+    h2_mass_V_tau2tau1[k].Write()
+    h2_pt_V_tau2tau1[k].Write()
 
 out_hist_file.Write()
 out_hist_file.Close()
