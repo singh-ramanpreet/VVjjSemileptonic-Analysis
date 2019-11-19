@@ -101,6 +101,8 @@ class book_hist_dict:
 # ===============
 hist_keys = list(samples_dict.keys())
 
+ROOT.TH1.SetDefaultSumw2()
+
 h_lept_pt1 = book_hist_dict(30, 0, 300, titleX="lept_pt1", units="GeV", keys=hist_keys).clone()
 h_lept_pt2 = book_hist_dict(30, 0, 300, titleX="lept_pt2", units="GeV", keys=hist_keys).clone()
 
