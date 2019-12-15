@@ -110,7 +110,7 @@ class book_hist_dict:
 
     def clone(self):
 
-        if self.ybins == None:
+        if self.ybins is None:
             hist_ = self.hist_1D()
         else:
             hist_ = self.hist_2D()
@@ -131,89 +131,58 @@ class book_hist_dict:
 
 # book histograms
 # ===============
+
+# xbins, xlow, xup, variable
+hists_1D = [
+    (30, 0, 300, "lept_pt1"),
+    #(30, 0, 300, "lept_pt2"),
+    (25, -2.5, 2.5, "lept_eta1"),
+    #(25, -2.5, 2.5, "lept_eta2"),
+    (32, -3.2, 3.2, "lept_phi1"),
+    #(32, -3.2, 3.2, "lept_phi2"),
+    (50, 40.0, 150.0, "PuppiAK8_jet_mass_so_corr"),
+    (80, 200.0, 600.0, "ungroomed_PuppiAK8_jet_pt"),
+    (50, 0, 2500, "mWV"),
+    #(50, 0, 2500, "mZV"),
+    (40, 0.0, 0.5, "PuppiAK8jet_n2_sdb1"),
+    (40, 0.0, 0.4, "PuppiAK8jet_n2_sdb2"),
+    (40, 0.0, 1.0, "PuppiAK8jet_tau2tau1"),
+]
+
+hists_2D = [
+    (40, 0.0, 0.5, "n2_sdb1",
+     40, 0.0, 1.0, "tau2tau1"),
+    (40, 0.0, 0.4, "n2_sdb2",
+     40, 0.0, 1.0, "tau2tau1"),
+]
+
 hist_keys = list(samples_dict.keys())
 
 ROOT.TH1.SetDefaultSumw2()
 
-h_lept_pt1 = book_hist_dict(30, 0, 300, titleX="lept_pt1", units="GeV", keys=hist_keys).clone()
-h_lept_pt2 = book_hist_dict(30, 0, 300, titleX="lept_pt2", units="GeV", keys=hist_keys).clone()
+for histogram in hists_1D:
+    make_hists = (
+        f"h_{histogram[3]} = book_hist_dict("
+        f"xbins=histogram[0], xlow=histogram[1],"
+        f"xup=histogram[2], titleX=histogram[3],"
+        f"keys=hist_keys)"
+    )
+    exec(f"{make_hists}.clone()")
 
-h_lept_eta1 = book_hist_dict(25, -2.5, 2.5, titleX="lept_eta1", keys=hist_keys).clone()
-h_lept_eta2 = book_hist_dict(25, -2.5, 2.5, titleX="lept_eta2", keys=hist_keys).clone()
-
-h_lept_phi1 = book_hist_dict(32, -3.2, 3.2, titleX="lept_phi1", keys=hist_keys).clone()
-h_lept_phi2 = book_hist_dict(32, -3.2, 3.2, titleX="lept_phi2", keys=hist_keys).clone()
-
-h_mass_WV = book_hist_dict(50, 0, 2500, titleX="mass_WV", units="GeV", keys=hist_keys).clone()
-h_mass_ZV = book_hist_dict(50, 0, 2500, titleX="mass_ZV", units="GeV", keys=hist_keys).clone()
-
-h_PuppiAK8jet_e2_sdb1 = book_hist_dict(80, 0.0, 0.4, titleX="PuppiAK8jet_e2_sdb1", keys=hist_keys).clone()
-h_PuppiAK8jet_e3_sdb1 = book_hist_dict(100, 0.0, 0.05, titleX="PuppiAK8jet_e3_sdb1", keys=hist_keys).clone()
-h_PuppiAK8jet_e3_v1_sdb1 = book_hist_dict(120, 0.0, 0.06, titleX="PuppiAK8jet_e3_v1_sdb1", keys=hist_keys).clone()
-h_PuppiAK8jet_e3_v2_sdb1 = book_hist_dict(100, 0.0, 0.05, titleX="PuppiAK8jet_e3_v2_sdb1", keys=hist_keys).clone()
-
-h_PuppiAK8jet_e2_sdb2 = book_hist_dict(60, 0.0, 0.3, titleX="PuppiAK8jet_e2_sdb2", keys=hist_keys).clone()
-h_PuppiAK8jet_e3_sdb2 = book_hist_dict(80, 0.0, 0.04, titleX="PuppiAK8jet_e3_sdb2", keys=hist_keys).clone()
-h_PuppiAK8jet_e3_v1_sdb2 = book_hist_dict(60, 0.0, 0.03, titleX="PuppiAK8jet_e3_v1_sdb2", keys=hist_keys).clone()
-h_PuppiAK8jet_e3_v2_sdb2 = book_hist_dict(60, 0.0, 0.03, titleX="PuppiAK8jet_e3_v2_sdb2", keys=hist_keys).clone()
-
-h_PuppiAK8jet_e4_v1_sdb1 = book_hist_dict(160, 0.0, 0.008, titleX="PuppiAK8jet_e4_v1_sdb1", keys=hist_keys).clone()
-h_PuppiAK8jet_e4_v2_sdb1 = book_hist_dict(80, 0.0, 0.004, titleX="PuppiAK8jet_e4_v2_sdb1", keys=hist_keys).clone()
-h_PuppiAK8jet_e4_v1_sdb2 = book_hist_dict(40, 0.0, 0.002, titleX="PuppiAK8jet_e4_v1_sdb2", keys=hist_keys).clone()
-h_PuppiAK8jet_e4_v2_sdb2 = book_hist_dict(40, 0.0, 0.0004, titleX="PuppiAK8jet_e4_v2_sdb2", keys=hist_keys).clone()
-
-h_PuppiAK8jet_n2_sdb1 = book_hist_dict(100, 0.0, 0.5, titleX="PuppiAK8jet_n2_sdb1", keys=hist_keys).clone()
-h_PuppiAK8jet_n2_sdb2 = book_hist_dict(80, 0.0, 0.4, titleX="PuppiAK8jet_n2_sdb2", keys=hist_keys).clone()
-
-h_PuppiAK8jet_d2_sdb1 = book_hist_dict(80, 0.0, 4.0, titleX="PuppiAK8jet_d2_sdb1", keys=hist_keys).clone()
-h_PuppiAK8jet_d2_sdb2 = book_hist_dict(140, 0.0, 7.0, titleX="PuppiAK8jet_d2_sdb2", keys=hist_keys).clone()
-
-h_PuppiAK8jet_tau2tau1 = book_hist_dict(100, 0.0, 1.0, titleX="PuppiAK8jet_tau2tau1", keys=hist_keys).clone()
-
-h2 = ROOT.TH2F("n2_sdb1_tau2tau1", ";n2_sdb1;tau2tau1", 100, 0.0, 0.5, 100, 0.0, 1.0)
-h2_n2_sdb1_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
-h2 = ROOT.TH2F("n2_sdb2_tau2tau1", ";n2_sdb2;tau2tau1", 80, 0.0, 0.4, 100, 0.0, 1.0)
-h2_n2_sdb2_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
-h2 = ROOT.TH2F("e2_sdb1_e3_sdb1", ";e2_sdb1;e3_sdb1", 80, 0.0, 0.4, 100, 0.0, 0.05)
-h2_e2_sdb1_e3_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
-h2 = ROOT.TH2F("e2_sdb1_e3_v1_sdb1", ";e2_sdb1;e3_v1_sdb1", 40, 0.0, 0.4, 120, 0.0, 0.06)
-h2_e2_sdb1_e3_v1_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
-h_PuppiAK8_jet_mass_so_corr = book_hist_dict(50, 50.0, 150.0, titleX="PuppiAK8_jet_mass_so_corr", keys=hist_keys).clone()
-h_ungroomed_PuppiAK8_jet_pt = book_hist_dict(80, 200.0, 600.0, titleX="ungroomed_PuppiAK8_jet_pt", keys=hist_keys).clone()
-
-h2 = ROOT.TH2F("mass_V_n2_sdb1", ";mass_V;n2_sdb1", 50, 50.0, 150.0, 100, 0.0, 0.5)
-h2_mass_V_n2_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
-h2 = ROOT.TH2F("pt_V_n2_sdb1", ";pt_V;n2_sdb1", 80, 200.0, 600.0, 100, 0.0, 0.5)
-h2_pt_V_n2_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
-h2 = ROOT.TH2F("mass_V_tau2tau1", ";mass_V;tau2tau1", 50, 50.0, 150.0, 100, 0.0, 1.0)
-h2_mass_V_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
-h2 = ROOT.TH2F("pt_V_tau2tau1", ";pt_V;tau2tau1", 80, 200.0, 600.0, 100, 0.0, 1.0)
-h2_pt_V_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
-#
-h2 = ROOT.TH2F("rho_n2_sdb1", ";mass_V;n2_sdb1", 70, -8.0, -1.0, 100, 0.0, 0.5)
-h2_rho_n2_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
-h2 = ROOT.TH2F("rho_prime_n2_sdb1", ";pt_V;n2_sdb1", 45, 0.0, 4.5, 100, 0.0, 0.5)
-h2_rho_prime_n2_sdb1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
-h2 = ROOT.TH2F("rho_tau2tau1", ";mass_V;tau2tau1", 70, -8.0, -1.0, 100, 0.0, 1.0)
-h2_rho_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
-h2 = ROOT.TH2F("rho_prime_tau2tau1", ";pt_V;tau2tau1", 45, 0.0, 4.5, 100, 0.0, 1.0)
-h2_rho_prime_tau2tau1 = {key: h2.Clone(f"{key}_{h2.GetName()}") for key in hist_keys}
-
+for histogram in hists_2D:
+    make_hists = (
+        f"h2_{histogram[3]}_{histogram[7]} = book_hist_dict("
+        f"xbins=histogram[0], xlow=histogram[1],"
+        f"xup=histogram[2], titleX=histogram[3],"
+        f"ybins=histogram[4], ylow=histogram[5],"
+        f"yup=histogram[6], titleY=histogram[7],"
+        f"keys=hist_keys)"
+    )
+    exec(f"{make_hists}.clone()")
 
 # fill ROOT histogram with numpy array
 # ===================================
-def fill_hist_array(hist, array, weight=1.0, overflow_in_last_bin=False):
+def fill_hist_1d(hist, array, weight=1.0, overflow_in_last_bin=False):
 
     if len(array) == 0:
         return None
@@ -236,7 +205,7 @@ def fill_hist_array(hist, array, weight=1.0, overflow_in_last_bin=False):
 
     return None
 
-def fill_hist_array_2d(hist, array1, array2, weight=1.0):
+def fill_hist_2d(hist, array1, array2, weight=1.0):
 
     if len(array1) == 0:
         return None
@@ -417,110 +386,52 @@ for key in samples_dict:
         print("filling hists .... ")
 
         lept_pt1 = skim_df["l_pt1"]
-        fill_hist_array(h_lept_pt1[key], lept_pt1, total_weight)
+        fill_hist_1d(h_lept_pt1[key], lept_pt1, total_weight)
 
-        lept_pt2 = skim_df["l_pt2"]
-        fill_hist_array(h_lept_pt2[key], lept_pt2, total_weight)
+        #lept_pt2 = skim_df["l_pt2"]
+        #fill_hist_1d(h_lept_pt2[key], lept_pt2, total_weight)
 
         lept_eta1 = skim_df["l_eta1"]
-        fill_hist_array(h_lept_eta1[key], lept_eta1, total_weight)
+        fill_hist_1d(h_lept_eta1[key], lept_eta1, total_weight)
 
-        lept_eta2 = skim_df["l_eta2"]
-        fill_hist_array(h_lept_eta2[key], lept_eta2, total_weight)
+        #lept_eta2 = skim_df["l_eta2"]
+        #fill_hist_1d(h_lept_eta2[key], lept_eta2, total_weight)
 
         lept_phi1 = skim_df["l_phi1"]
-        fill_hist_array(h_lept_phi1[key], lept_phi1, total_weight)
+        fill_hist_1d(h_lept_phi1[key], lept_phi1, total_weight)
 
-        lept_phi2 = skim_df["l_phi2"]
-        fill_hist_array(h_lept_phi2[key], lept_phi2, total_weight)
+        #lept_phi2 = skim_df["l_phi2"]
+        #fill_hist_1d(h_lept_phi2[key], lept_phi2, total_weight)
 
-        mass_WV = skim_df["mass_lvj_type0_PuppiAK8"]
-        fill_hist_array(h_mass_WV[key], mass_WV, total_weight)
+        mWV = skim_df["mass_lvj_type0_PuppiAK8"]
+        fill_hist_1d(h_mWV[key], mWV, total_weight)
 
-        mass_ZV = skim_df["mass_llj_PuppiAK8"]
-        fill_hist_array(h_mass_ZV[key], mass_ZV, total_weight)
+        #mZV = skim_df["mass_llj_PuppiAK8"]
+        #fill_hist_1d(h_mZV[key], mZV, total_weight)
 
-        # --------------------------------------------------------------
         PuppiAK8jet_e2_sdb1 = skim_df["PuppiAK8jet_e2_sdb1"]
-        fill_hist_array(h_PuppiAK8jet_e2_sdb1[key], PuppiAK8jet_e2_sdb1, total_weight)
-
-        PuppiAK8jet_e3_sdb1 = skim_df["PuppiAK8jet_e3_sdb1"]
-        fill_hist_array(h_PuppiAK8jet_e3_sdb1[key], PuppiAK8jet_e3_sdb1, total_weight)
-
-        PuppiAK8jet_e3_v1_sdb1 = skim_df["PuppiAK8jet_e3_v1_sdb1"]
-        fill_hist_array(h_PuppiAK8jet_e3_v1_sdb1[key], PuppiAK8jet_e3_v1_sdb1, total_weight)
+        PuppiAK8jet_e2_sdb2 = skim_df["PuppiAK8jet_e2_sdb2"]
 
         PuppiAK8jet_e3_v2_sdb1 = skim_df["PuppiAK8jet_e3_v2_sdb1"]
-        fill_hist_array(h_PuppiAK8jet_e3_v2_sdb1[key], PuppiAK8jet_e3_v2_sdb1, total_weight)
-
-        PuppiAK8jet_e2_sdb2 = skim_df["PuppiAK8jet_e2_sdb2"]
-        fill_hist_array(h_PuppiAK8jet_e2_sdb2[key], PuppiAK8jet_e2_sdb2, total_weight)
-
-        PuppiAK8jet_e3_sdb2 = skim_df["PuppiAK8jet_e3_sdb2"]
-        fill_hist_array(h_PuppiAK8jet_e3_sdb2[key], PuppiAK8jet_e3_sdb2, total_weight)
-
-        PuppiAK8jet_e3_v1_sdb2 = skim_df["PuppiAK8jet_e3_v1_sdb2"]
-        fill_hist_array(h_PuppiAK8jet_e3_v1_sdb2[key], PuppiAK8jet_e3_v1_sdb2, total_weight)
-
         PuppiAK8jet_e3_v2_sdb2 = skim_df["PuppiAK8jet_e3_v2_sdb2"]
-        fill_hist_array(h_PuppiAK8jet_e3_v2_sdb2[key], PuppiAK8jet_e3_v2_sdb2, total_weight)
-
-        PuppiAK8jet_e4_v1_sdb1 = skim_df["PuppiAK8jet_e4_v1_sdb1"]
-        fill_hist_array(h_PuppiAK8jet_e4_v1_sdb1[key], PuppiAK8jet_e4_v1_sdb1, total_weight)
-
-        PuppiAK8jet_e4_v2_sdb1 = skim_df["PuppiAK8jet_e4_v2_sdb1"]
-        fill_hist_array(h_PuppiAK8jet_e4_v2_sdb1[key], PuppiAK8jet_e4_v2_sdb1, total_weight)
-
-        PuppiAK8jet_e4_v1_sdb2 = skim_df["PuppiAK8jet_e4_v1_sdb2"]
-        fill_hist_array(h_PuppiAK8jet_e4_v1_sdb2[key], PuppiAK8jet_e4_v1_sdb2, total_weight)
-
-        PuppiAK8jet_e4_v2_sdb2 = skim_df["PuppiAK8jet_e4_v2_sdb2"]
-        fill_hist_array(h_PuppiAK8jet_e4_v2_sdb2[key], PuppiAK8jet_e4_v2_sdb2, total_weight)
 
         PuppiAK8jet_n2_sdb1 = PuppiAK8jet_e3_v2_sdb1 / (PuppiAK8jet_e2_sdb1)**2
-        fill_hist_array(h_PuppiAK8jet_n2_sdb1[key], PuppiAK8jet_n2_sdb1, total_weight)
+        fill_hist_1d(h_PuppiAK8jet_n2_sdb1[key], PuppiAK8jet_n2_sdb1, total_weight)
 
         PuppiAK8jet_n2_sdb2 = PuppiAK8jet_e3_v2_sdb2 / (PuppiAK8jet_e2_sdb2)**2
-        fill_hist_array(h_PuppiAK8jet_n2_sdb2[key], PuppiAK8jet_n2_sdb2, total_weight)
-
-        PuppiAK8jet_d2_sdb1 = PuppiAK8jet_e3_sdb1 / (PuppiAK8jet_e2_sdb1)**3
-        fill_hist_array(h_PuppiAK8jet_d2_sdb1[key], PuppiAK8jet_d2_sdb1, total_weight)
-
-        PuppiAK8jet_d2_sdb2 = PuppiAK8jet_e3_sdb2 / (PuppiAK8jet_e2_sdb2)**3
-        fill_hist_array(h_PuppiAK8jet_d2_sdb2[key], PuppiAK8jet_d2_sdb2, total_weight)
+        fill_hist_1d(h_PuppiAK8jet_n2_sdb2[key], PuppiAK8jet_n2_sdb2, total_weight)
 
         PuppiAK8jet_tau2tau1 = skim_df["PuppiAK8_jet_tau2tau1"]
-        fill_hist_array(h_PuppiAK8jet_tau2tau1[key], PuppiAK8jet_tau2tau1, total_weight)
+        fill_hist_1d(h_PuppiAK8jet_tau2tau1[key], PuppiAK8jet_tau2tau1, total_weight)
 
-        fill_hist_array_2d(h2_n2_sdb1_tau2tau1[key], PuppiAK8jet_n2_sdb1, PuppiAK8jet_tau2tau1, total_weight)
-        fill_hist_array_2d(h2_n2_sdb2_tau2tau1[key], PuppiAK8jet_n2_sdb2, PuppiAK8jet_tau2tau1, total_weight)
-        fill_hist_array_2d(h2_e2_sdb1_e3_sdb1[key], PuppiAK8jet_e2_sdb1, PuppiAK8jet_e3_sdb1, total_weight)
-        fill_hist_array_2d(h2_e2_sdb1_e3_v1_sdb1[key], PuppiAK8jet_e2_sdb1, PuppiAK8jet_e3_v1_sdb1, total_weight)
+        fill_hist_2d(h2_n2_sdb1_tau2tau1[key], PuppiAK8jet_n2_sdb1, PuppiAK8jet_tau2tau1, total_weight)
+        fill_hist_2d(h2_n2_sdb2_tau2tau1[key], PuppiAK8jet_n2_sdb2, PuppiAK8jet_tau2tau1, total_weight)
 
-        # --------------------------------------------------------------
         PuppiAK8_jet_mass_so_corr = skim_df["PuppiAK8_jet_mass_so_corr"]
-        fill_hist_array(h_PuppiAK8_jet_mass_so_corr[key], PuppiAK8_jet_mass_so_corr, total_weight, overflow_in_last_bin=True)
+        fill_hist_1d(h_PuppiAK8_jet_mass_so_corr[key], PuppiAK8_jet_mass_so_corr, total_weight, overflow_in_last_bin=True)
 
         ungroomed_PuppiAK8_jet_pt = skim_df["ungroomed_PuppiAK8_jet_pt"]
-        fill_hist_array(h_ungroomed_PuppiAK8_jet_pt[key], ungroomed_PuppiAK8_jet_pt, total_weight, overflow_in_last_bin=True)
-
-        fill_hist_array_2d(h2_mass_V_n2_sdb1[key], PuppiAK8_jet_mass_so_corr, PuppiAK8jet_n2_sdb1, total_weight)
-        fill_hist_array_2d(h2_pt_V_n2_sdb1[key], ungroomed_PuppiAK8_jet_pt, PuppiAK8jet_n2_sdb1, total_weight)
-        fill_hist_array_2d(h2_mass_V_tau2tau1[key], PuppiAK8_jet_mass_so_corr, PuppiAK8jet_tau2tau1, total_weight)
-        fill_hist_array_2d(h2_pt_V_tau2tau1[key], ungroomed_PuppiAK8_jet_pt, PuppiAK8jet_tau2tau1, total_weight)
-
-        # --------------------------------------------------------------
-        # DDT
-        rho_mu = 1.0
-        ratio1 = (PuppiAK8_jet_mass_so_corr) ** 2 / (ungroomed_PuppiAK8_jet_pt) ** 2
-        ratio2 = (PuppiAK8_jet_mass_so_corr) ** 2 / (ungroomed_PuppiAK8_jet_pt * rho_mu)
-        rho = np.log(ratio1)
-        rho_prime = np.log(ratio2)
-
-        fill_hist_array_2d(h2_rho_n2_sdb1[key], rho, PuppiAK8jet_n2_sdb1, total_weight)
-        fill_hist_array_2d(h2_rho_prime_n2_sdb1[key], rho_prime, PuppiAK8jet_n2_sdb1, total_weight)
-        fill_hist_array_2d(h2_rho_tau2tau1[key], rho, PuppiAK8jet_tau2tau1, total_weight)
-        fill_hist_array_2d(h2_rho_prime_tau2tau1[key], rho_prime, PuppiAK8jet_tau2tau1, total_weight)
+        fill_hist_1d(h_ungroomed_PuppiAK8_jet_pt[key], ungroomed_PuppiAK8_jet_pt, total_weight, overflow_in_last_bin=True)
 
 # write hists to root file
 # ========================
@@ -528,48 +439,12 @@ out_hist_file = ROOT.TFile(f"{args.region}_{args.boson}_{args.channel}.root", "R
 out_hist_file.cd()
 
 for k in samples_dict:
-    h_lept_pt1[k].Write()
-    h_lept_pt2[k].Write()
-    h_lept_eta1[k].Write()
-    h_lept_eta2[k].Write()
-    h_lept_phi1[k].Write()
-    h_lept_phi2[k].Write()
-    h_mass_WV[k].Write()
-    h_mass_ZV[k].Write()
 
-    h_PuppiAK8jet_e2_sdb1[k].Write()
-    h_PuppiAK8jet_e3_sdb1[k].Write()
-    h_PuppiAK8jet_e3_v1_sdb1[k].Write()
-    h_PuppiAK8jet_e3_v2_sdb1[k].Write()
-    h_PuppiAK8jet_e2_sdb2[k].Write()
-    h_PuppiAK8jet_e3_sdb2[k].Write()
-    h_PuppiAK8jet_e3_v1_sdb2[k].Write()
-    h_PuppiAK8jet_e3_v2_sdb2[k].Write()
-    h_PuppiAK8jet_e4_v1_sdb1[k].Write()
-    h_PuppiAK8jet_e4_v2_sdb1[k].Write()
-    h_PuppiAK8jet_e4_v1_sdb2[k].Write()
-    h_PuppiAK8jet_e4_v2_sdb2[k].Write()
-    h_PuppiAK8jet_n2_sdb1[k].Write()
-    h_PuppiAK8jet_n2_sdb2[k].Write()
-    h_PuppiAK8jet_d2_sdb1[k].Write()
-    h_PuppiAK8jet_d2_sdb2[k].Write()
-    h_PuppiAK8jet_tau2tau1[k].Write()
-    h2_n2_sdb1_tau2tau1[k].Write()
-    h2_n2_sdb2_tau2tau1[k].Write()
-    h2_e2_sdb1_e3_sdb1[k].Write()
-    h2_e2_sdb1_e3_v1_sdb1[k].Write()
+    for histogram in hists_1D:
+        exec(f"h_{histogram[3]}[k].Write()")
 
-    h_PuppiAK8_jet_mass_so_corr[k].Write()
-    h_ungroomed_PuppiAK8_jet_pt[k].Write()
-    h2_mass_V_n2_sdb1[k].Write()
-    h2_pt_V_n2_sdb1[k].Write()
-    h2_mass_V_tau2tau1[k].Write()
-    h2_pt_V_tau2tau1[k].Write()
-
-    h2_rho_n2_sdb1[k].Write()
-    h2_rho_prime_n2_sdb1[k].Write()
-    h2_rho_tau2tau1[k].Write()
-    h2_rho_prime_tau2tau1[k].Write()
+    for histogram in hists_2D:
+        exec(f"h2_{histogram[3]}_{histogram[7]}[k].Write()")
 
 out_hist_file.Write()
 out_hist_file.Close()
