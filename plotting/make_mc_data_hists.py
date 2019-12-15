@@ -40,61 +40,93 @@ samples_dict = json.load(open(args.datasets, "r"))
 # a class to book multiple hists
 # ==============================
 class book_hist_dict:
-    def __init__(self, xbins, xlow=0, xup=1, titleX="", units="", name="", 
+    def __init__(self, xbins, xlow=0, xup=1, titleX="",
+                 ybins=None, ylow=None, yup=None, titleY="",
                  keys=[], keys_sub=[]):
         self.xbins = xbins
         self.xlow = xlow
         self.xup = xup
         self.titleX = titleX
-        self.units = units
-        self.name = name
+        self.ybins = ybins
+        self.ylow = ylow
+        self.yup = yup
+        self.titleY = titleY
         self.keys = keys
         self.keys_sub = keys_sub
-    
+
     def hist_1D(self):
         if type(self.xbins) == int:
             variable = ROOT.TH1F("", "", self.xbins, self.xlow, self.xup)
             bw = variable.GetBinWidth(1)
-        
+
         elif type(self.xbins) == np.ndarray:
             variable = ROOT.TH1F("", "", len(self.xbins) - 1, self.xbins.astype(np.float64))
             bw = None
-        
+
         else:
             return None
 
         titleX = self.titleX
         if bw is not None:
-            titleY = "Events/%s" % bw
+            titleY = f"Events/{bw}"
         else:
             titleY = "Events"
-        
-        if self.units != "":
-            titleX = self.titleX + "(" + self.units + ")"
-            titleY = titleY + " " + self.units
-        
-        variable.SetTitle("%s;%s;%s" % (titleX, titleX, titleY))
-        
-        if self.name != "":
-            variable.SetName(self.name)
-        else:
-            variable.SetName(self.titleX)
-        
+
+        variable.SetTitle(f"{titleX};{titleX};{titleY}")
+        variable.SetName(titleX)
+
         return variable
-    
+
+    def hist_2D(self):
+        if type(self.xbins) == int:
+
+            if type(self.ybins) == int:
+                variable = ROOT.TH2F("", "", self.xbins, self.xlow, self.xup,
+                                     self.ybins, self.ylow, self.yup)
+
+            elif type(self.ybins) == np.ndarray:
+                variable = ROOT.TH2F("", "", self.xbins, self.xlow, self.xup,
+                                     len(self.ybins) - 1, self.ybins.astype(np.float64))
+
+        elif type(self.xbins) == np.ndarray:
+            if type(self.ybins) == int:
+                variable = ROOT.TH2F("", "", len(self.xbins) - 1, self.xbins.astype(np.float64),
+                                     self.ybins, self.ylow, self.yup)
+
+            elif type(self.ybins) == np.ndarray:
+                variable = ROOT.TH2F("", "", len(self.xbins) - 1, self.xbins.astype(np.float64),
+                                     len(self.ybins) - 1, self.ybins.astype(np.float64))
+
+        else:
+            return None
+
+        titleX = self.titleX
+        titleY = self.titleY
+
+        variable.SetTitle(f"{titleX}_{titleY};{titleX};{titleY}")
+        variable.SetName(f"{titleX}_{titleY}")
+
+        return variable
+
     def clone(self):
+
+        if self.ybins == None:
+            hist_ = self.hist_1D()
+        else:
+            hist_ = self.hist_2D()
+
         hist_dict = {}
-        
+
         for key in self.keys:
-            name_ = key + "_" + self.hist_1D().GetName()
-            hist_dict[key] = self.hist_1D().Clone()
+            name_ = f"{key}_{hist_.GetName()}"
+            hist_dict[key] = hist_.Clone()
             hist_dict[key].SetName(name_)
 
             for key_sub in self.keys_sub:
-                name = name_ + "_" + key_sub
-                hist_dict[key + "_" + key_sub] = self.hist_1D().Clone()
-                hist_dict[key + "_" + key_sub].SetName(name)
-                
+                name = f"{name_}_{key_sub}"
+                hist_dict[f"{key}_{key_sub}"] = hist_.Clone()
+                hist_dict[f"{key}_{key_sub}"].SetName(name)
+
         return hist_dict
 
 # book histograms
