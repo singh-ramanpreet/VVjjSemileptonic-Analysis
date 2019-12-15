@@ -46,11 +46,17 @@ for key in samples_dict:
         if key == "VBS_EWK":
             input_trees.append((root_file, xs_weight, "Signal"))
 
-        elif "data" in key:
-            continue
+        elif key == "VBS_QCD":
+            input_trees.append((root_file, xs_weight, "Background"))
+
+        elif key == "Top":
+            input_trees.append((root_file, xs_weight, "Background"))
+
+        elif key == "WJets":
+            input_trees.append((root_file, xs_weight, "Background"))
 
         else:
-            input_trees.append((root_file, xs_weight, "Background"))
+            continue
 
 for i_tree, treeWeight, treeClass in input_trees:
     dataloader.AddTree(i_tree.Get("otree"), treeClass, treeWeight)
@@ -73,7 +79,7 @@ dataloader.AddVariable("vbf_maxpt_j2_eta", "F")
 dataloader.AddVariable("PuppiAK8_jet_mass_so_corr", "F")
 dataloader.AddVariable("ungroomed_PuppiAK8_jet_pt", "F")
 dataloader.AddVariable("ungroomed_PuppiAK8_jet_eta", "F")
-#dataloader.AddVariable("PuppiAK8_jet_tau2tau1", "F")
+dataloader.AddVariable("PuppiAK8_jet_tau2tau1", "F")
 
 # WV system
 dataloader.AddVariable("mass_lvj_type0_PuppiAK8", "F")
@@ -136,17 +142,18 @@ preselection = """
 
 preselection = preselection.replace("\n", " ")
 
-N = 1000
+nTrain = 5000
+nTest = 5000
 dataloader.PrepareTrainingAndTestTree(
     ROOT.TCut(preselection),
     ":".join([
         "!V",
         "SplitMode=Random",
         "NormMode=NumEvents",
-        f"nTrain_Signal={N}",
-        f"nTest_Signal={N}",
-        f"nTrain_Background={N}",
-        f"nTest_Background={N}"
+        f"nTrain_Signal={nTrain}",
+        f"nTest_Signal={nTest}",
+        f"nTrain_Background={nTrain}",
+        f"nTest_Background={nTest}"
     ])
 )
 
@@ -155,12 +162,12 @@ factory.BookMethod(
     ROOT.TMVA.Types.kBDT,
     "BDTG",
     ":".join([
-        "!H", "!V", 
-        "NTrees=1000",
-        "MinNodeSize=2.5%", 
+        "!H", "!V",
+        "NTrees=500",
+        "MinNodeSize=5%",
         "BoostType=Grad",
         "Shrinkage=0.10",
-        "UseBaggedBoost", "BaggedSampleFraction=0.5", 
+        "UseBaggedBoost", "BaggedSampleFraction=0.5",
         "NegWeightTreatment=Pray"
     ])
 )
