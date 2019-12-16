@@ -17,7 +17,7 @@ parser.add_argument(
     )
 
 parser.add_argument(
-    "--channel", type=str, default="mu",
+    "--lepton", type=str, default="m",
     help="muon or electron channel, default=%(default)s"
     )
 
@@ -27,8 +27,13 @@ parser.add_argument(
     )
 
 parser.add_argument(
-    "--region", type=str, default="signal_loose",
+    "--region", type=str, default="signal_loose_W",
     help="region , default=%(default)s"
+    )
+
+parser.add_argument(
+    "--output", type=str, default="",
+    help="output filename, default='region'_'lepton'.root"
     )
 
 args = parser.parse_args()
@@ -265,27 +270,6 @@ for key in samples_dict:
         if "isResolved" not in df.columns:
             df["isResolved"] = False
 
-        # common veto
-        veto = ( 
-            (df["nBTagJet_loose"] == 0) &
-            (df["vbf_maxpt_j1_pt"] > 30) &
-            (df["vbf_maxpt_j2_pt"] > 30)
-        )
-
-        # W channel
-        W_channel = (
-            (df["l_pt1"] > 50) &
-            (df["l_pt2"] < 0)
-        )
-
-        # Z channel
-        Z_channel = (
-            (df["l_pt1"] > 50) &
-            (df["l_pt2"] > 30) &
-            (df["dilep_m"] > (91.1876 - 7.5)) &
-            (df["dilep_m"] < (91.1876 + 7.5))
-        )
-
         # e channel
         e_channel = (
             (df["type"] == 1) &
@@ -312,94 +296,55 @@ for key in samples_dict:
 
         mu_channel2 = (np.abs(df["l_eta2"]) < 2.4)
 
-        signal_region_loose = (
-            (df["isResolved"] == False) &
-            (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
-            (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-            #(df["PuppiAK8_jet_tau2tau1"] < 0.55) &
-            (df["PuppiAK8_jet_mass_so_corr"] > 65) &
-            (df["PuppiAK8_jet_mass_so_corr"] < 105) &
-            (df["vbf_maxpt_jj_m"] > 300) &
-            (np.abs(df["vbf_maxpt_j2_eta"] - df["vbf_maxpt_j1_eta"]) > 2.0)
-        )
+        if args.lepton == "e":
+            lep_sel = e_channel
+            lep_sel2 = e_channel2
 
-        region_loose_no_V_mass_cut = (
-            (df["isResolved"] == False) &
-            (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
-            (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-            #(df["PuppiAK8_jet_tau2tau1"] < 0.55) &
-            #(df["PuppiAK8_jet_mass_so_corr"] > 65) &
-            #(df["PuppiAK8_jet_mass_so_corr"] < 105) &
-            (df["vbf_maxpt_jj_m"] > 300) &
-            (np.abs(df["vbf_maxpt_j2_eta"] - df["vbf_maxpt_j1_eta"]) > 2.0)
-        )
+        if args.lepton == "m":
+            lep_sel = mu_channel
+            lep_sel2 = mu_channel2
 
-        signal_region_tight = (
-            (df["isResolved"] == False) &
-            (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
-            (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-            #(df["PuppiAK8_jet_tau2tau1"] < 0.55) &
-            (df["PuppiAK8_jet_mass_so_corr"] > 65) &
-            (df["PuppiAK8_jet_mass_so_corr"] < 105) &
-            (df["vbf_maxpt_jj_m"] > 800) &
-            (np.abs(df["vbf_maxpt_j2_eta"] - df["vbf_maxpt_j1_eta"]) > 4.0)
-        )
+        if args.lepton == "l":
+            lep_sel = e_channel | mu_channel
+            lep_sel2 = e_channel2 | mu_channel2
 
-        additional_W_cuts = (
-            (df["BosonCentrality_type0"] > 1.0) &
-            (np.abs(df["ZeppenfeldWL_type0"])/(np.abs(df["vbf_maxpt_j2_eta"] - df["vbf_maxpt_j1_eta"])) < 0.3) &
-            (np.abs(df["ZeppenfeldWH"])/(np.abs(df["vbf_maxpt_j2_eta"] - df["vbf_maxpt_j1_eta"])) < 0.3)
-        )
+
+        if args.region == "no_cut":
+            region_sel = (
+                (df["l_pt1"] > 0) &
+                (df["vbf_maxpt_jj_m"] > 0)
+            )
+
+
+        if args.region == "signal_loose_W":
+            region_sel = (
+                (df["isResolved"] == False) &
+                (df["l_pt1"] > 30) &
+                (df["l_pt2"] < 0) &
+                (df["pfMET_Corr"] > 50) &
+                (df["nBTagJet_loose"] == 0) &
+                (df["vbf_maxpt_jj_m"] > 500) &
+                (df["vbf_maxpt_j1_pt"] > 30) &
+                (df["vbf_maxpt_j2_pt"] > 30) &
+                (df["vbf_maxpt_jj_Deta"] > 2.5) &
+                (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
+                (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
+                (df["PuppiAK8_jet_tau2tau1"] < 0.55) &
+                (df["PuppiAK8_jet_mass_so_corr"] > 65) &
+                (df["PuppiAK8_jet_mass_so_corr"] < 105) &
+                (df["BosonCentrality_type0"] > -999.0) &
+                (np.abs((df["ZeppenfeldWL_type0"])/(df["vbf_maxpt_jj_Deta"])) < 1.0) &
+                (np.abs((df["ZeppenfeldWH"])/(df["vbf_maxpt_jj_Deta"])) < 1.0)
+            )
+
 
         if args.boson == "W":
-
-            boson_channel_sel = W_channel
-
-            if args.channel == "mu":
-
-                lep_channel_sel = mu_channel & (df["pfMET_Corr"] > 50)
-
-            if args.channel == "e":
-
-                lep_channel_sel = e_channel & (df["pfMET_Corr"] > 80)
-
-
-        if args.boson == "Z":
-
-            boson_channel_sel = Z_channel
-
-            if args.channel == "mu":
-
-                lep_channel_sel = mu_channel & mu_channel2
-
-            if args.channel == "e":
-
-                lep_channel_sel = e_channel & e_channel2
-
-
-        if args.region == "signal_loose":
-
-            region_sel = signal_region_loose
-
-        if args.region == "loose_no_V_mass_cut":
-
-            region_sel = region_loose_no_V_mass_cut
-
-        if args.region == "signal_tight":
-
-            region_sel = signal_region_tight
-
-            if args.boson == "W":
-
-                region_sel = signal_region_tight & additional_W_cuts
-
-        skim_df = df[veto & lep_channel_sel & boson_channel_sel & region_sel]
-
-        if args.boson == "W":
+            skim_df = df[lep_sel & region_sel]
             total_weight = xs_weight * skim_df["genWeight"] * skim_df["trig_eff_Weight"] \
                             * skim_df["id_eff_Weight"] * skim_df["pu_Weight"] * skim_df["btag0Wgt"]
 
         if args.boson == "Z":
+            skim_df = df[lep_sel & lep_sel2 & region_sel]
             total_weight = xs_weight * skim_df["genWeight"] * skim_df["trig_eff_Weight"] * skim_df["trig_eff_Weight2"] \
                             * skim_df["id_eff_Weight"] * skim_df["id_eff_Weight2"] * skim_df["pu_Weight"] * skim_df["btag0Wgt"]
 
@@ -423,11 +368,8 @@ for key in samples_dict:
         #lept_phi2 = skim_df["l_phi2"]
         #fill_hist_1d(h_lept_phi2[key], lept_phi2, total_weight)
 
-        mWV = skim_df["mass_lvj_type0_PuppiAK8"]
-        fill_hist_1d(h_mWV[key], mWV, total_weight)
-
-        #mZV = skim_df["mass_llj_PuppiAK8"]
-        #fill_hist_1d(h_mZV[key], mZV, total_weight)
+        mass_lvj_type0_PuppiAK8 = skim_df["mass_lvj_type0_PuppiAK8"]
+        fill_hist_1d(h_mass_lvj_type0_PuppiAK8[key], mass_lvj_type0_PuppiAK8, total_weight)
 
         PuppiAK8jet_e2_sdb1 = skim_df["PuppiAK8jet_e2_sdb1"]
         PuppiAK8jet_e2_sdb2 = skim_df["PuppiAK8jet_e2_sdb2"]
@@ -455,7 +397,7 @@ for key in samples_dict:
 
 # write hists to root file
 # ========================
-out_hist_file = ROOT.TFile(f"{args.region}_{args.boson}_{args.channel}.root", "RECREATE")
+out_hist_file = ROOT.TFile(f"{args.region}_{args.lepton}.root", "RECREATE")
 out_hist_file.cd()
 
 for k in samples_dict:
