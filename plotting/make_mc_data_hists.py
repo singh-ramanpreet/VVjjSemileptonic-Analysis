@@ -12,7 +12,7 @@ import argparse
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
-    "--datasets", type=str, default="datasets_2016.json",
+    "--datasets", type=str, default="../datasets_2016.json",
     help="json file containing info of datasets, default=%(default)s"
     )
 
@@ -140,13 +140,33 @@ hists_1D = [
     #(25, -2.5, 2.5, "lept_eta2"),
     (32, -3.2, 3.2, "lept_phi1"),
     #(32, -3.2, 3.2, "lept_phi2"),
+    # ak8 jet
     (50, 40.0, 150.0, "PuppiAK8_jet_mass_so_corr"),
-    (80, 200.0, 600.0, "ungroomed_PuppiAK8_jet_pt"),
-    (50, 0, 2500, "mWV"),
-    #(50, 0, 2500, "mZV"),
+    (120, 0.0, 600.0, "ungroomed_PuppiAK8_jet_pt"),
+    (20, -5.0, 5.0, "ungroomed_PuppiAK8_jet_eta"),
+    (32, -3.2, 3.2, "ungroomed_PuppiAK8_jet_phi"),
     (40, 0.0, 0.5, "PuppiAK8jet_n2_sdb1"),
     (40, 0.0, 0.4, "PuppiAK8jet_n2_sdb2"),
     (40, 0.0, 1.0, "PuppiAK8jet_tau2tau1"),
+    # W
+    (50, 0.0, 500.0, "v_pt_type0"),
+    (20, -5.0, 5.0, "v_eta_type0"),
+    (40, 0.0, 200.0, "v_mt_type0"),
+    # vbf jets
+    (120, 0.0, 600.0, "vbf_maxpt_j1_pt"),
+    (40, 0.0, 200.0, "vbf_maxpt_j2_pt"),
+    (20, -5.0, 5.0, "vbf_maxpt_j1_eta"),
+    (20, -5.0, 5.0, "vbf_maxpt_j2_eta"),
+    (20, 0.0, 10.0, "vbf_maxpt_jj_Deta"),
+    (32, -3.2, 3.2, "vbf_maxpt_j1_phi"),
+    (32, -3.2, 3.2, "vbf_maxpt_j2_phi"),
+    (40, 500.0, 2500.0, "vbf_maxpt_jj_m"),
+    # W V system
+    (50, 0, 2500, "mass_lvj_type0_PuppiAK8"),
+    (120, 0.0, 600.0, "pt_lvj_type0_PuppiAK8"),
+    (20, -5.0, 5.0, "eta_lvj_type0_PuppiAK8"),
+    (32, -3.2, 3.2, "phi_lvj_type0_PuppiAK8"),
+    #(50, 0, 2500, "mZV"),
 ]
 
 hists_2D = [
