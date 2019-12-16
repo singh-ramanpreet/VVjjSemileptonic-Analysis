@@ -397,7 +397,13 @@ for key in samples_dict:
 
 # write hists to root file
 # ========================
-out_hist_file = ROOT.TFile(f"{args.region}_{args.lepton}.root", "RECREATE")
+
+if args.output == "":
+    out_hist_filename = f"{args.region}_{args.lepton}.root"
+else:
+    out_hist_filename = args.output
+
+out_hist_file = ROOT.TFile(out_hist_filename, "recreate")
 out_hist_file.cd()
 
 for k in samples_dict:
