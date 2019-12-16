@@ -307,13 +307,13 @@ for key in samples_dict:
         if args.region == "no_cut":
             region_sel = (
                 (df["l_pt1"] > 0) &
-                (df["vbf_maxpt_jj_m"] > 0)
+                (df["vbf_maxpt_jj_m"] > 200)
             )
 
         if args.region == "l_pt1_cut":
             region_sel = (
                 (df["l_pt1"] > 30) &
-                (df["vbf_maxpt_jj_m"] > 0)
+                (df["vbf_maxpt_jj_m"] > 200)
             )
 
         if args.region == "signal_loose_W":
@@ -405,8 +405,17 @@ for key in samples_dict:
         #lept_phi2 = skim_df["l_phi2"]
         #fill_hist_1d(h_lept_phi2[key], lept_phi2, total_weight)
 
-        mass_lvj_type0_PuppiAK8 = skim_df["mass_lvj_type0_PuppiAK8"]
-        fill_hist_1d(h_mass_lvj_type0_PuppiAK8[key], mass_lvj_type0_PuppiAK8, total_weight)
+        PuppiAK8_jet_mass_so_corr = skim_df["PuppiAK8_jet_mass_so_corr"]
+        fill_hist_1d(h_PuppiAK8_jet_mass_so_corr[key], PuppiAK8_jet_mass_so_corr, total_weight, overflow_in_last_bin=True)
+
+        ungroomed_PuppiAK8_jet_pt = skim_df["ungroomed_PuppiAK8_jet_pt"]
+        fill_hist_1d(h_ungroomed_PuppiAK8_jet_pt[key], ungroomed_PuppiAK8_jet_pt, total_weight, overflow_in_last_bin=True)
+
+        ungroomed_PuppiAK8_jet_eta = skim_df["ungroomed_PuppiAK8_jet_eta"]
+        fill_hist_1d(h_ungroomed_PuppiAK8_jet_eta[key], ungroomed_PuppiAK8_jet_eta, total_weight)
+
+        ungroomed_PuppiAK8_jet_phi = skim_df["ungroomed_PuppiAK8_jet_phi"]
+        fill_hist_1d(h_ungroomed_PuppiAK8_jet_phi[key], ungroomed_PuppiAK8_jet_phi, total_weight)
 
         PuppiAK8jet_e2_sdb1 = skim_df["PuppiAK8jet_e2_sdb1"]
         PuppiAK8jet_e2_sdb2 = skim_df["PuppiAK8jet_e2_sdb2"]
@@ -415,22 +424,62 @@ for key in samples_dict:
         PuppiAK8jet_e3_v2_sdb2 = skim_df["PuppiAK8jet_e3_v2_sdb2"]
 
         PuppiAK8jet_n2_sdb1 = PuppiAK8jet_e3_v2_sdb1 / (PuppiAK8jet_e2_sdb1)**2
-        fill_hist_1d(h_PuppiAK8jet_n2_sdb1[key], PuppiAK8jet_n2_sdb1, total_weight)
+        fill_hist_1d(h_PuppiAK8jet_n2_sdb1[key], PuppiAK8jet_n2_sdb1, total_weight, overflow_in_last_bin=True)
 
         PuppiAK8jet_n2_sdb2 = PuppiAK8jet_e3_v2_sdb2 / (PuppiAK8jet_e2_sdb2)**2
-        fill_hist_1d(h_PuppiAK8jet_n2_sdb2[key], PuppiAK8jet_n2_sdb2, total_weight)
+        fill_hist_1d(h_PuppiAK8jet_n2_sdb2[key], PuppiAK8jet_n2_sdb2, total_weight, overflow_in_last_bin=True)
 
         PuppiAK8jet_tau2tau1 = skim_df["PuppiAK8_jet_tau2tau1"]
-        fill_hist_1d(h_PuppiAK8jet_tau2tau1[key], PuppiAK8jet_tau2tau1, total_weight)
+        fill_hist_1d(h_PuppiAK8jet_tau2tau1[key], PuppiAK8jet_tau2tau1, total_weight, overflow_in_last_bin=True)
 
+        v_pt_type0 = skim_df["v_pt_type0"]
+        fill_hist_1d(h_v_pt_type0[key], v_pt_type0, total_weight, overflow_in_last_bin=True)
+
+        v_eta_type0 = skim_df["v_eta_type0"]
+        fill_hist_1d(h_v_eta_type0[key], v_eta_type0, total_weight)
+
+        v_mt_type0 = skim_df["v_mt_type0"]
+        fill_hist_1d(h_v_mt_type0[key], v_mt_type0, total_weight, overflow_in_last_bin=True)
+
+        vbf_maxpt_j1_pt = skim_df["vbf_maxpt_j1_pt"]
+        fill_hist_1d(h_vbf_maxpt_j1_pt[key], vbf_maxpt_j1_pt, total_weight, overflow_in_last_bin=True)
+
+        vbf_maxpt_j2_pt = skim_df["vbf_maxpt_j2_pt"]
+        fill_hist_1d(h_vbf_maxpt_j2_pt[key], vbf_maxpt_j2_pt, total_weight, overflow_in_last_bin=True)
+
+        vbf_maxpt_j1_eta = skim_df["vbf_maxpt_j1_eta"]
+        fill_hist_1d(h_vbf_maxpt_j1_eta[key], vbf_maxpt_j1_eta, total_weight)
+
+        vbf_maxpt_j2_eta = skim_df["vbf_maxpt_j2_eta"]
+        fill_hist_1d(h_vbf_maxpt_j2_eta[key], vbf_maxpt_j2_eta, total_weight)
+
+        vbf_maxpt_j1_phi = skim_df["vbf_maxpt_j1_phi"]
+        fill_hist_1d(h_vbf_maxpt_j1_phi[key], vbf_maxpt_j1_phi, total_weight)
+
+        vbf_maxpt_j2_phi = skim_df["vbf_maxpt_j2_phi"]
+        fill_hist_1d(h_vbf_maxpt_j2_phi[key], vbf_maxpt_j2_phi, total_weight)
+
+        vbf_maxpt_jj_Deta = skim_df["vbf_maxpt_jj_Deta"]
+        fill_hist_1d(h_vbf_maxpt_jj_Deta[key], vbf_maxpt_jj_Deta, total_weight)
+
+        vbf_maxpt_jj_m = skim_df["vbf_maxpt_jj_m"]
+        fill_hist_1d(h_vbf_maxpt_jj_m[key], vbf_maxpt_jj_m, total_weight)
+
+        mass_lvj_type0_PuppiAK8 = skim_df["mass_lvj_type0_PuppiAK8"]
+        fill_hist_1d(h_mass_lvj_type0_PuppiAK8[key], mass_lvj_type0_PuppiAK8, total_weight, overflow_in_last_bin=True)
+
+        pt_lvj_type0_PuppiAK8 = skim_df["pt_lvj_type0_PuppiAK8"]
+        fill_hist_1d(h_pt_lvj_type0_PuppiAK8[key], pt_lvj_type0_PuppiAK8, total_weight, overflow_in_last_bin=True)
+
+        eta_lvj_type0_PuppiAK8 = skim_df["eta_lvj_type0_PuppiAK8"]
+        fill_hist_1d(h_eta_lvj_type0_PuppiAK8[key], eta_lvj_type0_PuppiAK8, total_weight)
+
+        phi_lvj_type0_PuppiAK8 = skim_df["phi_lvj_type0_PuppiAK8"]
+        fill_hist_1d(h_phi_lvj_type0_PuppiAK8[key], phi_lvj_type0_PuppiAK8, total_weight)
+
+        # 2D hists
         fill_hist_2d(h2_n2_sdb1_tau2tau1[key], PuppiAK8jet_n2_sdb1, PuppiAK8jet_tau2tau1, total_weight)
         fill_hist_2d(h2_n2_sdb2_tau2tau1[key], PuppiAK8jet_n2_sdb2, PuppiAK8jet_tau2tau1, total_weight)
-
-        PuppiAK8_jet_mass_so_corr = skim_df["PuppiAK8_jet_mass_so_corr"]
-        fill_hist_1d(h_PuppiAK8_jet_mass_so_corr[key], PuppiAK8_jet_mass_so_corr, total_weight, overflow_in_last_bin=True)
-
-        ungroomed_PuppiAK8_jet_pt = skim_df["ungroomed_PuppiAK8_jet_pt"]
-        fill_hist_1d(h_ungroomed_PuppiAK8_jet_pt[key], ungroomed_PuppiAK8_jet_pt, total_weight, overflow_in_last_bin=True)
 
 # write hists to root file
 # ========================
