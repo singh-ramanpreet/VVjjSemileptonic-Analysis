@@ -147,7 +147,7 @@ hists_1D = [
     #(32, -3.2, 3.2, "lept_phi2"),
     # ak8 jet
     (50, 40.0, 150.0, "PuppiAK8_jet_mass_so_corr"),
-    (120, 0.0, 600.0, "ungroomed_PuppiAK8_jet_pt"),
+    (80, 200.0, 600.0, "ungroomed_PuppiAK8_jet_pt"),
     (20, -5.0, 5.0, "ungroomed_PuppiAK8_jet_eta"),
     (32, -3.2, 3.2, "ungroomed_PuppiAK8_jet_phi"),
     (40, 0.0, 0.5, "PuppiAK8jet_n2_sdb1"),
@@ -307,13 +307,15 @@ for key in samples_dict:
         if args.region == "no_cut":
             region_sel = (
                 (df["l_pt1"] > 0) &
-                (df["vbf_maxpt_jj_m"] > 200)
+                (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
+                (df["vbf_maxpt_jj_m"] > 500)
             )
 
         if args.region == "l_pt1_cut":
             region_sel = (
                 (df["l_pt1"] > 30) &
-                (df["vbf_maxpt_jj_m"] > 200)
+                (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
+                (df["vbf_maxpt_jj_m"] > 500)
             )
 
         if args.region == "signal_loose_W":
@@ -388,7 +390,7 @@ for key in samples_dict:
         print("filling hists .... ")
 
         lept_pt1 = skim_df["l_pt1"]
-        fill_hist_1d(h_lept_pt1[key], lept_pt1, total_weight)
+        fill_hist_1d(h_lept_pt1[key], lept_pt1, total_weight, overflow_in_last_bin=True)
 
         #lept_pt2 = skim_df["l_pt2"]
         #fill_hist_1d(h_lept_pt2[key], lept_pt2, total_weight)
