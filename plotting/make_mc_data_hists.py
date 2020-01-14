@@ -380,12 +380,12 @@ for key in samples_dict:
         if args.boson == "W":
             skim_df = df[lep_sel & region_sel]
             total_weight = xs_weight * skim_df["genWeight"] * skim_df["trig_eff_Weight"] \
-                            * skim_df["id_eff_Weight"] * skim_df["pu_Weight"] * skim_df["btag0Wgt"]
+                            * skim_df["id_eff_Weight"] * skim_df["pu_Weight"] #* skim_df["btag0Wgt"]
 
         if args.boson == "Z":
             skim_df = df[lep_sel & lep_sel2 & region_sel]
             total_weight = xs_weight * skim_df["genWeight"] * skim_df["trig_eff_Weight"] * skim_df["trig_eff_Weight2"] \
-                            * skim_df["id_eff_Weight"] * skim_df["id_eff_Weight2"] * skim_df["pu_Weight"] * skim_df["btag0Wgt"]
+                            * skim_df["id_eff_Weight"] * skim_df["id_eff_Weight2"] * skim_df["pu_Weight"] #* skim_df["btag0Wgt"]
 
         print("filling hists .... ")
 
