@@ -1,6 +1,6 @@
 {    
     "dataM": {
-        "location": "/afs/cern.ch/user/r/rasharma/work/public/aQGC_Ntuples/WWTree_CommonNtuple_For1and2Lepton_MuonPtScale_2018_07_24_10h36/",
+        "location": "/eos/user/s/singhr/WWTree_copy/",
         "lumi": 1.0,
         "filelist": [
             {"name": "SingleMuon.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
@@ -8,7 +8,7 @@
     },
     
     "dataE": {
-        "location": "/afs/cern.ch/user/r/rasharma/work/public/aQGC_Ntuples/WWTree_CommonNtuple_For1and2Lepton_MuonPtScale_2018_07_24_10h36/",
+        "location": "/eos/user/s/singhr/WWTree_copy/",
         "lumi": 1.0,
         "filelist": [
             {"name": "SingleElectron.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
@@ -91,7 +91,7 @@
     },
     
     "WJets": {
-        "location": "/afs/cern.ch/user/r/rasharma/work/public/aQGC_Ntuples/WWTree_CommonNtuple_For1and2Lepton_MuonPtScale_2018_07_24_10h36/",
+        "location": "/eos/user/s/singhr/WWTree_copy/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WJetsToLNu_HT_100To200.root",   "xs": 1627.45  , "nMC": 79165700,  "nMCneg": 0},
