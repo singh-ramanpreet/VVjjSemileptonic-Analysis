@@ -139,38 +139,38 @@ class book_hist_dict:
 
 # xbins, xlow, xup, variable
 hists_1D = [
-    (30, 0, 300, "lept_pt1"),
+    (40, 0, 2000, "lept_pt1"),
     #(30, 0, 300, "lept_pt2"),
-    (25, -2.5, 2.5, "lept_eta1"),
+    (26, -2.6, 2.6, "lept_eta1"),
     #(25, -2.5, 2.5, "lept_eta2"),
-    (32, -3.2, 3.2, "lept_phi1"),
+    (34, -3.4, 3.4, "lept_phi1"),
     #(32, -3.2, 3.2, "lept_phi2"),
     # ak8 jet
-    (50, 40.0, 150.0, "PuppiAK8_jet_mass_so_corr"),
-    (80, 200.0, 600.0, "ungroomed_PuppiAK8_jet_pt"),
-    (20, -5.0, 5.0, "ungroomed_PuppiAK8_jet_eta"),
-    (32, -3.2, 3.2, "ungroomed_PuppiAK8_jet_phi"),
+    (80, 0.0, 400.0, "PuppiAK8_jet_mass_so_corr"),
+    (80, 200.0, 2000.0, "ungroomed_PuppiAK8_jet_pt"),
+    (26, -2.6, 2.6, "ungroomed_PuppiAK8_jet_eta"),
+    (34, -3.4, 3.4, "ungroomed_PuppiAK8_jet_phi"),
     (40, 0.0, 0.5, "PuppiAK8jet_n2_sdb1"),
     (40, 0.0, 0.4, "PuppiAK8jet_n2_sdb2"),
     (40, 0.0, 1.0, "PuppiAK8jet_tau2tau1"),
     # W
-    (50, 0.0, 500.0, "v_pt_type0"),
-    (20, -5.0, 5.0, "v_eta_type0"),
-    (40, 0.0, 200.0, "v_mt_type0"),
+    (50, 0.0, 2000.0, "v_pt_type0"),
+    (51, -5.1, 5.1, "v_eta_type0"),
+    (40, 0.0, 2000.0, "v_mt_type0"),
     # vbf jets
-    (120, 0.0, 600.0, "vbf_maxpt_j1_pt"),
-    (40, 0.0, 200.0, "vbf_maxpt_j2_pt"),
-    (20, -5.0, 5.0, "vbf_maxpt_j1_eta"),
-    (20, -5.0, 5.0, "vbf_maxpt_j2_eta"),
+    (120, 0.0, 2000.0, "vbf_maxpt_j1_pt"),
+    (40, 0.0, 2000.0, "vbf_maxpt_j2_pt"),
+    (51, -5.1, 5.1, "vbf_maxpt_j1_eta"),
+    (51, -5.1, 5.1, "vbf_maxpt_j2_eta"),
     (20, 0.0, 10.0, "vbf_maxpt_jj_Deta"),
-    (32, -3.2, 3.2, "vbf_maxpt_j1_phi"),
-    (32, -3.2, 3.2, "vbf_maxpt_j2_phi"),
+    (34, -3.4, 3.4, "vbf_maxpt_j1_phi"),
+    (34, -3.4, 3.4, "vbf_maxpt_j2_phi"),
     (40, 500.0, 2500.0, "vbf_maxpt_jj_m"),
     # W V system
     (50, 0, 2500, "mass_lvj_type0_PuppiAK8"),
-    (120, 0.0, 600.0, "pt_lvj_type0_PuppiAK8"),
+    (240, 0.0, 600.0, "pt_lvj_type0_PuppiAK8"),
     (20, -5.0, 5.0, "eta_lvj_type0_PuppiAK8"),
-    (32, -3.2, 3.2, "phi_lvj_type0_PuppiAK8"),
+    (34, -3.4, 3.4, "phi_lvj_type0_PuppiAK8"),
     #(50, 0, 2500, "mZV"),
 ]
 
@@ -304,18 +304,53 @@ for key in samples_dict:
             lep_sel = mu_channel
             lep_sel2 = mu_channel2
 
-        if args.region == "no_cut":
+        if args.region == "cuts00":
             region_sel = (
                 (df["l_pt1"] > 0) &
                 (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
                 (df["vbf_maxpt_jj_m"] > 500)
             )
 
-        if args.region == "l_pt1_cut":
+        if args.region == "cuts0_W":
             region_sel = (
-                (df["l_pt1"] > 30) &
+                (df["isResolved"] == False) &
+                (df["l_pt1"] > 0) &
+                (df["l_pt2"] < 0) &
                 (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
                 (df["vbf_maxpt_jj_m"] > 500)
+            )
+
+        if args.region == "cuts1_W":
+            region_sel = (
+                (df["isResolved"] == False) &
+                (df["l_pt1"] > 30) &
+                (df["l_pt2"] < 0) &
+                (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
+                (df["vbf_maxpt_jj_m"] > 500)
+            )
+
+        if args.region == "cuts2_W":
+            region_sel = (
+                (df["isResolved"] == False) &
+                (df["l_pt1"] > 30) &
+                (df["l_pt2"] < 0) &
+                (df["pfMET_Corr"] > 50) &
+                (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
+                (df["vbf_maxpt_jj_m"] > 500)
+            )
+
+        if args.region == "cuts3_W":
+            region_sel = (
+                (df["isResolved"] == False) &
+                (df["l_pt1"] > 30) &
+                (df["l_pt2"] < 0) &
+                (df["pfMET_Corr"] > 50) &
+                (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
+                (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
+                (df["vbf_maxpt_jj_m"] > 500) &
+                (df["vbf_maxpt_j1_pt"] > 30) &
+                (df["vbf_maxpt_j2_pt"] > 30) &
+                (df["vbf_maxpt_jj_Deta"] > 2.5)
             )
 
         if args.region == "signal_loose_W":

@@ -1,13 +1,11 @@
 #!/bin/bash
 
-./make_mc_data_hists.py --region no_cut --lepton m
-./make_mc_data_hists.py --region no_cut --lepton e
+./make_mc_data_hists.py --region cuts00 --lepton m
 
-./make_mc_data_hists.py --region l_pt1_cut --lepton m
-./make_mc_data_hists.py --region l_pt1_cut --lepton e
+./make_mc_data_hists.py --region cuts0_W --lepton m
 
-./make_mc_data_hists.py --region signal_loose_W --lepton m
-./make_mc_data_hists.py --region signal_loose_W --lepton e
+./make_mc_data_hists.py --region cuts1_W --lepton m
 
-./make_mc_data_hists.py --region signal_tight_W --lepton m
-./make_mc_data_hists.py --region signal_tight_W --lepton e
+./make_mc_data_hists.py --region cuts2_W --lepton m
+
+./make_mc_data_hists.py --region cuts3_W --lepton m
