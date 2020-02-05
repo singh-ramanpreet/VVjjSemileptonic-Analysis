@@ -145,6 +145,8 @@ hists_1D = [
     #(25, -2.5, 2.5, "lept_eta2"),
     (34, -3.4, 3.4, "lept_phi1"),
     #(32, -3.2, 3.2, "lept_phi2"),
+    (20, 0, 1000, "pfMET_Corr"),
+    (34, -3.4, 3.4, "pfMET_Corr_phi"),
     # ak8 jet
     (80, 0.0, 400.0, "PuppiAK8_jet_mass_so_corr"),
     (80, 200.0, 2000.0, "ungroomed_PuppiAK8_jet_pt"),
@@ -441,6 +443,12 @@ for key in samples_dict:
 
         #lept_phi2 = skim_df["l_phi2"]
         #fill_hist_1d(h_lept_phi2[key], lept_phi2, total_weight)
+
+        pfMET_Corr = skim_df["pfMET_Corr"]
+        fill_hist_1d(h_pfMET_Corr[key], pfMET_Corr, total_weight, overflow_in_last_bin=True)
+
+        pfMET_Corr_phi = skim_df["pfMET_Corr_phi"]
+        fill_hist_1d(h_pfMET_Corr_phi[key], pfMET_Corr_phi, total_weight)
 
         PuppiAK8_jet_mass_so_corr = skim_df["PuppiAK8_jet_mass_so_corr"]
         fill_hist_1d(h_PuppiAK8_jet_mass_so_corr[key], PuppiAK8_jet_mass_so_corr, total_weight, overflow_in_last_bin=True)
