@@ -168,6 +168,10 @@ hists_1D = [
     (34, -3.4, 3.4, "vbf_maxpt_j1_phi"),
     (34, -3.4, 3.4, "vbf_maxpt_j2_phi"),
     (40, 500.0, 2500.0, "vbf_maxpt_jj_m"),
+    #
+    (60, -6.0, 6.0, "BosonCentrality_type0"),
+    (60, -6.0, 6.0, "ZeppenfeldWL_type0"),
+    (60, -6.0, 6.0, "ZeppenfeldWH"),
     # W V system
     (50, 0, 2500, "mass_lvj_type0_PuppiAK8"),
     (240, 0.0, 600.0, "pt_lvj_type0_PuppiAK8"),
@@ -509,6 +513,15 @@ for key in samples_dict:
 
         vbf_maxpt_jj_m = skim_df["vbf_maxpt_jj_m"]
         fill_hist_1d(h_vbf_maxpt_jj_m[key], vbf_maxpt_jj_m, total_weight)
+
+        BosonCentrality_type0 = skim_df["BosonCentrality_type0"]
+        fill_hist_1d(h_BosonCentrality_type0[key], BosonCentrality_type0, total_weight)
+
+        ZeppenfeldWL_type0 = skim_df["ZeppenfeldWL_type0"]
+        fill_hist_1d(h_ZeppenfeldWL_type0[key], ZeppenfeldWL_type0, total_weight)
+
+        ZeppenfeldWH = skim_df["ZeppenfeldWH"]
+        fill_hist_1d(h_ZeppenfeldWH[key], ZeppenfeldWH, total_weight)
 
         mass_lvj_type0_PuppiAK8 = skim_df["mass_lvj_type0_PuppiAK8"]
         fill_hist_1d(h_mass_lvj_type0_PuppiAK8[key], mass_lvj_type0_PuppiAK8, total_weight, overflow_in_last_bin=True)
