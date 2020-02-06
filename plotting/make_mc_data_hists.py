@@ -174,6 +174,8 @@ hists_1D = [
     (60, -6.0, 6.0, "ZeppenfeldWH"),
     # W V system
     (50, 0, 2500, "mass_lvj_type0_PuppiAK8"),
+    (np.array([600, 700, 800, 900,
+               1000, 1200, 1500, 2000, 2500]), 0, 0, "mass_lvj_type0_PuppiAK8_8bin"),
     (240, 0.0, 600.0, "pt_lvj_type0_PuppiAK8"),
     (20, -5.0, 5.0, "eta_lvj_type0_PuppiAK8"),
     (34, -3.4, 3.4, "phi_lvj_type0_PuppiAK8"),
@@ -275,6 +277,11 @@ for key in samples_dict:
 
         if "isResolved" not in df.columns:
             df["isResolved"] = False
+
+        if "data" in key:
+            df["btag0Wgt"] = 1.0
+
+        apply_btag0Wgt = False
 
         # e channel
         e_channel = (
@@ -398,6 +405,8 @@ for key in samples_dict:
                 l_pt1_cut = 50
                 pfmet_cut = 80
 
+            apply_btag0Wgt = True
+
             region_sel = (
                 (df["isResolved"] == False) &
                 (df["l_pt1"] > l_pt1_cut) &
@@ -413,6 +422,7 @@ for key in samples_dict:
                 (df["PuppiAK8_jet_tau2tau1"] < 0.55) &
                 (df["PuppiAK8_jet_mass_so_corr"] > 65) &
                 (df["PuppiAK8_jet_mass_so_corr"] < 105) &
+                (df["mass_lvj_type0_PuppiAK8"] > 600) &
                 (df["BosonCentrality_type0"] > 1.0) &
                 (np.abs((df["ZeppenfeldWL_type0"])/(df["vbf_maxpt_jj_Deta"])) < 0.3) &
                 (np.abs((df["ZeppenfeldWH"])/(df["vbf_maxpt_jj_Deta"])) < 0.3)
@@ -421,12 +431,15 @@ for key in samples_dict:
         if args.boson == "W":
             skim_df = df[lep_sel & region_sel]
             total_weight = xs_weight * skim_df["genWeight"] * skim_df["trig_eff_Weight"] \
-                            * skim_df["id_eff_Weight"] * skim_df["pu_Weight"] #* skim_df["btag0Wgt"]
+                            * skim_df["id_eff_Weight"] * skim_df["pu_Weight"]
 
         if args.boson == "Z":
             skim_df = df[lep_sel & lep_sel2 & region_sel]
             total_weight = xs_weight * skim_df["genWeight"] * skim_df["trig_eff_Weight"] * skim_df["trig_eff_Weight2"] \
-                            * skim_df["id_eff_Weight"] * skim_df["id_eff_Weight2"] * skim_df["pu_Weight"] #* skim_df["btag0Wgt"]
+                            * skim_df["id_eff_Weight"] * skim_df["id_eff_Weight2"] * skim_df["pu_Weight"]
+
+        if apply_btag0Wgt:
+            total_weight = total_weight * skim_df["btag0Wgt"]
 
         print("filling hists .... ")
 
@@ -525,6 +538,9 @@ for key in samples_dict:
 
         mass_lvj_type0_PuppiAK8 = skim_df["mass_lvj_type0_PuppiAK8"]
         fill_hist_1d(h_mass_lvj_type0_PuppiAK8[key], mass_lvj_type0_PuppiAK8, total_weight, overflow_in_last_bin=True)
+
+        mass_lvj_type0_PuppiAK8_8bin = skim_df["mass_lvj_type0_PuppiAK8"]
+        fill_hist_1d(h_mass_lvj_type0_PuppiAK8_8bin[key], mass_lvj_type0_PuppiAK8_8bin, total_weight, overflow_in_last_bin=True)
 
         pt_lvj_type0_PuppiAK8 = skim_df["pt_lvj_type0_PuppiAK8"]
         fill_hist_1d(h_pt_lvj_type0_PuppiAK8[key], pt_lvj_type0_PuppiAK8, total_weight, overflow_in_last_bin=True)
