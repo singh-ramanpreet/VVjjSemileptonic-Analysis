@@ -253,6 +253,10 @@ def fill_hist_2d(hist, array1, array2, weight=1.0):
 
     return None
 
+# total raw entries in data sets
+total_entries = book_hist_dict(xbins=1, titleX="total_entries").hist_1D()
+total_entries.SetCanExtend(ROOT.TH1.kAllAxes)
+
 # loop over samples, apply selections,
 # and fill histograms.
 # ===================================
@@ -627,6 +631,12 @@ for key in samples_dict:
 
         print("filling hists .... ")
 
+        if "data" in key:
+            total_entries.Fill("data", len(skim_df))
+
+        else:
+            total_entries.Fill(key, len(skim_df))
+
         lept_pt1 = skim_df["l_pt1"]
         fill_hist_1d(h_lept_pt1[key], lept_pt1, total_weight, overflow_in_last_bin=True)
 
@@ -757,6 +767,8 @@ for k in samples_dict:
 
     for histogram in hists_2D:
         exec(f"h2_{histogram[3]}_{histogram[7]}[k].Write()")
+
+total_entries.Write()
 
 out_hist_file.Write()
 out_hist_file.Close()
