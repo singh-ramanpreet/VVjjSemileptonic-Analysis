@@ -176,7 +176,7 @@ hists_1D = [
     (50, 0, 2500, "mass_lvj_type0_PuppiAK8"),
     (np.array([600, 700, 800, 900,
                1000, 1200, 1500, 2000, 2500]), 0, 0, "mass_lvj_type0_PuppiAK8_8bin"),
-    (240, 0.0, 600.0, "pt_lvj_type0_PuppiAK8"),
+    (60, 0.0, 600.0, "pt_lvj_type0_PuppiAK8"),
     (20, -5.0, 5.0, "eta_lvj_type0_PuppiAK8"),
     (34, -3.4, 3.4, "phi_lvj_type0_PuppiAK8"),
     #(50, 0, 2500, "mZV"),
