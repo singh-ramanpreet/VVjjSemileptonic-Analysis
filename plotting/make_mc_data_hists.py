@@ -235,6 +235,7 @@ def fill_hist_1d(hist, array, weight=1.0, overflow_in_last_bin=False):
         overflow_content = hist.GetBinContent(overflow_bin)
 
         hist.SetBinContent(last_bin, last_content + overflow_content)
+        hist.SetBinContent(overflow_bin, 0.0)
 
     return None
 
