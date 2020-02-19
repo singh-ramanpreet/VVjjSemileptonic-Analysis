@@ -6,6 +6,7 @@ usage() {
   echo "   -f Input ipynb file (default: plots_variables.ipynb)"
   echo "   -o Output filename (default extracted from input)"
   echo "   -t Output type pdf or html (default: pdf)"
+  echo "   -c flag for including input code in output"
 }
 
 exit_abnormal() {
@@ -13,11 +14,14 @@ exit_abnormal() {
   exit 1
 }
 
-while getopts ":f:o:t:" opt; do
+excludeCode="True"
+
+while getopts ":f:o:t:c" opt; do
   case "${opt}" in
     f) FILE=${OPTARG};;
     o) OUTPUT=${OPTARG};;
     t) TYPE+=("${OPTARG}");;
+    c) excludeCode="False";;
     :)
       echo "Error: -${OPTARG} requires an argument."
       exit_abnormal
@@ -47,11 +51,11 @@ fi
 
 for type in ${TYPE[*]}; do
     if [ "$type" == "pdf" ]; then
-      python -m jupyter nbconvert --to pdf ${input} --output ${output}.pdf  --PDFExporter.exclude_input=True
+      python -m jupyter nbconvert --to pdf ${input} --output ${output}.pdf  --PDFExporter.exclude_input=${excludeCode}
     fi
 
     if [ "$type" == "html" ]; then
-        python -m jupyter nbconvert --to html ${input} --output ${output}.html  --TemplateExporter.exclude_input=True
+        python -m jupyter nbconvert --to html ${input} --output ${output}.html  --TemplateExporter.exclude_input=${excludeCode}
     fi
 done
 exit
