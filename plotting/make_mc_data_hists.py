@@ -8,6 +8,7 @@ import ROOT
 import awkward
 import uproot
 import argparse
+import importlib
 
 parser = argparse.ArgumentParser()
 
@@ -258,6 +259,23 @@ def fill_hist_2d(hist, array1, array2, weight=1.0):
 total_entries = book_hist_dict(xbins=1, titleX="total_entries").hist_1D()
 total_entries.SetCanExtend(ROOT.TH1.kAllAxes)
 
+# selection code import
+sel_code = importlib.import_module(f"selections.{args.region}")
+
+lep_channel = {
+    "e": sel_code.e_channel,
+    "m": sel_code.m_channel
+}
+
+if args.boson == "Z":
+    lep_channel2 = {
+        "e": sel_code.e_channel2,
+        "m": sel_code.m_channel2
+    }
+
+region_ = sel_code.region_
+apply_btag0Wgt = sel_code.apply_btag0Wgt
+
 # loop over samples, apply selections,
 # and fill histograms.
 # ===================================
@@ -286,336 +304,8 @@ for key in samples_dict:
         if "data" in key:
             df["btag0Wgt"] = 1.0
 
-        apply_btag0Wgt = False
-
-        # e channel
-        e_channel = (
-            (df["type"] == 1) &
-            (np.abs(df["l_eta1"]) < 2.5) &
-            ~(
-                (np.abs(df["l_eta1"]) > 1.4442) &
-                (np.abs(df["l_eta1"]) < 1.566)
-            )
-        )
-
-        e_channel2 = (
-            (np.abs(df["l_eta2"]) < 2.5) &
-            ~(
-                (np.abs(df["l_eta2"]) > 1.4442) &
-                (np.abs(df["l_eta2"]) < 1.566)
-            )
-        )
-
-        # mu channel
-        mu_channel = (
-            (df["type"] == 0) &
-            (np.abs(df["l_eta1"]) < 2.4)
-        )
-
-        mu_channel2 = (np.abs(df["l_eta2"]) < 2.4)
-
-        if args.lepton == "e":
-            lep_sel = e_channel
-            lep_sel2 = e_channel2
-
-        if args.lepton == "m":
-            lep_sel = mu_channel
-            lep_sel2 = mu_channel2
-
-        if args.region == "cuts00":
-            region_sel = (
-                (df["l_pt1"] > 0) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
-                (df["vbf_maxpt_jj_m"] > 500)
-            )
-
-        if args.region == "cuts0_W":
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > 0) &
-                (df["l_pt2"] < 0) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
-                (df["vbf_maxpt_jj_m"] > 500)
-            )
-
-        if args.region == "cuts1_W":
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > 30) &
-                (df["l_pt2"] < 0) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
-                (df["vbf_maxpt_jj_m"] > 500)
-            )
-
-        if args.region == "cuts2_W":
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > 30) &
-                (df["l_pt2"] < 0) &
-                (df["pfMET_Corr"] > 50) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
-                (df["vbf_maxpt_jj_m"] > 500)
-            )
-
-        if args.region == "cuts3_W":
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > 30) &
-                (df["l_pt2"] < 0) &
-                (df["pfMET_Corr"] > 50) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200) &
-                (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-                (df["vbf_maxpt_jj_m"] > 500) &
-                (df["vbf_maxpt_j1_pt"] > 30) &
-                (df["vbf_maxpt_j2_pt"] > 30) &
-                (df["vbf_maxpt_jj_Deta"] > 2.5)
-            )
-
-        if args.region == "signal_loose_W":
-
-            if args.lepton == "m":
-                l_pt1_cut = 30
-                pfmet_cut = 50
-            if args.lepton == "e":
-                l_pt1_cut = 30
-                pfmet_cut = 50
-
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > l_pt1_cut) &
-                (df["l_pt2"] < 0) &
-                (df["pfMET_Corr"] > pfmet_cut) &
-                (df["nBTagJet_loose"] == 0) &
-                (df["vbf_maxpt_jj_m"] > 500) &
-                (df["vbf_maxpt_j1_pt"] > 30) &
-                (df["vbf_maxpt_j2_pt"] > 30) &
-                (df["vbf_maxpt_jj_Deta"] > 2.5) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
-                (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-                (df["PuppiAK8_jet_mass_so_corr"] > 65) &
-                (df["PuppiAK8_jet_mass_so_corr"] < 105) &
-                (df["BosonCentrality_type0"] > -999.0) &
-                (np.abs((df["ZeppenfeldWL_type0"])/(df["vbf_maxpt_jj_Deta"])) < 1.0) &
-                (np.abs((df["ZeppenfeldWH"])/(df["vbf_maxpt_jj_Deta"])) < 1.0)
-            )
-
-
-        if args.region == "signal_tight_W":
-
-            if args.lepton == "m":
-                l_pt1_cut = 50
-                pfmet_cut = 50
-            if args.lepton == "e":
-                l_pt1_cut = 50
-                pfmet_cut = 80
-
-            apply_btag0Wgt = True
-
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > l_pt1_cut) &
-                (df["l_pt2"] < 0) &
-                (df["pfMET_Corr"] > pfmet_cut) &
-                (df["nBTagJet_loose"] == 0) &
-                (df["vbf_maxpt_jj_m"] > 800) &
-                (df["vbf_maxpt_j1_pt"] > 30) &
-                (df["vbf_maxpt_j2_pt"] > 30) &
-                (df["vbf_maxpt_jj_Deta"] > 4.0) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
-                (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-                (df["PuppiAK8_jet_tau2tau1"] < 0.55) &
-                (df["PuppiAK8_jet_mass_so_corr"] > 65) &
-                (df["PuppiAK8_jet_mass_so_corr"] < 105) &
-                (df["mass_lvj_type0_PuppiAK8"] > 600) &
-                (df["BosonCentrality_type0"] > 1.0) &
-                (np.abs((df["ZeppenfeldWL_type0"])/(df["vbf_maxpt_jj_Deta"])) < 0.3) &
-                (np.abs((df["ZeppenfeldWH"])/(df["vbf_maxpt_jj_Deta"])) < 0.3)
-            )
-
-        if args.region == "signal_tight_01_W":
-
-            if args.lepton == "m":
-                l_pt1_cut = 50
-                pfmet_cut = 50
-            if args.lepton == "e":
-                l_pt1_cut = 50
-                pfmet_cut = 80
-
-            apply_btag0Wgt = True
-
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > l_pt1_cut) &
-                (df["l_pt2"] < 0) &
-                (df["pfMET_Corr"] > pfmet_cut) &
-                (df["nBTagJet_loose"] == 0) &
-                (df["vbf_maxpt_jj_m"] > 800) &
-                (df["vbf_maxpt_j1_pt"] > 30) &
-                (df["vbf_maxpt_j2_pt"] > 30) &
-                (df["vbf_maxpt_jj_Deta"] > 4.0) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
-                (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-                (df["PuppiAK8_jet_mass_so_corr"] > 65) &
-                (df["PuppiAK8_jet_mass_so_corr"] < 105) &
-                (df["mass_lvj_type0_PuppiAK8"] > 600) &
-                (df["BosonCentrality_type0"] > 1.0) &
-                (np.abs((df["ZeppenfeldWL_type0"])/(df["vbf_maxpt_jj_Deta"])) < 0.3) &
-                (np.abs((df["ZeppenfeldWH"])/(df["vbf_maxpt_jj_Deta"])) < 0.3)
-            )
-
-        if args.region == "signal_tight_02_W":
-
-            if args.lepton == "m":
-                l_pt1_cut = 50
-                pfmet_cut = 50
-            if args.lepton == "e":
-                l_pt1_cut = 50
-                pfmet_cut = 80
-
-            apply_btag0Wgt = True
-
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > l_pt1_cut) &
-                (df["l_pt2"] < 0) &
-                (df["pfMET_Corr"] > pfmet_cut) &
-                (df["nBTagJet_loose"] == 0) &
-                (df["vbf_maxpt_jj_m"] > 500) &
-                (df["vbf_maxpt_j1_pt"] > 30) &
-                (df["vbf_maxpt_j2_pt"] > 30) &
-                (df["vbf_maxpt_jj_Deta"] > 4.0) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
-                (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-                (df["PuppiAK8_jet_mass_so_corr"] > 65) &
-                (df["PuppiAK8_jet_mass_so_corr"] < 105) &
-                (df["mass_lvj_type0_PuppiAK8"] > 600) &
-                (df["BosonCentrality_type0"] > 1.0) &
-                (np.abs((df["ZeppenfeldWL_type0"])/(df["vbf_maxpt_jj_Deta"])) < 0.3) &
-                (np.abs((df["ZeppenfeldWH"])/(df["vbf_maxpt_jj_Deta"])) < 0.3)
-            )
-
-        if args.region == "signal_tight_03_W":
-
-            if args.lepton == "m":
-                l_pt1_cut = 50
-                pfmet_cut = 50
-            if args.lepton == "e":
-                l_pt1_cut = 50
-                pfmet_cut = 80
-
-            apply_btag0Wgt = True
-
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > l_pt1_cut) &
-                (df["l_pt2"] < 0) &
-                (df["pfMET_Corr"] > pfmet_cut) &
-                (df["nBTagJet_loose"] == 0) &
-                (df["vbf_maxpt_jj_m"] > 500) &
-                (df["vbf_maxpt_j1_pt"] > 30) &
-                (df["vbf_maxpt_j2_pt"] > 30) &
-                (df["vbf_maxpt_jj_Deta"] > 2.5) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
-                (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-                (df["PuppiAK8_jet_mass_so_corr"] > 65) &
-                (df["PuppiAK8_jet_mass_so_corr"] < 105) &
-                (df["mass_lvj_type0_PuppiAK8"] > 600) &
-                (df["BosonCentrality_type0"] > 1.0) &
-                (np.abs((df["ZeppenfeldWL_type0"])/(df["vbf_maxpt_jj_Deta"])) < 0.3) &
-                (np.abs((df["ZeppenfeldWH"])/(df["vbf_maxpt_jj_Deta"])) < 0.3)
-            )
-
-        if args.region == "signal_tight_04_W":
-
-            if args.lepton == "m":
-                l_pt1_cut = 30
-                pfmet_cut = 50
-            if args.lepton == "e":
-                l_pt1_cut = 30
-                pfmet_cut = 80
-
-            apply_btag0Wgt = True
-
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > l_pt1_cut) &
-                (df["l_pt2"] < 0) &
-                (df["pfMET_Corr"] > pfmet_cut) &
-                (df["nBTagJet_loose"] == 0) &
-                (df["vbf_maxpt_jj_m"] > 500) &
-                (df["vbf_maxpt_j1_pt"] > 30) &
-                (df["vbf_maxpt_j2_pt"] > 30) &
-                (df["vbf_maxpt_jj_Deta"] > 2.5) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
-                (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-                (df["PuppiAK8_jet_mass_so_corr"] > 65) &
-                (df["PuppiAK8_jet_mass_so_corr"] < 105) &
-                (df["mass_lvj_type0_PuppiAK8"] > 600) &
-                (df["BosonCentrality_type0"] > 1.0) &
-                (np.abs((df["ZeppenfeldWL_type0"])/(df["vbf_maxpt_jj_Deta"])) < 0.3) &
-                (np.abs((df["ZeppenfeldWH"])/(df["vbf_maxpt_jj_Deta"])) < 0.3)
-            )
-
-        if args.region == "signal_tight_05_W":
-
-            if args.lepton == "m":
-                l_pt1_cut = 30
-                pfmet_cut = 50
-            if args.lepton == "e":
-                l_pt1_cut = 30
-                pfmet_cut = 80
-
-            apply_btag0Wgt = True
-
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > l_pt1_cut) &
-                (df["l_pt2"] < 0) &
-                (df["pfMET_Corr"] > pfmet_cut) &
-                (df["nBTagJet_loose"] == 0) &
-                (df["vbf_maxpt_jj_m"] > 500) &
-                (df["vbf_maxpt_j1_pt"] > 30) &
-                (df["vbf_maxpt_j2_pt"] > 30) &
-                (df["vbf_maxpt_jj_Deta"] > 2.5) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
-                (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-                (df["PuppiAK8_jet_mass_so_corr"] > 65) &
-                (df["PuppiAK8_jet_mass_so_corr"] < 105) &
-                (df["mass_lvj_type0_PuppiAK8"] > 600) &
-                (df["BosonCentrality_type0"] > 0.0) &
-                (np.abs((df["ZeppenfeldWL_type0"])/(df["vbf_maxpt_jj_Deta"])) < 1.0) &
-                (np.abs((df["ZeppenfeldWH"])/(df["vbf_maxpt_jj_Deta"])) < 1.0)
-            )
-
-        if args.region == "top_W":
-
-            if args.lepton == "m":
-                l_pt1_cut = 50
-                pfmet_cut = 50
-            if args.lepton == "e":
-                l_pt1_cut = 50
-                pfmet_cut = 80
-
-            region_sel = (
-                (df["isResolved"] == False) &
-                (df["l_pt1"] > l_pt1_cut) &
-                (df["l_pt2"] < 0) &
-                (df["pfMET_Corr"] > pfmet_cut) &
-                (df["nBTagJet_medium"] > 0) &
-                (df["vbf_maxpt_jj_m"] > 800) &
-                (df["vbf_maxpt_j1_pt"] > 30) &
-                (df["vbf_maxpt_j2_pt"] > 30) &
-                (df["vbf_maxpt_jj_Deta"] > 4.0) &
-                (df["ungroomed_PuppiAK8_jet_pt"] > 200 ) &
-                (np.abs(df["ungroomed_PuppiAK8_jet_eta"]) < 2.4 ) &
-                (df["PuppiAK8_jet_tau2tau1"] < 0.55) &
-                (df["PuppiAK8_jet_mass_so_corr"] > 65) &
-                (df["PuppiAK8_jet_mass_so_corr"] < 105) &
-                (df["mass_lvj_type0_PuppiAK8"] > 600) &
-                (df["BosonCentrality_type0"] > 1.0) &
-                (np.abs((df["ZeppenfeldWL_type0"])/(df["vbf_maxpt_jj_Deta"])) < 0.3) &
-                (np.abs((df["ZeppenfeldWH"])/(df["vbf_maxpt_jj_Deta"])) < 0.3)
-            )
+        lep_sel = lep_channel[args.lepton](df)
+        region_sel = region_(df, args.lepton)
 
         if args.boson == "W":
             skim_df = df[lep_sel & region_sel]
@@ -623,6 +313,7 @@ for key in samples_dict:
                             * skim_df["id_eff_Weight"] * skim_df["pu_Weight"]
 
         if args.boson == "Z":
+            lep_sel2 = lep_channel2[args.lepton](df)
             skim_df = df[lep_sel & lep_sel2 & region_sel]
             total_weight = xs_weight * skim_df["genWeight"] * skim_df["trig_eff_Weight"] * skim_df["trig_eff_Weight2"] \
                             * skim_df["id_eff_Weight"] * skim_df["id_eff_Weight2"] * skim_df["pu_Weight"]
