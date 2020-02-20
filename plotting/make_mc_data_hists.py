@@ -276,6 +276,11 @@ if args.boson == "Z":
 region_ = sel_code.region_
 apply_btag0Wgt = sel_code.apply_btag0Wgt
 
+# add selection code to root file
+code_text = open(f"selections/{args.region}.py").read()
+ttext = ROOT.TText(0.0, 0.0, "\n" + code_text)
+ttext.SetName("selection_code")
+
 # loop over samples, apply selections,
 # and fill histograms.
 # ===================================
@@ -461,6 +466,7 @@ for k in samples_dict:
         exec(f"h2_{histogram[3]}_{histogram[7]}[k].Write()")
 
 total_entries.Write()
+ttext.Write()
 
 out_hist_file.Write()
 out_hist_file.Close()
