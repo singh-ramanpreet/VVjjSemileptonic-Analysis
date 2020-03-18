@@ -9,6 +9,9 @@ import awkward
 import uproot
 import argparse
 import importlib
+from array import array
+from root_numpy.tmva import evaluate_reader
+import xml.etree.ElementTree as ET
 
 parser = argparse.ArgumentParser()
 
@@ -30,6 +33,11 @@ parser.add_argument(
 parser.add_argument(
     "--region", type=str, default="signal_loose_W",
     help="region , default=%(default)s"
+    )
+
+parser.add_argument(
+    "--mva", type=str, default="",
+    help="mva training weight file (xml), default=%(default)s"
     )
 
 parser.add_argument(
@@ -181,6 +189,7 @@ hists_1D = [
     (20, -5.0, 5.0, "eta_lvj_type0_PuppiAK8"),
     (34, -3.4, 3.4, "phi_lvj_type0_PuppiAK8"),
     #(50, 0, 2500, "mZV"),
+    (40, -1.0, 1.0, "mva_score"),
 ]
 
 hists_2D = [
@@ -281,6 +290,32 @@ code_text = open(f"selections/{args.region}.py").read()
 ttext = ROOT.TText(0.0, 0.0, "\n" + code_text)
 ttext.SetName("selection_code")
 
+# TMVA Reader
+# read variables name and type from
+if args.mva != "":
+    xml_tree = ET.parse(args.mva)
+    xml_nodes = xml_tree.getroot().getchildren()
+
+    vars_node = xml_nodes[2]
+    if vars_node.tag != "Variables":
+        raise Exception("Check node index in xml file.")
+
+    n_vars = vars_node.attrib["NVar"]
+    vars_node = vars_node.getchildren()
+
+    vars_label = [i.attrib["Label"] for i in vars_node]
+    vars_exp = {i.attrib["Label"]: i.attrib["Expression"] for i in vars_node}
+    vars_array = {i.attrib["Label"]: array("f", [-999.0]) for i in vars_node}
+
+    mva_reader = ROOT.TMVA.Reader()
+
+    for i_var in vars_label:
+        mva_reader.AddVariable(f"{i_var} := {vars_exp[i_var]}", vars_array[i_var])
+
+    mva_reader.BookMVA("BDT", args.mva)
+
+data_blind = True
+
 # loop over samples, apply selections,
 # and fill histograms.
 # ===================================
@@ -308,6 +343,23 @@ for key in samples_dict:
 
         if "data" in key:
             df["btag0Wgt"] = 1.0
+
+        # add mva column
+        df["mva_score"] = -999.0
+
+        # some new columns for mva evaluation
+        df["ht"] = df["ungroomed_PuppiAK8_jet_pt"] + df["vbf_maxpt_j1_pt"] + df["vbf_maxpt_j2_pt"]
+        df["ZeppenfeldWH_dEtajj"] = df["ZeppenfeldWH"] / df["vbf_maxpt_jj_Deta"]
+        df["ZeppenfeldWL_dEtajj"] = df["ZeppenfeldWL_type0"] / df["vbf_maxpt_jj_Deta"]
+
+        if data_blind and ("data" in key) and args.mva != "":
+            print("skipping mva for data")
+
+        else:
+            if args.mva != "":
+                var_data = np.column_stack(tuple([df[i_var] for i_var in vars_label]))
+                mva_score = evaluate_reader(mva_reader, "BDT", var_data)
+                df["mva_score"] = mva_score
 
         lep_sel = lep_channel[args.lepton](df)
         region_sel = region_(df, args.lepton)
@@ -441,6 +493,9 @@ for key in samples_dict:
 
         phi_lvj_type0_PuppiAK8 = skim_df["phi_lvj_type0_PuppiAK8"]
         fill_hist_1d(h_phi_lvj_type0_PuppiAK8[key], phi_lvj_type0_PuppiAK8, total_weight)
+
+        mva_score = skim_df["mva_score"]
+        fill_hist_1d(h_mva_score[key], mva_score, total_weight)
 
         # 2D hists
         fill_hist_2d(h2_n2_sdb1_tau2tau1[key], PuppiAK8jet_n2_sdb1, PuppiAK8jet_tau2tau1, total_weight)
