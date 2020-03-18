@@ -1,22 +1,22 @@
 {    
     "dataM": {
-        "location": "/eos/user/s/singhr/WWTree_copy/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/data_obs/",
         "lumi": 1.0,
         "filelist": [
-            {"name": "SingleMuon.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
+            {"name": "WWTree_SingleMuon_Run2016_03Feb2017.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
         ]
     },
     
     "dataE": {
-        "location": "/eos/user/s/singhr/WWTree_copy/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/data_obs/",
         "lumi": 1.0,
         "filelist": [
-            {"name": "SingleElectron.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
+            {"name": "WWTree_SingleElectron_Run2016_03Feb2017.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
         ]
     },
     
     "VBS_EWK": {
-        "location": "/eos/cms/store/user/jlawhorn/WWTreeWithFixedJEC/VBS_EWK/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/VBS_EWK/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WWTree_WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.02982, "nMC": 189086.0 , "nMCneg": 0},
@@ -32,7 +32,7 @@
     },
 
     "VBS_QCD": {
-        "location": "/eos/cms/store/user/jlawhorn/WWTreeWithFixedJEC/VBS_QCD/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/VBS_QCD/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WWTree_WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 , "nMC": 489280.0 , "nMCneg": 0},
@@ -48,7 +48,7 @@
     },
     
     "DYJets": {
-        "location": "/eos/cms/store/user/jlawhorn/WWTreeWithFixedJEC/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/DYJets/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WWTree_DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 1012.296845, "nMC": 46443016.0, "nMCneg": 0},
@@ -59,7 +59,7 @@
     },
     
     "QCD": {
-        "location": "/eos/cms/store/user/jlawhorn/WWTreeWithFixedJEC/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/QCD/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WWTree_QCD_HT100to200_13TeV.root"  , "xs": 27990000.0, "nMC": 8061400.0 , "nMCneg": 0},
@@ -74,7 +74,7 @@
     },
     
     "Top": {
-        "location": "/eos/cms/store/user/jlawhorn/WWTreeWithFixedJEC/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/Top/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WWTree_ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV_powheg_TuneCUETP8M1.root", "xs": 19.5741, "nMC": 5424956.0 , "nMCneg": 0        },
@@ -91,7 +91,7 @@
     },
     
     "WJets": {
-        "location": "/eos/user/s/singhr/WWTree_copy/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/WJets/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WJetsToLNu_HT_100To200.root",   "xs": 1627.45  , "nMC": 79165700,  "nMCneg": 0},
