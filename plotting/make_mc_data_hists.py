@@ -16,8 +16,8 @@ import xml.etree.ElementTree as ET
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
-    "--datasets", type=str, default="../datasets_2016.json",
-    help="json file containing info of datasets, default=%(default)s"
+    "--dframes", type=str, default="data_frames.awkd",
+    help="awkd file of datasets df prepared, default=%(default)s"
     )
 
 parser.add_argument(
@@ -36,11 +36,6 @@ parser.add_argument(
     )
 
 parser.add_argument(
-    "--mva", type=str, default="",
-    help="mva training weight file (xml), default=%(default)s"
-    )
-
-parser.add_argument(
     "--output", type=str, default="",
     help="output filename, default='region'_'lepton'.root"
     )
@@ -49,7 +44,8 @@ args = parser.parse_args()
 
 # samples dict
 # ============
-samples_dict = json.load(open(args.datasets, "r"))
+samples_dict = list(awkward.load(args.dframes))
+samples_dict = dict.fromkeys([i.split("/")[0] for i in samples_dict])
 
 # a class to book multiple hists
 # ==============================
@@ -290,216 +286,163 @@ code_text = open(f"selections/{args.region}.py").read()
 ttext = ROOT.TText(0.0, 0.0, "\n" + code_text)
 ttext.SetName("selection_code")
 
-# TMVA Reader
-# read variables name and type from
-if args.mva != "":
-    xml_tree = ET.parse(args.mva)
-    xml_nodes = xml_tree.getroot().getchildren()
-
-    vars_node = xml_nodes[2]
-    if vars_node.tag != "Variables":
-        raise Exception("Check node index in xml file.")
-
-    n_vars = vars_node.attrib["NVar"]
-    vars_node = vars_node.getchildren()
-
-    vars_label = [i.attrib["Label"] for i in vars_node]
-    vars_exp = {i.attrib["Label"]: i.attrib["Expression"] for i in vars_node}
-    vars_array = {i.attrib["Label"]: array("f", [-999.0]) for i in vars_node}
-
-    mva_reader = ROOT.TMVA.Reader()
-
-    for i_var in vars_label:
-        mva_reader.AddVariable(f"{i_var} := {vars_exp[i_var]}", vars_array[i_var])
-
-    mva_reader.BookMVA("BDT", args.mva)
-
-data_blind = True
 
 # loop over samples, apply selections,
 # and fill histograms.
 # ===================================
-for key in samples_dict:
 
-    location = samples_dict[key]["location"]
-    filelist = samples_dict[key]["filelist"]
-    lumi = samples_dict[key]["lumi"]
+dfs = awkward.load(args.dframes)
 
-    for sample in filelist:
+for i in dfs:
 
-        root_file = location + sample["name"]
-        xs = sample["xs"]
-        nMC = sample["nMC"]
-        nMCneg = sample["nMCneg"]
+    xs_weight = dfs[i]["xs_weight"]
 
-        xs_weight = (lumi * xs) / (nMC - (2 * nMCneg))
+    df = dfs[i]["dframe"]
 
-        print("loading ... ", key, sample["name"])
+    key = i.split("/")[0]
+    filename = i.split("/")[1]
 
-        df = uproot.lazyarrays(root_file, "otree")
+    print(key, xs_weight, filename)
 
-        if "isResolved" not in df.columns:
-            df["isResolved"] = False
+    lep_sel = lep_channel[args.lepton](df)
+    region_sel = region_(df, args.lepton)
 
-        if "data" in key:
-            df["btag0Wgt"] = 1.0
+    if args.boson == "W":
+        skim_df = df[lep_sel & region_sel]
+        total_weight = xs_weight * skim_df["genWeight"] * skim_df["trig_eff_Weight"] \
+                        * skim_df["id_eff_Weight"] * skim_df["pu_Weight"]
 
-        # add mva column
-        df["mva_score"] = -999.0
+    if args.boson == "Z":
+        lep_sel2 = lep_channel2[args.lepton](df)
+        skim_df = df[lep_sel & lep_sel2 & region_sel]
+        total_weight = xs_weight * skim_df["genWeight"] * skim_df["trig_eff_Weight"] * skim_df["trig_eff_Weight2"] \
+                        * skim_df["id_eff_Weight"] * skim_df["id_eff_Weight2"] * skim_df["pu_Weight"]
 
-        # some new columns for mva evaluation
-        df["ht"] = df["ungroomed_PuppiAK8_jet_pt"] + df["vbf_maxpt_j1_pt"] + df["vbf_maxpt_j2_pt"]
-        df["ZeppenfeldWH_dEtajj"] = df["ZeppenfeldWH"] / df["vbf_maxpt_jj_Deta"]
-        df["ZeppenfeldWL_dEtajj"] = df["ZeppenfeldWL_type0"] / df["vbf_maxpt_jj_Deta"]
+    if apply_btag0Wgt:
+        total_weight = total_weight * skim_df["btag0Wgt"]
 
-        if data_blind and ("data" in key) and args.mva != "":
-            print("skipping mva for data")
+    print("filling hists .... ")
 
-        else:
-            if args.mva != "":
-                var_data = np.column_stack(tuple([df[i_var] for i_var in vars_label]))
-                mva_score = evaluate_reader(mva_reader, "BDT", var_data)
-                df["mva_score"] = mva_score
+    if "data" in key:
+        total_entries.Fill("data", len(skim_df))
 
-        lep_sel = lep_channel[args.lepton](df)
-        region_sel = region_(df, args.lepton)
+    else:
+        total_entries.Fill(key, len(skim_df))
 
-        if args.boson == "W":
-            skim_df = df[lep_sel & region_sel]
-            total_weight = xs_weight * skim_df["genWeight"] * skim_df["trig_eff_Weight"] \
-                            * skim_df["id_eff_Weight"] * skim_df["pu_Weight"]
+    lept_pt1 = skim_df["l_pt1"]
+    fill_hist_1d(h_lept_pt1[key], lept_pt1, total_weight, overflow_in_last_bin=True)
 
-        if args.boson == "Z":
-            lep_sel2 = lep_channel2[args.lepton](df)
-            skim_df = df[lep_sel & lep_sel2 & region_sel]
-            total_weight = xs_weight * skim_df["genWeight"] * skim_df["trig_eff_Weight"] * skim_df["trig_eff_Weight2"] \
-                            * skim_df["id_eff_Weight"] * skim_df["id_eff_Weight2"] * skim_df["pu_Weight"]
+    #lept_pt2 = skim_df["l_pt2"]
+    #fill_hist_1d(h_lept_pt2[key], lept_pt2, total_weight)
 
-        if apply_btag0Wgt:
-            total_weight = total_weight * skim_df["btag0Wgt"]
+    lept_eta1 = skim_df["l_eta1"]
+    fill_hist_1d(h_lept_eta1[key], lept_eta1, total_weight)
 
-        print("filling hists .... ")
+    #lept_eta2 = skim_df["l_eta2"]
+    #fill_hist_1d(h_lept_eta2[key], lept_eta2, total_weight)
 
-        if "data" in key:
-            total_entries.Fill("data", len(skim_df))
+    lept_phi1 = skim_df["l_phi1"]
+    fill_hist_1d(h_lept_phi1[key], lept_phi1, total_weight)
 
-        else:
-            total_entries.Fill(key, len(skim_df))
+    #lept_phi2 = skim_df["l_phi2"]
+    #fill_hist_1d(h_lept_phi2[key], lept_phi2, total_weight)
 
-        lept_pt1 = skim_df["l_pt1"]
-        fill_hist_1d(h_lept_pt1[key], lept_pt1, total_weight, overflow_in_last_bin=True)
+    pfMET_Corr = skim_df["pfMET_Corr"]
+    fill_hist_1d(h_pfMET_Corr[key], pfMET_Corr, total_weight, overflow_in_last_bin=True)
 
-        #lept_pt2 = skim_df["l_pt2"]
-        #fill_hist_1d(h_lept_pt2[key], lept_pt2, total_weight)
+    pfMET_Corr_phi = skim_df["pfMET_Corr_phi"]
+    fill_hist_1d(h_pfMET_Corr_phi[key], pfMET_Corr_phi, total_weight)
 
-        lept_eta1 = skim_df["l_eta1"]
-        fill_hist_1d(h_lept_eta1[key], lept_eta1, total_weight)
+    PuppiAK8_jet_mass_so_corr = skim_df["PuppiAK8_jet_mass_so_corr"]
+    fill_hist_1d(h_PuppiAK8_jet_mass_so_corr[key], PuppiAK8_jet_mass_so_corr, total_weight, overflow_in_last_bin=True)
 
-        #lept_eta2 = skim_df["l_eta2"]
-        #fill_hist_1d(h_lept_eta2[key], lept_eta2, total_weight)
+    ungroomed_PuppiAK8_jet_pt = skim_df["ungroomed_PuppiAK8_jet_pt"]
+    fill_hist_1d(h_ungroomed_PuppiAK8_jet_pt[key], ungroomed_PuppiAK8_jet_pt, total_weight, overflow_in_last_bin=True)
 
-        lept_phi1 = skim_df["l_phi1"]
-        fill_hist_1d(h_lept_phi1[key], lept_phi1, total_weight)
+    ungroomed_PuppiAK8_jet_eta = skim_df["ungroomed_PuppiAK8_jet_eta"]
+    fill_hist_1d(h_ungroomed_PuppiAK8_jet_eta[key], ungroomed_PuppiAK8_jet_eta, total_weight)
 
-        #lept_phi2 = skim_df["l_phi2"]
-        #fill_hist_1d(h_lept_phi2[key], lept_phi2, total_weight)
+    ungroomed_PuppiAK8_jet_phi = skim_df["ungroomed_PuppiAK8_jet_phi"]
+    fill_hist_1d(h_ungroomed_PuppiAK8_jet_phi[key], ungroomed_PuppiAK8_jet_phi, total_weight)
 
-        pfMET_Corr = skim_df["pfMET_Corr"]
-        fill_hist_1d(h_pfMET_Corr[key], pfMET_Corr, total_weight, overflow_in_last_bin=True)
+    PuppiAK8jet_e2_sdb1 = skim_df["PuppiAK8jet_e2_sdb1"]
+    PuppiAK8jet_e2_sdb2 = skim_df["PuppiAK8jet_e2_sdb2"]
 
-        pfMET_Corr_phi = skim_df["pfMET_Corr_phi"]
-        fill_hist_1d(h_pfMET_Corr_phi[key], pfMET_Corr_phi, total_weight)
+    PuppiAK8jet_e3_v2_sdb1 = skim_df["PuppiAK8jet_e3_v2_sdb1"]
+    PuppiAK8jet_e3_v2_sdb2 = skim_df["PuppiAK8jet_e3_v2_sdb2"]
 
-        PuppiAK8_jet_mass_so_corr = skim_df["PuppiAK8_jet_mass_so_corr"]
-        fill_hist_1d(h_PuppiAK8_jet_mass_so_corr[key], PuppiAK8_jet_mass_so_corr, total_weight, overflow_in_last_bin=True)
+    PuppiAK8jet_n2_sdb1 = PuppiAK8jet_e3_v2_sdb1 / (PuppiAK8jet_e2_sdb1)**2
+    fill_hist_1d(h_PuppiAK8jet_n2_sdb1[key], PuppiAK8jet_n2_sdb1, total_weight, overflow_in_last_bin=True)
 
-        ungroomed_PuppiAK8_jet_pt = skim_df["ungroomed_PuppiAK8_jet_pt"]
-        fill_hist_1d(h_ungroomed_PuppiAK8_jet_pt[key], ungroomed_PuppiAK8_jet_pt, total_weight, overflow_in_last_bin=True)
+    PuppiAK8jet_n2_sdb2 = PuppiAK8jet_e3_v2_sdb2 / (PuppiAK8jet_e2_sdb2)**2
+    fill_hist_1d(h_PuppiAK8jet_n2_sdb2[key], PuppiAK8jet_n2_sdb2, total_weight, overflow_in_last_bin=True)
 
-        ungroomed_PuppiAK8_jet_eta = skim_df["ungroomed_PuppiAK8_jet_eta"]
-        fill_hist_1d(h_ungroomed_PuppiAK8_jet_eta[key], ungroomed_PuppiAK8_jet_eta, total_weight)
+    PuppiAK8jet_tau2tau1 = skim_df["PuppiAK8_jet_tau2tau1"]
+    fill_hist_1d(h_PuppiAK8jet_tau2tau1[key], PuppiAK8jet_tau2tau1, total_weight, overflow_in_last_bin=True)
 
-        ungroomed_PuppiAK8_jet_phi = skim_df["ungroomed_PuppiAK8_jet_phi"]
-        fill_hist_1d(h_ungroomed_PuppiAK8_jet_phi[key], ungroomed_PuppiAK8_jet_phi, total_weight)
+    v_pt_type0 = skim_df["v_pt_type0"]
+    fill_hist_1d(h_v_pt_type0[key], v_pt_type0, total_weight, overflow_in_last_bin=True)
 
-        PuppiAK8jet_e2_sdb1 = skim_df["PuppiAK8jet_e2_sdb1"]
-        PuppiAK8jet_e2_sdb2 = skim_df["PuppiAK8jet_e2_sdb2"]
+    v_eta_type0 = skim_df["v_eta_type0"]
+    fill_hist_1d(h_v_eta_type0[key], v_eta_type0, total_weight)
 
-        PuppiAK8jet_e3_v2_sdb1 = skim_df["PuppiAK8jet_e3_v2_sdb1"]
-        PuppiAK8jet_e3_v2_sdb2 = skim_df["PuppiAK8jet_e3_v2_sdb2"]
+    v_mt_type0 = skim_df["v_mt_type0"]
+    fill_hist_1d(h_v_mt_type0[key], v_mt_type0, total_weight, overflow_in_last_bin=True)
 
-        PuppiAK8jet_n2_sdb1 = PuppiAK8jet_e3_v2_sdb1 / (PuppiAK8jet_e2_sdb1)**2
-        fill_hist_1d(h_PuppiAK8jet_n2_sdb1[key], PuppiAK8jet_n2_sdb1, total_weight, overflow_in_last_bin=True)
+    vbf_maxpt_j1_pt = skim_df["vbf_maxpt_j1_pt"]
+    fill_hist_1d(h_vbf_maxpt_j1_pt[key], vbf_maxpt_j1_pt, total_weight, overflow_in_last_bin=True)
 
-        PuppiAK8jet_n2_sdb2 = PuppiAK8jet_e3_v2_sdb2 / (PuppiAK8jet_e2_sdb2)**2
-        fill_hist_1d(h_PuppiAK8jet_n2_sdb2[key], PuppiAK8jet_n2_sdb2, total_weight, overflow_in_last_bin=True)
+    vbf_maxpt_j2_pt = skim_df["vbf_maxpt_j2_pt"]
+    fill_hist_1d(h_vbf_maxpt_j2_pt[key], vbf_maxpt_j2_pt, total_weight, overflow_in_last_bin=True)
 
-        PuppiAK8jet_tau2tau1 = skim_df["PuppiAK8_jet_tau2tau1"]
-        fill_hist_1d(h_PuppiAK8jet_tau2tau1[key], PuppiAK8jet_tau2tau1, total_weight, overflow_in_last_bin=True)
+    vbf_maxpt_j1_eta = skim_df["vbf_maxpt_j1_eta"]
+    fill_hist_1d(h_vbf_maxpt_j1_eta[key], vbf_maxpt_j1_eta, total_weight)
 
-        v_pt_type0 = skim_df["v_pt_type0"]
-        fill_hist_1d(h_v_pt_type0[key], v_pt_type0, total_weight, overflow_in_last_bin=True)
+    vbf_maxpt_j2_eta = skim_df["vbf_maxpt_j2_eta"]
+    fill_hist_1d(h_vbf_maxpt_j2_eta[key], vbf_maxpt_j2_eta, total_weight)
 
-        v_eta_type0 = skim_df["v_eta_type0"]
-        fill_hist_1d(h_v_eta_type0[key], v_eta_type0, total_weight)
+    vbf_maxpt_j1_phi = skim_df["vbf_maxpt_j1_phi"]
+    fill_hist_1d(h_vbf_maxpt_j1_phi[key], vbf_maxpt_j1_phi, total_weight)
 
-        v_mt_type0 = skim_df["v_mt_type0"]
-        fill_hist_1d(h_v_mt_type0[key], v_mt_type0, total_weight, overflow_in_last_bin=True)
+    vbf_maxpt_j2_phi = skim_df["vbf_maxpt_j2_phi"]
+    fill_hist_1d(h_vbf_maxpt_j2_phi[key], vbf_maxpt_j2_phi, total_weight)
 
-        vbf_maxpt_j1_pt = skim_df["vbf_maxpt_j1_pt"]
-        fill_hist_1d(h_vbf_maxpt_j1_pt[key], vbf_maxpt_j1_pt, total_weight, overflow_in_last_bin=True)
+    vbf_maxpt_jj_Deta = skim_df["vbf_maxpt_jj_Deta"]
+    fill_hist_1d(h_vbf_maxpt_jj_Deta[key], vbf_maxpt_jj_Deta, total_weight)
 
-        vbf_maxpt_j2_pt = skim_df["vbf_maxpt_j2_pt"]
-        fill_hist_1d(h_vbf_maxpt_j2_pt[key], vbf_maxpt_j2_pt, total_weight, overflow_in_last_bin=True)
+    vbf_maxpt_jj_m = skim_df["vbf_maxpt_jj_m"]
+    fill_hist_1d(h_vbf_maxpt_jj_m[key], vbf_maxpt_jj_m, total_weight)
 
-        vbf_maxpt_j1_eta = skim_df["vbf_maxpt_j1_eta"]
-        fill_hist_1d(h_vbf_maxpt_j1_eta[key], vbf_maxpt_j1_eta, total_weight)
+    BosonCentrality_type0 = skim_df["BosonCentrality_type0"]
+    fill_hist_1d(h_BosonCentrality_type0[key], BosonCentrality_type0, total_weight)
 
-        vbf_maxpt_j2_eta = skim_df["vbf_maxpt_j2_eta"]
-        fill_hist_1d(h_vbf_maxpt_j2_eta[key], vbf_maxpt_j2_eta, total_weight)
+    ZeppenfeldWL_type0_dEtajj = skim_df["ZeppenfeldWL_type0"] / skim_df["vbf_maxpt_jj_Deta"]
+    fill_hist_1d(h_ZeppenfeldWL_type0_dEtajj[key], ZeppenfeldWL_type0_dEtajj, total_weight)
 
-        vbf_maxpt_j1_phi = skim_df["vbf_maxpt_j1_phi"]
-        fill_hist_1d(h_vbf_maxpt_j1_phi[key], vbf_maxpt_j1_phi, total_weight)
+    ZeppenfeldWH_dEtajj = skim_df["ZeppenfeldWH"] / skim_df["vbf_maxpt_jj_Deta"]
+    fill_hist_1d(h_ZeppenfeldWH_dEtajj[key], ZeppenfeldWH_dEtajj, total_weight)
 
-        vbf_maxpt_j2_phi = skim_df["vbf_maxpt_j2_phi"]
-        fill_hist_1d(h_vbf_maxpt_j2_phi[key], vbf_maxpt_j2_phi, total_weight)
+    mass_lvj_type0_PuppiAK8 = skim_df["mass_lvj_type0_PuppiAK8"]
+    fill_hist_1d(h_mass_lvj_type0_PuppiAK8[key], mass_lvj_type0_PuppiAK8, total_weight, overflow_in_last_bin=True)
 
-        vbf_maxpt_jj_Deta = skim_df["vbf_maxpt_jj_Deta"]
-        fill_hist_1d(h_vbf_maxpt_jj_Deta[key], vbf_maxpt_jj_Deta, total_weight)
+    mass_lvj_type0_PuppiAK8_8bin = skim_df["mass_lvj_type0_PuppiAK8"]
+    fill_hist_1d(h_mass_lvj_type0_PuppiAK8_8bin[key], mass_lvj_type0_PuppiAK8_8bin, total_weight, overflow_in_last_bin=True)
 
-        vbf_maxpt_jj_m = skim_df["vbf_maxpt_jj_m"]
-        fill_hist_1d(h_vbf_maxpt_jj_m[key], vbf_maxpt_jj_m, total_weight)
+    pt_lvj_type0_PuppiAK8 = skim_df["pt_lvj_type0_PuppiAK8"]
+    fill_hist_1d(h_pt_lvj_type0_PuppiAK8[key], pt_lvj_type0_PuppiAK8, total_weight, overflow_in_last_bin=True)
 
-        BosonCentrality_type0 = skim_df["BosonCentrality_type0"]
-        fill_hist_1d(h_BosonCentrality_type0[key], BosonCentrality_type0, total_weight)
+    eta_lvj_type0_PuppiAK8 = skim_df["eta_lvj_type0_PuppiAK8"]
+    fill_hist_1d(h_eta_lvj_type0_PuppiAK8[key], eta_lvj_type0_PuppiAK8, total_weight)
 
-        ZeppenfeldWL_type0_dEtajj = skim_df["ZeppenfeldWL_type0"] / skim_df["vbf_maxpt_jj_Deta"]
-        fill_hist_1d(h_ZeppenfeldWL_type0_dEtajj[key], ZeppenfeldWL_type0_dEtajj, total_weight)
+    phi_lvj_type0_PuppiAK8 = skim_df["phi_lvj_type0_PuppiAK8"]
+    fill_hist_1d(h_phi_lvj_type0_PuppiAK8[key], phi_lvj_type0_PuppiAK8, total_weight)
 
-        ZeppenfeldWH_dEtajj = skim_df["ZeppenfeldWH"] / skim_df["vbf_maxpt_jj_Deta"]
-        fill_hist_1d(h_ZeppenfeldWH_dEtajj[key], ZeppenfeldWH_dEtajj, total_weight)
+    mva_score = skim_df["mva_score"]
+    fill_hist_1d(h_mva_score[key], mva_score, total_weight)
 
-        mass_lvj_type0_PuppiAK8 = skim_df["mass_lvj_type0_PuppiAK8"]
-        fill_hist_1d(h_mass_lvj_type0_PuppiAK8[key], mass_lvj_type0_PuppiAK8, total_weight, overflow_in_last_bin=True)
-
-        mass_lvj_type0_PuppiAK8_8bin = skim_df["mass_lvj_type0_PuppiAK8"]
-        fill_hist_1d(h_mass_lvj_type0_PuppiAK8_8bin[key], mass_lvj_type0_PuppiAK8_8bin, total_weight, overflow_in_last_bin=True)
-
-        pt_lvj_type0_PuppiAK8 = skim_df["pt_lvj_type0_PuppiAK8"]
-        fill_hist_1d(h_pt_lvj_type0_PuppiAK8[key], pt_lvj_type0_PuppiAK8, total_weight, overflow_in_last_bin=True)
-
-        eta_lvj_type0_PuppiAK8 = skim_df["eta_lvj_type0_PuppiAK8"]
-        fill_hist_1d(h_eta_lvj_type0_PuppiAK8[key], eta_lvj_type0_PuppiAK8, total_weight)
-
-        phi_lvj_type0_PuppiAK8 = skim_df["phi_lvj_type0_PuppiAK8"]
-        fill_hist_1d(h_phi_lvj_type0_PuppiAK8[key], phi_lvj_type0_PuppiAK8, total_weight)
-
-        mva_score = skim_df["mva_score"]
-        fill_hist_1d(h_mva_score[key], mva_score, total_weight)
-
-        # 2D hists
-        fill_hist_2d(h2_n2_sdb1_tau2tau1[key], PuppiAK8jet_n2_sdb1, PuppiAK8jet_tau2tau1, total_weight)
-        fill_hist_2d(h2_n2_sdb2_tau2tau1[key], PuppiAK8jet_n2_sdb2, PuppiAK8jet_tau2tau1, total_weight)
+    # 2D hists
+    fill_hist_2d(h2_n2_sdb1_tau2tau1[key], PuppiAK8jet_n2_sdb1, PuppiAK8jet_tau2tau1, total_weight)
+    fill_hist_2d(h2_n2_sdb2_tau2tau1[key], PuppiAK8jet_n2_sdb2, PuppiAK8jet_tau2tau1, total_weight)
 
 # write hists to root file
 # ========================
