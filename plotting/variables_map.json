@@ -121,6 +121,12 @@
         "jesDown": "ungroomed_PuppiAK8_jet_eta_jes_dn"
     },
 
+    "fatjet_phi": {
+        "central": "ungroomed_PuppiAK8_jet_phi",
+        "jesUp": "ungroomed_PuppiAK8_jet_phi_jes_up",
+        "jesDown": "ungroomed_PuppiAK8_jet_phi_jes_dn"
+    },
+
     "fatjet_tau21": {
         "central": "PuppiAK8_jet_tau2tau1"
     },
