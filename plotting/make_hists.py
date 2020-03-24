@@ -5,13 +5,11 @@ import os
 import json
 import numpy as np
 import ROOT
+ROOT.PyConfig.IgnoreCommandLineOptions = True
 import awkward
 import uproot
 import argparse
 import importlib
-from array import array
-from root_numpy.tmva import evaluate_reader
-import xml.etree.ElementTree as ET
 
 parser = argparse.ArgumentParser()
 
@@ -181,10 +179,13 @@ hists_1D = [
     (50, 0, 2500, "wv_m"),
     (np.array([600, 700, 800, 900,
                1000, 1200, 1500, 2000, 2500]), 0, 0, "wv_m_8bin"),
+    (np.array([50, 300, 500, 600, 700, 800, 900,
+               1000, 1200, 1500, 2000, 2500]), 0, 0, "wv_m_11bin"),
     (60, 0.0, 600.0, "wv_pt"),
     (20, -5.0, 5.0, "wv_eta"),
     (34, -3.4, 3.4, "wv_phi"),
     (40, -1.0, 1.0, "mva_score"),
+    (10, -1.0, 1.0, "mva_score_10bin"),
 ]
 
 hists_2D = [
@@ -278,7 +279,9 @@ if args.boson == "Z":
     }
 
 region_ = sel_code.region_
+
 apply_btag0Wgt = sel_code.apply_btag0Wgt
+blind_data = sel_code.blind_data
 
 # add selection code to root file
 code_text = open(f"selections/{args.region}.py").read()
@@ -305,6 +308,13 @@ for i in dfs:
 
     lep_sel = lep_channel[args.lepton](df)
     region_sel = region_(df, args.lepton)
+
+    if "mva_score" not in df.columns:
+        df["mva_score"] = -999.0
+
+    if len(blind_data) != 0 and "data" in key:
+        for blind_var in blind_data:
+            df[blind_var] = -999.0
 
     if args.boson == "W":
         skim_df = df[lep_sel & region_sel]
@@ -418,6 +428,7 @@ for i in dfs:
     wv_m = skim_df["wv_m"]
     fill_hist_1d(h_wv_m[key], wv_m, total_weight, overflow_in_last_bin=True)
     fill_hist_1d(h_wv_m_8bin[key], wv_m, total_weight, overflow_in_last_bin=True)
+    fill_hist_1d(h_wv_m_11bin[key], wv_m, total_weight, overflow_in_last_bin=True)
 
     wv_pt = skim_df["wv_pt"]
     fill_hist_1d(h_wv_pt[key], wv_pt, total_weight, overflow_in_last_bin=True)
@@ -428,8 +439,10 @@ for i in dfs:
     wv_phi = skim_df["wv_phi"]
     fill_hist_1d(h_wv_phi[key], wv_phi, total_weight)
 
-    #mva_score = skim_df["mva_score"]
-    #fill_hist_1d(h_mva_score[key], mva_score, total_weight)
+    if "mva_score" in df.columns:
+        mva_score = skim_df["mva_score"]
+        fill_hist_1d(h_mva_score[key], mva_score, total_weight)
+        fill_hist_1d(h_mva_score_10bin[key], mva_score, total_weight)
 
     # 2D hists
     fill_hist_2d(h2_n2b1_tau21[key], fatjet_n2b1, fatjet_tau21, total_weight)

@@ -2,6 +2,8 @@ import numpy as np
 
 apply_btag0Wgt = True
 
+blind_data = ["mva_score", "wv_m"]
+
 def e_channel(df):
      return (
         (df["lept_channel"] == 1) &
