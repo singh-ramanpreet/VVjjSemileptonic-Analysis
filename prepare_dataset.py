@@ -1,22 +1,16 @@
 #!/usr/bin/env python3
 
 import argparse
-import ROOT
-ROOT.PyConfig.IgnoreCommandLineOptions = True
 import json
 import numpy as np
 import awkward
 import uproot
 from pprint import pprint
-import importlib
-from array import array
-from root_numpy.tmva import evaluate_reader
-import xml.etree.ElementTree as ET
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
-    "--datasets", type=str, default="../datasets_2016.json",
+    "--datasets", type=str, default="datasets_2016.json",
     help="json file: info of datasets, default=%(default)s"
     )
 
@@ -31,7 +25,7 @@ parser.add_argument(
     )
 
 parser.add_argument(
-    "--output", type=str, default="df_step1.awkd",
+    "--output", type=str, default="df_dataset.awkd",
     help="awkd file output name, default=%(default)s"
     )
 
@@ -48,6 +42,7 @@ for name_ in variables_map:
     if systematic not in variables_map[name_]:
         print(f"systematic '{systematic}' not available for '{name_}'")
         print(f"using central variable for '{name_}'")
+        print("")
         systematic = "central"
 
     variables_mapped[name_] = variables_map[name_][systematic]
@@ -81,12 +76,6 @@ for key in samples_dict:
 
         df = uproot.lazyarrays(root_file, "otree", branches=ttree_branches, persistvirtual=True)
 
-        if "isResolved" not in df.columns:
-            df["isResolved"] = False
-
-        if "data" in key:
-            df["btag0Wgt"] = 1.0
-
         for new_name, var_name in variables_mapped.items():
             df[new_name] = df[var_name]
             if new_name != var_name:
@@ -98,6 +87,12 @@ for key in samples_dict:
         df["ht"] = df["fatjet_pt"] + df["vbf_j1_pt"] + df["vbf_j2_pt"]
         df["zeppenfeld_w_Deta"] = df["zeppenfeld_w"] / df["vbf_jj_Deta"]
         df["zeppenfeld_v_Deta"] = df["zeppenfeld_v"] / df["vbf_jj_Deta"]
+
+        if "isResolved" not in df.columns:
+            df["isResolved"] = False
+
+        if "data" in key:
+            df["btag0_weight"] = 1.0
 
         dfs[f"{key}/{sample['name']}"] = {"xs_weight": xs_weight, "dframe": df}
 

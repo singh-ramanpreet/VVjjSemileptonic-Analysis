@@ -4,3 +4,6 @@
 *.pyc
 
 setup_env/
+
+*.awkd
+plotting/current

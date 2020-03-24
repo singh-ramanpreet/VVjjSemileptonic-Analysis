@@ -109,8 +109,8 @@
 
     "fatjet_m": {
         "central": "PuppiAK8_jet_mass_so_corr",
-        "jesUp": "PuppiAK8_jet_mass_jes_up",
-        "jesDown": "PuppiAK8_jet_mass_jes_dn"
+        "jesUp": "ungroomed_PuppiAK8_jet_mass_jes_up",
+        "jesDown": "ungroomed_PuppiAK8_jet_mass_jes_dn"
     },
 
     "fatjet_pt": {
