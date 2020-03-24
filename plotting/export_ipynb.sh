@@ -3,8 +3,8 @@
 usage() {
   echo "Usage: $0 [ -f FILE ] [ -o OUTPUT ] [ -t TYPE ]" 1>&2
   echo ""
-  echo "   -f Input ipynb file (default: plots_variables.ipynb)"
-  echo "   -o Output filename (default extracted from input)"
+  echo "   -f Input ipynb file (default: )"
+  echo "   -o Output filename (default: same as input)"
   echo "   -t Output type pdf or html (default: pdf)"
   echo "   -c flag for including input code in output"
 }
@@ -33,13 +33,13 @@ while getopts ":f:o:t:c" opt; do
 done
 
 if [ "$FILE" == "" ]; then
-    input=plots_variables.ipynb
+    exit_abnormal
 else
     input=$FILE
 fi
 
 if [ "$OUTPUT" == "" ]; then
-    output=$(grep -oh "hist_filename = .*root" ${input} | cut -d '"' -f 2 | cut -d '.' -f 1)
+    output=`echo $input | cut -d'.' -f1`
 else
     output=$OUTPUT
 fi
