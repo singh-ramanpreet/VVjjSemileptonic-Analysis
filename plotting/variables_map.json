@@ -51,6 +51,10 @@
         "central": "pfMET_Corr_phi"
     },
 
+    "njets": {
+        "central": "njets"
+    },
+
     "nBTagJet_loose": {
         "central": "nBTagJet_loose"
     },
