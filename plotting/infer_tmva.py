@@ -2,6 +2,8 @@
 
 import argparse
 import ROOT
+ROOT.PyConfig.IgnoreCommandLineOptions = True
+import os
 import json
 import numpy as np
 import awkward
@@ -11,7 +13,7 @@ from root_numpy.tmva import evaluate_reader
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
-    "--dframes", type=str, default="df_step1.awkd",
+    "--dframes", type=str, default="../df_dataset.awkd",
     help="awkd file: from step1, default=%(default)s"
     )
 
@@ -20,6 +22,10 @@ parser.add_argument(
     help="awkd file output name, default=%(default)s"
     )
 
+parser.add_argument(
+    "--suffix_out", type=str, default="BDT",
+    help="additional suffix in output filename, default=%(default)s"
+    )
 
 parser.add_argument(
     "--mva", type=str, default="",
@@ -69,7 +75,9 @@ for i in dfs:
     new_dfs[f"{key}/{filename}"] = {"xs_weight": xs_weight, "dframe": df}
 
 if args.output == "":
-    output_filename = args.dframes.replace("step1", "step2")
+    output_filename = os.path.basename(args.dframes)
+    output_filename = os.path.splitext(output_filename)[0]
+    output_filename = f"{output_filename}_ {args.suffix_out}"
 else:
     output_filename = args.output
 
