@@ -70,14 +70,14 @@ for i in dfs:
     mva_score = evaluate_reader(mva_reader, "BDT", var_data)
     df["mva_score"] = mva_score
 
-    print(df["mva_score"])
+    print(df["mva_score"][:5])
 
     new_dfs[f"{key}/{filename}"] = {"xs_weight": xs_weight, "dframe": df}
 
 if args.output == "":
     output_filename = os.path.basename(args.dframes)
     output_filename = os.path.splitext(output_filename)[0]
-    output_filename = f"{output_filename}_ {args.suffix_out}"
+    output_filename = f"{output_filename}_{args.suffix_out}"
 else:
     output_filename = args.output
 
