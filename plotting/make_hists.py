@@ -14,7 +14,7 @@ import importlib
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
-    "--dframes", type=str, default="df_step1.awkd",
+    "--dframes", type=str, default="df.awkd",
     help="awkd file of datasets df prepared, default=%(default)s"
     )
 
@@ -35,7 +35,12 @@ parser.add_argument(
 
 parser.add_argument(
     "--output", type=str, default="",
-    help="output filename, default='region'_'lepton'.root"
+    help="output filename, default='region'_'info_out'_'lepton'.root"
+    )
+
+parser.add_argument(
+    "--info_out", type=str, default="",
+    help="additional string in output filename, default=%(default)s"
     )
 
 args = parser.parse_args()
@@ -453,6 +458,8 @@ for i in dfs:
 
 if args.output == "":
     out_hist_filename = f"{args.region}_{args.lepton}.root"
+    if args.info_out != "":
+        out_hist_filename = f"{args.region}_{args.info_out}_{args.lepton}.root"
 else:
     out_hist_filename = args.output
 
