@@ -3,8 +3,8 @@
         "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/data_obs/",
         "lumi": 1.0,
         "filelist": [
-            {"name": "WWTree_SingleMuon_Run2016_03Feb2017.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0},
-            {"name": "WWTree_SingleElectron_Run2016_03Feb2017.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
+            {"name": "SingleMuon.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0},
+            {"name": "SingleElectron.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
         ]
     },
     

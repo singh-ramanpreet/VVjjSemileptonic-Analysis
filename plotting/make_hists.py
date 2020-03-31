@@ -147,16 +147,17 @@ class book_hist_dict:
 
 # xbins, xlow, xup, variable
 hists_1D = [
-    (40, 0, 2000, "lept1_pt"),
+    (40, 0, 800, "lept1_pt"),
     #(30, 0, 300, "lept2_pt"),
     (26, -2.6, 2.6, "lept1_eta"),
     #(25, -2.5, 2.5, "lept2_eta"),
     (34, -3.4, 3.4, "lept1_phi"),
     #(32, -3.2, 3.2, "lept2_phi"),
-    (20, 0, 1000, "pf_met_corr"),
+    (80, 0, 800, "pf_met_corr"),
     (34, -3.4, 3.4, "pf_met_corr_phi"),
+    (14, 0, 14, "njets"),
     # ak8 jet
-    (80, 0.0, 400.0, "fatjet_m"),
+    (24, 30.0, 160.0, "fatjet_m"),
     (80, 200.0, 2000.0, "fatjet_pt"),
     (26, -2.6, 2.6, "fatjet_eta"),
     (34, -3.4, 3.4, "fatjet_phi"),
@@ -164,22 +165,22 @@ hists_1D = [
     (40, 0.0, 0.4, "fatjet_n2b2"),
     (40, 0.0, 1.0, "fatjet_tau21"),
     # W
-    (50, 0.0, 2000.0, "w_pt"),
-    (51, -5.1, 5.1, "w_eta"),
-    (40, 0.0, 2000.0, "w_mt"),
+    (50, 0.0, 1000.0, "w_pt"),
+    (40, -4.0, 4.0, "w_eta"),
+    (20, 0.0, 400.0, "w_mt"),
     # vbf jets
-    (120, 0.0, 2000.0, "vbf_j1_pt"),
-    (40, 0.0, 2000.0, "vbf_j2_pt"),
+    (50, 0.0, 1000.0, "vbf_j1_pt"),
+    (30, 0.0, 600.0, "vbf_j2_pt"),
     (51, -5.1, 5.1, "vbf_j1_eta"),
     (51, -5.1, 5.1, "vbf_j2_eta"),
-    (20, 0.0, 10.0, "vbf_jj_Deta"),
+    (16, 2.0, 10.0, "vbf_jj_Deta"),
     (34, -3.4, 3.4, "vbf_j1_phi"),
     (34, -3.4, 3.4, "vbf_j2_phi"),
     (40, 500.0, 2500.0, "vbf_jj_m"),
     #
-    (60, -6.0, 6.0, "boson_centrality"),
-    (40, -4.0, 4.0, "zeppenfeld_w_Deta"),
-    (40, -4.0, 4.0, "zeppenfeld_v_Deta"),
+    (30, 0.0, 6.0, "boson_centrality"),
+    (20, -1.0, 1.0, "zeppenfeld_w_Deta"),
+    (20, -1.0, 1.0, "zeppenfeld_v_Deta"),
     # W V system
     (50, 0, 2500, "wv_m"),
     (np.array([600, 700, 800, 900,
@@ -366,6 +367,9 @@ for i in dfs:
 
     pf_met_corr_phi = skim_df["pf_met_corr_phi"]
     fill_hist_1d(h_pf_met_corr_phi[key], pf_met_corr_phi, total_weight)
+
+    njets = skim_df["njets"]
+    fill_hist_1d(h_njets[key], njets, total_weight)
 
     fatjet_m = skim_df["fatjet_m"]
     fill_hist_1d(h_fatjet_m[key], fatjet_m, total_weight, overflow_in_last_bin=True)
