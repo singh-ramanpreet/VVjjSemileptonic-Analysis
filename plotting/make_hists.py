@@ -383,13 +383,13 @@ for i in dfs:
     fatjet_phi = skim_df["fatjet_phi"]
     fill_hist_1d(h_fatjet_phi[key], fatjet_phi, total_weight)
 
-    fatjet_n2b1 = df["fatjet_n2b1"]
+    fatjet_n2b1 = skim_df["fatjet_n2b1"]
     fill_hist_1d(h_fatjet_n2b1[key], fatjet_n2b1, total_weight, overflow_in_last_bin=True)
 
-    fatjet_n2b2 = df["fatjet_n2b2"]
+    fatjet_n2b2 = skim_df["fatjet_n2b2"]
     fill_hist_1d(h_fatjet_n2b2[key], fatjet_n2b2, total_weight, overflow_in_last_bin=True)
 
-    fatjet_tau21 = df["fatjet_tau21"]
+    fatjet_tau21 = skim_df["fatjet_tau21"]
     fill_hist_1d(h_fatjet_tau21[key], fatjet_tau21, total_weight, overflow_in_last_bin=True)
 
     w_pt = skim_df["w_pt"]

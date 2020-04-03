@@ -74,7 +74,10 @@ for key in samples_dict:
 
         print("loading ... ", key, sample["name"])
 
-        df = uproot.lazyarrays(root_file, "otree", branches=ttree_branches, persistvirtual=True)
+        if key in ["data_obs", "WJets"]:
+            df = uproot.lazyarrays(root_file, "otree", branches=ttree_branches, persistvirtual=True)
+        else:
+            df = uproot.lazyarrays(root_file, "otree", branches=ttree_branches + ["isResolved"], persistvirtual=True)
 
         for new_name, var_name in variables_mapped.items():
             df[new_name] = df[var_name]
