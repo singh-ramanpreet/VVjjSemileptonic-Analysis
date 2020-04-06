@@ -187,11 +187,15 @@ hists_1D = [
                1000, 1200, 1500, 2000, 2500]), 0, 0, "wv_m_8bin"),
     (np.array([50, 300, 500, 600, 700, 800, 900,
                1000, 1200, 1500, 2000, 2500]), 0, 0, "wv_m_11bin"),
+    (1, 0.0, 1.0, "wv_m_3d"),
     (60, 0.0, 600.0, "wv_pt"),
     (20, -5.0, 5.0, "wv_eta"),
     (34, -3.4, 3.4, "wv_phi"),
     (40, -1.0, 1.0, "mva_score"),
+    (30, -1.0, 1.0, "mva_score_30bin"),
+    (20, -1.0, 1.0, "mva_score_20bin"),
     (10, -1.0, 1.0, "mva_score_10bin"),
+    (34, -1.0, 0.7, "mva_score_var1")
 ]
 
 hists_2D = [
@@ -439,6 +443,27 @@ for i in dfs:
     fill_hist_1d(h_wv_m_8bin[key], wv_m, total_weight, overflow_in_last_bin=True)
     fill_hist_1d(h_wv_m_11bin[key], wv_m, total_weight, overflow_in_last_bin=True)
 
+    # 3d fit histogram filling
+    # start
+    wv_m_bins = (150, 300, 450, 600, 1075, 1550, 2025, np.inf)
+    vbf_jj_Deta_bins = (4.0, 5.0, 6.0, 10.0)
+    vbf_jj_m_bins = (600, 800, 1200, np.inf)
+
+    if h_wv_m_3d[key].GetNbinsX() == 1:
+        new_x_bins = (len(vbf_jj_m_bins) - 1) * (len(vbf_jj_Deta_bins) - 1) * (len(wv_m_bins) - 1)
+        h_wv_m_3d[key].SetBins(new_x_bins, 0, new_x_bins)
+
+    wv_m_3d_data = np.column_stack([vbf_jj_m, vbf_jj_Deta, wv_m])
+    wv_m_3d_bins = (vbf_jj_m_bins, vbf_jj_Deta_bins, wv_m_bins)
+    wv_m_3d, wv_m_3d_edges = np.histogramdd(wv_m_3d_data, bins=wv_m_3d_bins, weights=total_weight)
+
+    wv_m_3d_flat = np.ndarray.flatten(wv_m_3d)
+    wv_m_3d_flat_bins = np.where(wv_m_3d_flat != 0.0)[0]
+    wv_m_3d_flat_weights = wv_m_3d_flat[wv_m_3d_flat_bins]
+
+    fill_hist_1d(h_wv_m_3d[key], wv_m_3d_flat_bins, wv_m_3d_flat_weights)
+    # end
+
     wv_pt = skim_df["wv_pt"]
     fill_hist_1d(h_wv_pt[key], wv_pt, total_weight, overflow_in_last_bin=True)
 
@@ -452,6 +477,9 @@ for i in dfs:
         mva_score = skim_df["mva_score"]
         fill_hist_1d(h_mva_score[key], mva_score, total_weight)
         fill_hist_1d(h_mva_score_10bin[key], mva_score, total_weight)
+        fill_hist_1d(h_mva_score_20bin[key], mva_score, total_weight)
+        fill_hist_1d(h_mva_score_30bin[key], mva_score, total_weight)
+        fill_hist_1d(h_mva_score_var1[key], mva_score, total_weight, overflow_in_last_bin=True)
 
     # 2D hists
     fill_hist_2d(h2_n2b1_tau21[key], fatjet_n2b1, fatjet_tau21, total_weight)
