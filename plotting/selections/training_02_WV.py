@@ -23,12 +23,12 @@ def m_channel(df):
 def region_(df, lepton):
     
     if lepton == "m":
-        lept1_pt_cut = 50
-        pf_met_cut = 50
+        lept1_pt_cut = 30
+        pf_met_cut = 30
     
     if lepton == "e":
-        lept1_pt_cut = 50
-        pf_met_cut = 80
+        lept1_pt_cut = 30
+        pf_met_cut = 30
 
     return (
         (df["isResolved"] == False) &
@@ -39,11 +39,12 @@ def region_(df, lepton):
         (df["vbf_jj_m"] > 500) &
         (df["vbf_j1_pt"] > 30) &
         (df["vbf_j2_pt"] > 30) &
-        (df["vbf_jj_Deta"] > 2.0) &
+        (df["vbf_jj_Deta"] > 2.5) &
         (df["fatjet_pt"] > 200) &
         (np.abs(df["fatjet_eta"]) < 2.4) &
         (df["fatjet_m"] > 65) &
         (df["fatjet_m"] < 105) &
+        (df["fatjet_tau21"] < 0.55) &
         (df["boson_centrality"] > 0.0) &
         (np.abs(df["zeppenfeld_w_Deta"]) < 1.0) &
         (np.abs(df["zeppenfeld_v_Deta"]) < 1.0)

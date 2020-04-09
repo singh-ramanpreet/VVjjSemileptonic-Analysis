@@ -1,21 +1,26 @@
 #!/usr/bin/env python3
 
 import argparse
+import ROOT
+ROOT.PyConfig.IgnoreCommandLineOptions = True
+import os
 import json
 import numpy as np
 import awkward
 import uproot
 from pprint import pprint
+from array import array
+from root_numpy.tmva import evaluate_reader
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
-    "--datasets", type=str, default="datasets_2016.json",
+    "--datasets", type=str, default="../datasets_2016.json",
     help="json file: info of datasets, default=%(default)s"
     )
 
 parser.add_argument(
-    "--variables", type=str, default="variables_map.json",
+    "--variables", type=str, default="../variables_map.json",
     help="json file: variables central and systematic map, default=%(default)s"
     )
 
@@ -27,6 +32,21 @@ parser.add_argument(
 parser.add_argument(
     "--output", type=str, default="df_dataset.awkd",
     help="awkd file output name, default=%(default)s"
+    )
+
+parser.add_argument(
+    "--suffix-out", dest="suffix_out", type=str, default="BDT",
+    help="additional suffix in output filename, default=%(default)s"
+    )
+
+parser.add_argument(
+    "--mva", type=str, default="",
+    help="mva training weight file (xml), default=%(default)s"
+    )
+
+parser.add_argument(
+    "--mva-var-list", dest="mva_vars", type=str, default="",
+    help="mva training variable list, default=%(default)s"
     )
 
 args = parser.parse_args()
@@ -48,10 +68,19 @@ for name_ in variables_map:
     variables_mapped[name_] = variables_map[name_][systematic]
 
 pprint(variables_mapped, width=1)
-input("...")
-
 ttree_branches = list(variables_mapped.values())
-print(ttree_branches)
+
+# TMVA Reader
+if args.mva != "":
+    mva_variables = open(args.mva_vars).readlines()
+    mva_variables = [i.rstrip("\n") for i in mva_variables]
+
+    mva_reader = ROOT.TMVA.Reader()
+
+    for var in mva_variables:
+        mva_reader.AddVariable(var, array("f", [-999.0]))
+
+    mva_reader.BookMVA("BDT", args.mva)
 
 # Loop over samples
 dfs = {}
@@ -96,6 +125,15 @@ for key in samples_dict:
 
         if "data" in key:
             df["btag0_weight"] = 1.0
+
+        if args.mva != "":
+            var_data = np.column_stack(tuple([df[var] for var in mva_variables]))
+            mva_score = evaluate_reader(mva_reader, "BDT", var_data)
+            df["mva_score"] = mva_score
+        else:
+            df["mva_score"] = -999.0
+
+        print(df["mva_score"][:5])
 
         dfs[f"{key}/{sample['name']}"] = {"xs_weight": xs_weight, "dframe": df}
 

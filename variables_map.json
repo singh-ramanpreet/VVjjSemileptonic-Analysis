@@ -10,15 +10,11 @@
     },
 
     "lept1_eta": {
-        "central": "l_eta1",
-        "lep_scaleUp": "l_eta1_Up",
-        "lep_scaleDown": "l_eta1_Down"
+        "central": "l_eta1"
     },
 
     "lept1_phi": {
-        "central": "l_phi1",
-        "lep_scaleUp": "l_phi1_Up",
-        "lep_scaleDown": "l_phi1_Down"
+        "central": "l_phi1"
     },
 
     "lept2_pt": {
@@ -28,15 +24,11 @@
     },
 
     "lept2_eta": {
-        "central": "l_eta2",
-        "lep_scaleUp": "l_eta2_Up",
-        "lep_scaleDown": "l_eta2_Down"
+        "central": "l_eta2"
     },
 
     "lept2_phi": {
-        "central": "l_phi2",
-        "lep_scaleUp": "l_phi2_Up",
-        "lep_scaleDown": "l_phi2_Down"
+        "central": "l_phi2"
     },
 
     "pf_met_corr": {
@@ -66,15 +58,11 @@
     },
 
     "vbf_j1_eta": {
-        "central": "vbf_maxpt_j1_eta",
-        "jesUp": "vbf_maxpt_j1_eta_jes_up",
-        "jesDown": "vbf_maxpt_j1_eta_jes_dn"
+        "central": "vbf_maxpt_j1_eta"
     },
 
     "vbf_j1_phi": {
-        "central": "vbf_maxpt_j1_phi",
-        "jesUp": "vbf_maxpt_j1_phi_jes_up",
-        "jesDown": "vbf_maxpt_j1_phi_jes_dn"
+        "central": "vbf_maxpt_j1_phi"
     },
 
     "vbf_j2_pt": {
@@ -84,15 +72,11 @@
     },
 
     "vbf_j2_eta": {
-        "central": "vbf_maxpt_j2_eta",
-        "jesUp": "vbf_maxpt_j2_eta_jes_up",
-        "jesDown": "vbf_maxpt_j2_eta_jes_dn"
+        "central": "vbf_maxpt_j2_eta"
     },
 
     "vbf_j2_phi": {
-        "central": "vbf_maxpt_j2_phi",
-        "jesUp": "vbf_maxpt_j2_phi_jes_up",
-        "jesDown": "vbf_maxpt_j2_phi_jes_dn"
+        "central": "vbf_maxpt_j2_phi"
     },
 
     "vbf_jj_m": {
@@ -102,9 +86,7 @@
     },
 
     "vbf_jj_Deta": {
-        "central": "vbf_maxpt_jj_Deta",
-        "jesUp": "vbf_maxpt_jj_Deta_jes_up",
-        "jesDown": "vbf_maxpt_jj_Deta_jes_dn"
+        "central": "vbf_maxpt_jj_Deta"
     },
 
     "fatjet_m": {
@@ -120,15 +102,11 @@
     },
 
     "fatjet_eta": {
-        "central": "ungroomed_PuppiAK8_jet_eta",
-        "jesUp": "ungroomed_PuppiAK8_jet_eta_jes_up",
-        "jesDown": "ungroomed_PuppiAK8_jet_eta_jes_dn"
+        "central": "ungroomed_PuppiAK8_jet_eta"
     },
 
     "fatjet_phi": {
-        "central": "ungroomed_PuppiAK8_jet_phi",
-        "jesUp": "ungroomed_PuppiAK8_jet_phi_jes_up",
-        "jesDown": "ungroomed_PuppiAK8_jet_phi_jes_dn"
+        "central": "ungroomed_PuppiAK8_jet_phi"
     },
 
     "fatjet_tau21": {
@@ -162,13 +140,7 @@
     },
 
     "w_eta": {
-        "central": "v_eta_type0",
-        "jesUp": "v_eta_type0_jes_up",
-        "jesDown": "v_eta_type0_jes_dn",
-        "jerUp": "v_eta_type0_jer_up",
-        "jerDown": "v_eta_type0_jer_dn",
-        "lep_scaleUp": "v_eta_type0_LEP_Up",
-        "lep_scaleDown": "v_eta_type0_LEP_Down"
+        "central": "v_eta_type0"
     },
 
     "w_mt": {
@@ -204,29 +176,15 @@
     },
 
     "zeppenfeld_v": {
-        "central": "ZeppenfeldWH",
-        "jesUp": "ZeppenfeldWH_jes_up",
-        "jesDown": "ZeppenfeldWH_jes_dn"
+        "central": "ZeppenfeldWH"
     },
 
     "zeppenfeld_w": {
-        "central": "ZeppenfeldWL_type0",
-        "jesUp": "ZeppenfeldWL_type0_jes_up",
-        "jesDown": "ZeppenfeldWL_type0_jes_dn",
-        "jerUp": "ZeppenfeldWL_type0_jer_up",
-        "jerDown": "ZeppenfeldWL_type0_jer_dn",
-        "lep_scaleUp": "ZeppenfeldWL_type0_LEP_Up",
-        "lep_scaleDown": "ZeppenfeldWL_type0_LEP_Down"
+        "central": "ZeppenfeldWL_type0"
     },
 
     "boson_centrality": {
-        "central": "BosonCentrality_type0",
-        "jesUp": "BosonCentrality_type0_jes_up",
-        "jesDown": "BosonCentrality_type0_jes_dn",
-        "jerUp": "BosonCentrality_type0_jer_up",
-        "jerDown": "BosonCentrality_type0_jer_dn",
-        "lep_scaleUp": "BosonCentrality_type0_LEP_Up",
-        "lep_scaleDown": "BosonCentrality_type0_LEP_Down"
+        "central": "BosonCentrality_type0"
     },
 
     "costheta1_type0": {
@@ -254,11 +212,17 @@
     },
 
     "pu_weight": {
-        "central": "pu_Weight",
-        "puUp": "pu_Weight_up",
-        "puDown": "pu_Weight_down"
+        "central": "pu_Weight"
     },
-    
+
+    "pu_weight_up": {
+        "central": "pu_Weight_up"
+    },
+
+    "pu_weight_down": {
+        "central": "pu_Weight_down"
+    },
+
     "trig_eff_weight": {
         "central": "trig_eff_Weight"
     },
