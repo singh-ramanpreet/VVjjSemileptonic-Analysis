@@ -1,210 +1,182 @@
 {
-    "lept_channel": {
-        "central": "type"
-    },
-
     "lept1_pt": {
-        "central": "l_pt1",
-        "lep_scaleUp": "l_pt1_Up",
-        "lep_scaleDown": "l_pt1_Down"
+        "central": "lep1_pt",
+        "lep_scaleUp": "lep1_pt_scaleUp",
+        "lep_scaleDown": "lep1_pt_scaleDn"
     },
 
     "lept1_eta": {
-        "central": "l_eta1"
+        "central": "lep1_eta"
     },
 
     "lept1_phi": {
-        "central": "l_phi1"
+        "central": "lep1_phi"
+    },
+
+    "lept1_m": {
+        "central": "lep1_m"
     },
 
     "lept2_pt": {
-        "central": "l_pt2",
-        "lep_scaleUp": "l_pt2_Up",
-        "lep_scaleDown": "l_pt2_Down"
+        "central": "lep2_pt",
+        "lep_scaleUp": "lep2_pt_scaleUp",
+        "lep_scaleDown": "lep2_pt_scaleDn"
     },
 
     "lept2_eta": {
-        "central": "l_eta2"
+        "central": "lep2_eta"
     },
 
     "lept2_phi": {
-        "central": "l_phi2"
+        "central": "lep2_phi"
+    },
+
+    "lept2_m": {
+        "central": "lep2_m"
     },
 
     "pf_met_corr": {
-        "central": "pfMET_Corr",
-        "jesUp": "pfMET_jes_up",
-        "jesDown": "pfMET_jes_dn",
-        "jerUp": "pfMET_Corr_jerup",
-        "jerDown": "pfMET_Corr_jerdn"
+        "central": "MET",
+        "jesUp": "MET_scaleUp",
+        "jesDown": "MET_scaleDn"
     },
 
     "pf_met_corr_phi": {
-        "central": "pfMET_Corr_phi"
-    },
-
-    "njets": {
-        "central": "njets"
+        "central": "MET_phi"
     },
 
     "nBTagJet_loose": {
-        "central": "nBTagJet_loose"
+        "central": "nBtag_loose"
     },
 
     "vbf_j1_pt": {
-        "central": "vbf_maxpt_j1_pt",
-        "jesUp": "vbf_maxpt_j1_pt_jes_up",
-        "jesDown": "vbf_maxpt_j1_pt_jes_dn"
+        "central": "vbf1_AK4_pt",
+        "jesUp": "vbf1_AK4_pt_scaleUp",
+        "jesDown": "vbf1_AK4_pt_scaleDn"
     },
 
     "vbf_j1_eta": {
-        "central": "vbf_maxpt_j1_eta"
+        "central": "vbf1_AK4_eta"
     },
 
     "vbf_j1_phi": {
-        "central": "vbf_maxpt_j1_phi"
+        "central": "vbf1_AK4_phi"
+    },
+
+    "vbf_j1_gqid": {
+        "central": "vbf1_AK4_gqid"
     },
 
     "vbf_j2_pt": {
-        "central": "vbf_maxpt_j2_pt",
-        "jesUp": "vbf_maxpt_j2_pt_jes_up",
-        "jesDown": "vbf_maxpt_j2_pt_jes_dn"
+        "central": "vbf2_AK4_pt",
+        "jesUp": "vbf2_AK4_pt_scaleUp",
+        "jesDown": "vbf2_AK4_pt_scaleDn"
     },
 
     "vbf_j2_eta": {
-        "central": "vbf_maxpt_j2_eta"
+        "central": "vbf2_AK4_eta"
     },
 
     "vbf_j2_phi": {
-        "central": "vbf_maxpt_j2_phi"
+        "central": "vbf2_AK4_phi"
+    },
+
+    "vbf_j2_gqid": {
+        "central": "vbf2_AK4_gqid"
     },
 
     "vbf_jj_m": {
-        "central": "vbf_maxpt_jj_m",
-        "jesUp": "vbf_maxpt_jj_m_jes_up",
-        "jesDown": "vbf_maxpt_jj_m_jes_dn"
-    },
-
-    "vbf_jj_Deta": {
-        "central": "vbf_maxpt_jj_Deta"
+        "central": "vbf_m",
+        "jesUp": "vbf_m_scaleUp",
+        "jesDown": "vbf_m_scaleDn"
     },
 
     "fatjet_m": {
-        "central": "PuppiAK8_jet_mass_so_corr",
-        "jesUp": "ungroomed_PuppiAK8_jet_mass_jes_up",
-        "jesDown": "ungroomed_PuppiAK8_jet_mass_jes_dn"
+        "central": "bos_PuppiAK8_m_sd0_corr",
+        "jesUp": "bos_PuppiAK8_m_sd0_corr_scaleUp",
+        "jesDown": "bos_PuppiAK8_m_sd0_corr_scaleDn"
     },
 
     "fatjet_pt": {
-        "central": "ungroomed_PuppiAK8_jet_pt",
-        "jesUp": "ungroomed_PuppiAK8_jet_pt_jes_up",
-        "jesDown": "ungroomed_PuppiAK8_jet_pt_jes_dn"
+        "central": "bos_PuppiAK8_pt",
+        "jesUp": "bos_PuppiAK8_pt_scaleUp",
+        "jesDown": "bos_PuppiAK8_pt_scaleDn"
     },
 
     "fatjet_eta": {
-        "central": "ungroomed_PuppiAK8_jet_eta"
+        "central": "bos_PuppiAK8_eta"
     },
 
     "fatjet_phi": {
-        "central": "ungroomed_PuppiAK8_jet_phi"
+        "central": "bos_PuppiAK8_phi"
     },
 
     "fatjet_tau21": {
-        "central": "PuppiAK8_jet_tau2tau1"
+        "central": "bos_PuppiAK8_tau2tau1"
     },
 
     "fatjet_e2_sdb1": {
-        "central": "PuppiAK8jet_e2_sdb1"
+        "central": "bos_PuppiAK8_e2_sdb1"
     },
 
     "fatjet_e3_v2_sdb1": {
-        "central": "PuppiAK8jet_e3_v2_sdb1"
+        "central": "bos_PuppiAK8_e3_v2_sdb1"
     },
 
     "fatjet_e2_sdb2": {
-        "central": "PuppiAK8jet_e2_sdb2"
+        "central": "bos_PuppiAK8_e2_sdb2"
     },
 
     "fatjet_e3_v2_sdb2": {
-        "central": "PuppiAK8jet_e3_v2_sdb2"
+        "central": "bos_PuppiAK8_e3_v2_sdb2"
+    },
+
+    "w_m": {
+        "central": "dilep_m",
+        "jesUp": "dilep_m_scaleUp",
+        "jesDown": "dilep_m_scaleDn"
     },
 
     "w_pt": {
-        "central": "v_pt_type0",
-        "jesUp": "v_pt_type0_jes_up",
-        "jesDown": "v_pt_type0_jes_dn",
-        "jerUp": "v_pt_type0_jer_up",
-        "jerDown": "v_pt_type0_jer_dn",
-        "lep_scaleUp": "v_pt_type0_LEP_Up",
-        "lep_scaleDown": "v_pt_type0_LEP_Down"
+        "central": "dilep_pt",
+        "jesUp": "dilep_pt_scaleUp",
+        "jesDown": "dilep_pt_scaleDn"
     },
 
     "w_eta": {
-        "central": "v_eta_type0"
-    },
-
-    "w_mt": {
-        "central": "v_mt_type0",
-        "jesUp": "v_mt_type0_jes_up",
-        "jesDown": "v_mt_type0_jes_dn",
-        "jerUp": "v_mt_type0_jer_up",
-        "jerDown": "v_mt_type0_jer_dn",
-        "lep_scaleUp": "v_mt_type0_LEP_Up",
-        "lep_scaleDown": "v_mt_type0_LEP_Down"
+        "central": "dilep_eta"
     },
 
     "wv_m": {
-        "central": "mass_lvj_type0_PuppiAK8",
-        "jesUp": "mass_lvj_type0_PuppiAK8_jes_up",
-        "jesDown": "mass_lvj_type0_PuppiAK8_jes_dn",
-        "jerUp": "mass_lvj_type0_PuppiAK8_jer_up",
-        "jerDown": "mass_lvj_type0_PuppiAK8_jer_dn",
-        "lep_scaleUp": "mass_lvj_type0_PuppiAK8_LEP_Up",
-        "lep_scaleDown": "mass_lvj_type0_PuppiAK8_LEP_Down"
+        "central": "dibos_m",
+        "jesUp": "dibos_m_scaleUp",
+        "jesDown": "dibos_m_scaleDn"
     },
 
     "wv_pt": {
-        "central": "pt_lvj_type0_PuppiAK8"
+        "central": "dibos_pt",
+        "jesUp": "dibos_pt_scaleUp",
+        "jesDown": "dibos_pt_scaleDn"
     },
 
     "wv_eta": {
-        "central": "eta_lvj_type0_PuppiAK8"
+        "central": "dibos_eta"
     },
 
     "wv_phi": {
-        "central": "phi_lvj_type0_PuppiAK8"
+        "central": "dibos_phi"
     },
 
     "zeppenfeld_v": {
-        "central": "ZeppenfeldWH"
+        "central": "zeppHad"
     },
 
     "zeppenfeld_w": {
-        "central": "ZeppenfeldWL_type0"
+        "central": "zeppLep"
     },
 
     "boson_centrality": {
-        "central": "BosonCentrality_type0"
-    },
-
-    "costheta1_type0": {
-        "central": "costheta1_type0"
-    },
-
-    "costheta2_type0": {
-        "central": "costheta2_type0"
-    },
-
-    "costhetastar_type0": {
-        "central": "costhetastar_type0"
-    },
-
-    "phi_type0": {
-        "central": "phi_type0"
-    },
-
-    "phi1_type0": {
-        "central": "phi1_type0"
+        "central": "bosCent"
     },
 
     "gen_weight": {
@@ -212,27 +184,22 @@
     },
 
     "pu_weight": {
-        "central": "pu_Weight"
+        "central": "puWeight"
     },
 
     "pu_weight_up": {
-        "central": "pu_Weight_up"
+        "central": "puWeight_Up"
     },
 
     "pu_weight_down": {
-        "central": "pu_Weight_down"
+        "central": "puWeight_Dn"
     },
 
-    "trig_eff_weight": {
-        "central": "trig_eff_Weight"
-    },
-    
     "id_eff_weight": {
-        "central": "id_eff_Weight"
+        "central": "lep1_idEffWeight"
     },
-    
-    "btag0_weight": {
-        "central": "btag0Wgt"
-    }
 
+    "LHEWeight": {
+        "central": "LHEWeight"
+    }
 }

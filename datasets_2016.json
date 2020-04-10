@@ -1,6 +1,6 @@
 {    
     "data_obs": {
-        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/data_obs/",
+        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
         "lumi": 1.0,
         "filelist": [
             {"name": "SingleMuon.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0},
@@ -9,91 +9,76 @@
     },
     
     "VBS_EWK": {
-        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/VBS_EWK/",
+        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WWTree_WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.02982, "nMC": 189086.0 , "nMCneg": 0},
-            {"name": "WWTree_WminusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root", "xs": 0.03259, "nMC": 189560.0 , "nMCneg": 0}, 
-            {"name": "WWTree_WminusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"     , "xs": 0.1    , "nMC": 199542.0 , "nMCneg": 0},
-            {"name": "WWTree_WplusTo2JWminusToLNuJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 0.9107 , "nMC": 1983847.0, "nMCneg": 0},
-            {"name": "WWTree_WplusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"       , "xs": 0.05401, "nMC": 198922.0 , "nMCneg": 0},
-            {"name": "WWTree_WplusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 0.9114 , "nMC": 1991227.0, "nMCneg": 0},
-            {"name": "WWTree_WplusToLNuWplusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"  , "xs": 0.08793, "nMC": 198848.0 , "nMCneg": 0},
-            {"name": "WWTree_WplusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.1825 , "nMC": 393171.0 , "nMCneg": 0},
-            {"name": "WWTree_ZTo2LZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"           , "xs": 0.01589, "nMC": 99997.0  , "nMCneg": 0}
+            {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.02982, "nMC": 189086.0 , "nMCneg": 0},
+            {"name": "WminusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root", "xs": 0.03259, "nMC": 189560.0 , "nMCneg": 0}, 
+            {"name": "WminusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"     , "xs": 0.1    , "nMC": 199542.0 , "nMCneg": 0},
+            {"name": "WplusTo2JWminusToLNuJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 0.9107 , "nMC": 1983847.0, "nMCneg": 0},
+            {"name": "WplusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"       , "xs": 0.05401, "nMC": 198922.0 , "nMCneg": 0},
+            {"name": "WplusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 0.9114 , "nMC": 1991227.0, "nMCneg": 0},
+            {"name": "WplusToLNuWplusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"  , "xs": 0.08793, "nMC": 198848.0 , "nMCneg": 0},
+            {"name": "WplusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.1825 , "nMC": 393171.0 , "nMCneg": 0},
+            {"name": "ZTo2LZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"           , "xs": 0.01589, "nMC": 99997.0  , "nMCneg": 0}
         ]
     },
 
     "VBS_QCD": {
-        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/VBS_QCD/",
+        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WWTree_WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 , "nMC": 489280.0 , "nMCneg": 0},
-            {"name": "WWTree_WminusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root", "xs": 0.03203, "nMC": 99657.0  , "nMCneg": 0},
-            {"name": "WWTree_WminusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"     , "xs": 1.166  , "nMC": 981540.0 , "nMCneg": 0},
-            {"name": "WWTree_WplusTo2JWminusToLNuJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 5.568  , "nMC": 3994663.0, "nMCneg": 0},
-            {"name": "WWTree_WplusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"       , "xs": 0.575  , "nMC": 499432.0 , "nMCneg": 0},
-            {"name": "WWTree_WplusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 5.546  , "nMC": 3949170.0, "nMCneg": 0},
-            {"name": "WWTree_WplusToLNuWplusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"  , "xs": 0.07584, "nMC": 99992.0  , "nMCneg": 0},
-            {"name": "WWTree_WplusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 1.938  , "nMC": 1991348.0, "nMCneg": 0},
-            {"name": "WWTree_ZTo2LZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"           , "xs": 0.3449 , "nMC": 49999.0  , "nMCneg": 0}
+            {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 , "nMC": 489280.0 , "nMCneg": 0},
+            {"name": "WminusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root", "xs": 0.03203, "nMC": 99657.0  , "nMCneg": 0},
+            {"name": "WminusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"     , "xs": 1.166  , "nMC": 981540.0 , "nMCneg": 0},
+            {"name": "WplusTo2JWminusToLNuJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 5.568  , "nMC": 3994663.0, "nMCneg": 0},
+            {"name": "WplusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"       , "xs": 0.575  , "nMC": 499432.0 , "nMCneg": 0},
+            {"name": "WplusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 5.546  , "nMC": 3949170.0, "nMCneg": 0},
+            {"name": "WplusToLNuWplusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"  , "xs": 0.07584, "nMC": 99992.0  , "nMCneg": 0},
+            {"name": "WplusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 1.938  , "nMC": 1991348.0, "nMCneg": 0},
+            {"name": "ZTo2LZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"           , "xs": 0.3449 , "nMC": 49999.0  , "nMCneg": 0}
         ]
     },
-    
+
     "DYJets": {
-        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/DYJets/",
+        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WWTree_DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 1012.296845, "nMC": 46443016.0, "nMCneg": 0},
-            {"name": "WWTree_DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 334.717838 , "nMC": 19296117.0, "nMCneg": 0},
-            {"name": "WWTree_DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 102.4628   , "nMC": 4866978.0 , "nMCneg": 0},
-            {"name": "WWTree_DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 54.48136   , "nMC": 2798791.0 , "nMCneg": 0}
+            {"name": "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 1012.296845, "nMC": 46443016.0, "nMCneg": 0},
+            {"name": "DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 334.717838 , "nMC": 19296117.0, "nMCneg": 0},
+            {"name": "DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 102.4628   , "nMC": 4866978.0 , "nMCneg": 0},
+            {"name": "DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 54.48136   , "nMC": 2798791.0 , "nMCneg": 0}
         ]
     },
-    
-    "QCD": {
-        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/QCD/",
-        "lumi": 35867.06,
-        "filelist": [
-            {"name": "WWTree_QCD_HT100to200_13TeV.root"  , "xs": 27990000.0, "nMC": 8061400.0 , "nMCneg": 0},
-            {"name": "WWTree_QCD_HT200to300_13TeV.root"  , "xs": 1712000.0 , "nMC": 5428000.0 , "nMCneg": 0},
-            {"name": "WWTree_QCD_HT300to500_13TeV.root"  , "xs": 347700.0  , "nMC": 17005515.0, "nMCneg": 0},
-            {"name": "WWTree_QCD_HT500to700_13TeV.root"  , "xs": 32100.0   , "nMC": 53744436.0, "nMCneg": 0},
-            {"name": "WWTree_QCD_HT700to1000_13TeV.root" , "xs": 6831.0    , "nMC": 15578398.0, "nMCneg": 0},
-            {"name": "WWTree_QCD_HT1000to1500_13TeV.root", "xs": 1207.0    , "nMC": 13080692.0, "nMCneg": 0},
-            {"name": "WWTree_QCD_HT1500to2000_13TeV.root", "xs": 119.9     , "nMC": 11624720.0, "nMCneg": 0},
-            {"name": "WWTree_QCD_HT2000toInf_13TeV.root" , "xs": 25.24     , "nMC": 5875869.0 , "nMCneg": 0}
-        ]
-    },
-    
+
     "Top": {
-        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/Top/",
+        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WWTree_ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV_powheg_TuneCUETP8M1.root", "xs": 19.5741, "nMC": 5424956.0 , "nMCneg": 0        },
-            {"name": "WWTree_ST_tW_top_5f_NoFullyHadronicDecays_13TeV_powheg_TuneCUETP8M1.root"    , "xs": 19.5741, "nMC": 5372830.0 , "nMCneg": 0        },
-            {"name": "WWTree_Summer16_ST_s_channel_4f_leptonDecays.root"                           , "xs": 11.36  , "nMC": 999976.0  , "nMCneg": 188501.0 },
-            {"name": "WWTree_Summer16_ST_t_channel_antitop_4f_inclusiveDecays_TuneCUETP8M2T4.root" , "xs": 80.95  , "nMC": 3927980.0 , "nMCneg": 0        },
-            {"name": "WWTree_Summer16_ST_t_channel_top_4f_inclusiveDecays_TuneCUETP8M2T4.root"     , "xs": 136.02 , "nMC": 5993570.0 , "nMCneg": 0        },
-            {"name": "WWTree_TTToSemilepton_powheg.root"                                           , "xs": 364.3  , "nMC": 91832423.0, "nMCneg": 0        },
-            {"name": "WWTree_TTWJetsToLNu.root"                                                    , "xs": 0.2043 , "nMC": 5280251.0 , "nMCneg": 1282079.0},
-            {"name": "WWTree_TTWJetsToQQ.root"                                                     , "xs": 0.4062 , "nMC": 833257.0  , "nMCneg": 201483.0 },
-            {"name": "WWTree_TTZToLLNuNu_M-10.root"                                                , "xs": 0.2529 , "nMC": 7969186.0 , "nMCneg": 2126557.0},
-            {"name": "WWTree_TTZToQQ.root"                                                         , "xs": 0.5297 , "nMC": 749367.0  , "nMCneg": 199113.0 }
+            {"name": "ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV_powheg_TuneCUETP8M1.root", "xs": 19.5741, "nMC": 5424956.0 , "nMCneg": 0        },
+            {"name": "ST_tW_top_5f_NoFullyHadronicDecays_13TeV_powheg_TuneCUETP8M1.root"    , "xs": 19.5741, "nMC": 5372830.0 , "nMCneg": 0        },
+            {"name": "Summer16_ST_s_channel_4f_leptonDecays.root"                           , "xs": 11.36  , "nMC": 999976.0  , "nMCneg": 188501.0 },
+            {"name": "Summer16_ST_t_channel_antitop_4f_inclusiveDecays_TuneCUETP8M2T4.root" , "xs": 80.95  , "nMC": 3927980.0 , "nMCneg": 0        },
+            {"name": "Summer16_ST_t_channel_top_4f_inclusiveDecays_TuneCUETP8M2T4.root"     , "xs": 136.02 , "nMC": 5993570.0 , "nMCneg": 0        },
+            {"name": "TTToSemilepton_powheg.root"                                           , "xs": 364.3  , "nMC": 91832423.0, "nMCneg": 0        },
+            {"name": "TTWJetsToLNu.root"                                                    , "xs": 0.2043 , "nMC": 5280251.0 , "nMCneg": 1282079.0},
+            {"name": "TTWJetsToQQ.root"                                                     , "xs": 0.4062 , "nMC": 833257.0  , "nMCneg": 201483.0 },
+            {"name": "TTZToLLNuNu_M-10.root"                                                , "xs": 0.2529 , "nMC": 7969186.0 , "nMCneg": 2126557.0},
+            {"name": "TTZToQQ.root"                                                         , "xs": 0.5297 , "nMC": 749367.0  , "nMCneg": 199113.0 }
         ]
     },
     
     "WJets": {
-        "location": "/eos/user/s/singhr/wv_vbs_ntuples/2016/WJets/",
+        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WJetsToLNu_HT_100To200.root",   "xs": 1627.45  , "nMC": 79165700,  "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_200To400.root",   "xs": 435.24   , "nMC": 38925814,  "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_400To600.root",   "xs": 59.18    , "nMC": 7754249.5, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_600To800.root",   "xs": 14.58    , "nMC": 18578602,  "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_800To1200.root",  "xs": 6.655    , "nMC": 7688954.5, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_1200To2500.root", "xs": 1.60809  , "nMC": 6708653.5, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_2500ToInf.root",  "xs": 0.0389136, "nMC": 2520615.5, "nMCneg": 0}
+            {"name": "WJetsToLNu_HT_100To200_13TeV_all.root",   "xs": 1627.45  , "nMC": 79165700,  "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_200To400_13TeV_all.root",   "xs": 435.24   , "nMC": 38925814,  "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_400To600_13TeV_all.root",   "xs": 59.18    , "nMC": 7754249.5, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_600To800_13TeV_all.root",   "xs": 14.58    , "nMC": 18578602,  "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_800To1200_13TeV_all.root",  "xs": 6.655    , "nMC": 7688954.5, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_1200To2500_13TeV_all.root", "xs": 1.60809  , "nMC": 6708653.5, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_2500ToInf_13TeV_all.root",  "xs": 0.0389136, "nMC": 2520615.5, "nMCneg": 0}
         ]
     }
 }
