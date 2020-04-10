@@ -195,7 +195,19 @@ hists_1D = [
     (30, -1.0, 1.0, "mva_score_30bin"),
     (20, -1.0, 1.0, "mva_score_20bin"),
     (10, -1.0, 1.0, "mva_score_10bin"),
-    (34, -1.0, 0.7, "mva_score_var1")
+    (34, -1.0, 0.7, "mva_score_var1"),
+    (np.array([-1.0, -0.300, -0.150, 0.000, 0.100,
+               0.200, 0.300, 0.400, 0.500, 0.600, 1]), 0, 0, "mva_score_var10"),
+    (np.array([-1.0, -0.300, -0.150, 0.000, 0.100,
+               0.200, 0.300, 0.400, 0.500, 0.600, 0.700, 1]), 0, 0, "mva_score_var11"),
+    (np.array([-1.0, -0.350, -0.250, -0.150,
+               -0.050, -0.000, 0.100, 0.150,
+               0.250, 0.300, 0.350, 0.450,
+               0.500, 0.600, 0.650, 1]), 0, 0, "mva_score_var15"),
+    (np.array([-1.0, -0.400, -0.300, -0.200, -0.150,
+               -0.050, -0.000, 0.050, 0.100, 0.150,
+               0.200, 0.250, 0.300, 0.350, 0.400,
+               0.450, 0.500, 0.550, 0.600, 0.700, 1.0]), 0, 0, "mva_score_var20")
 ]
 
 hists_2D = [
@@ -473,17 +485,20 @@ for i in dfs:
     wv_phi = skim_df["wv_phi"]
     fill_hist_1d(h_wv_phi[key], wv_phi, total_weight)
 
-    if "mva_score" in df.columns:
-        mva_score = skim_df["mva_score"]
-        fill_hist_1d(h_mva_score[key], mva_score, total_weight)
-        fill_hist_1d(h_mva_score_10bin[key], mva_score, total_weight)
-        fill_hist_1d(h_mva_score_20bin[key], mva_score, total_weight)
-        fill_hist_1d(h_mva_score_30bin[key], mva_score, total_weight)
-        fill_hist_1d(h_mva_score_var1[key], mva_score, total_weight, overflow_in_last_bin=True)
+    mva_score = skim_df["mva_score"]
+    fill_hist_1d(h_mva_score[key], mva_score, total_weight)
+    fill_hist_1d(h_mva_score_10bin[key], mva_score, total_weight)
+    fill_hist_1d(h_mva_score_20bin[key], mva_score, total_weight)
+    fill_hist_1d(h_mva_score_30bin[key], mva_score, total_weight)
+    fill_hist_1d(h_mva_score_var1[key], mva_score, total_weight, overflow_in_last_bin=True)
+    fill_hist_1d(h_mva_score_var10[key], mva_score, total_weight, overflow_in_last_bin=True)
+    fill_hist_1d(h_mva_score_var11[key], mva_score, total_weight, overflow_in_last_bin=True)
+    fill_hist_1d(h_mva_score_var15[key], mva_score, total_weight, overflow_in_last_bin=True)
+    fill_hist_1d(h_mva_score_var20[key], mva_score, total_weight, overflow_in_last_bin=True)
 
     # 2D hists
-    fill_hist_2d(h2_n2b1_tau21[key], fatjet_n2b1, fatjet_tau21, total_weight)
-    fill_hist_2d(h2_n2b2_tau21[key], fatjet_n2b2, fatjet_tau21, total_weight)
+    #fill_hist_2d(h2_n2b1_tau21[key], fatjet_n2b1, fatjet_tau21, total_weight)
+    #fill_hist_2d(h2_n2b2_tau21[key], fatjet_n2b2, fatjet_tau21, total_weight)
 
 # write hists to root file
 # ========================
