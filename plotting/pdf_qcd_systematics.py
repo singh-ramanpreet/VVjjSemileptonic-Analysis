@@ -36,7 +36,7 @@ parser.add_argument(
     )
 
 parser.add_argument(
-    "--region", type=str, default="training_02_W",
+    "--region", type=str, default="training_02_WV",
     help="region , default=%(default)s"
     )
 
@@ -154,7 +154,19 @@ hists_1D = [
     (30, -1.0, 1.0, "mva_score_30bin"),
     (20, -1.0, 1.0, "mva_score_20bin"),
     (10, -1.0, 1.0, "mva_score_10bin"),
-    (34, -1.0, 0.7, "mva_score_var1")
+    (34, -1.0, 0.7, "mva_score_var1"),
+    (np.array([-1.0, -0.300, -0.150, 0.000, 0.100,
+               0.200, 0.300, 0.400, 0.500, 0.600, 1]), 0, 0, "mva_score_var10"),
+    (np.array([-1.0, -0.300, -0.150, 0.000, 0.100,
+               0.200, 0.300, 0.400, 0.500, 0.600, 0.700, 1]), 0, 0, "mva_score_var11"),
+    (np.array([-1.0, -0.350, -0.250, -0.150,
+               -0.050, -0.000, 0.100, 0.150,
+               0.250, 0.300, 0.350, 0.450,
+               0.500, 0.600, 0.650, 1]), 0, 0, "mva_score_var15"),
+    (np.array([-1.0, -0.400, -0.300, -0.200, -0.150,
+               -0.050, -0.000, 0.050, 0.100, 0.150,
+               0.200, 0.250, 0.300, 0.350, 0.400,
+               0.450, 0.500, 0.550, 0.600, 0.700, 1.0]), 0, 0, "mva_score_var20")
 ]
 
 hist_keys = list(samples_dict.keys())
@@ -234,6 +246,12 @@ for key in samples_dict:
     filelist = samples_dict[key]["filelist"]
     lumi = samples_dict[key]["lumi"]
 
+    if key == "data_obs": continue
+    if key == "Top": continue
+    if key == "QCD": continue
+    if key == "DYJets": continue
+    if key == "WJets": continue
+
     for sample in filelist:
 
         root_file = location + sample["name"]
@@ -291,33 +309,28 @@ for key in samples_dict:
         print("filling hists .... ")
 
         mva_score = skim_df["mva_score"]
-        fill_hist_1d(h_mva_score[key], mva_score, total_weight)
-        fill_hist_1d(h_mva_score_10bin[key], mva_score, total_weight)
-        fill_hist_1d(h_mva_score_20bin[key], mva_score, total_weight)
-        fill_hist_1d(h_mva_score_30bin[key], mva_score, total_weight)
-        fill_hist_1d(h_mva_score_var1[key], mva_score, total_weight, overflow_in_last_bin=True)
-        
-        lhe_weight = skim_df["LHEWeight"]
+        for histogram in [h_mva_score, h_mva_score_10bin, h_mva_score_20bin,
+                          h_mva_score_30bin, h_mva_score_var1, h_mva_score_var10,
+                          h_mva_score_var11, h_mva_score_var15, h_mva_score_var20]:
 
-        j = 0
-        for i in range(1, 108):
-            if (i == 5) or (i == 7): continue
-            if i <= 8:
-                j = i
-                sub_key = "qcd_scale"
-            else:
-                j = i - 8
-                sub_key ="pdf_scale"
+            fill_hist_1d(histogram[key], mva_score, total_weight, overflow_in_last_bin=True)
 
-            new_weight = (lhe_weight[:, i] / lhe_weight[:, 0]) * total_weight
+            lhe_weight = skim_df["LHEWeight"]
 
-            fill_hist_1d(h_mva_score[f"{key}_{sub_key}{j}"], mva_score, new_weight)
-            fill_hist_1d(h_mva_score_10bin[f"{key}_{sub_key}{j}"], mva_score, new_weight)
-            fill_hist_1d(h_mva_score_20bin[f"{key}_{sub_key}{j}"], mva_score, new_weight)
-            fill_hist_1d(h_mva_score_30bin[f"{key}_{sub_key}{j}"], mva_score, new_weight)
-            fill_hist_1d(h_mva_score_var1[f"{key}_{sub_key}{j}"], mva_score, new_weight, overflow_in_last_bin=True)
+            j = 0
+            for i in range(1, 108):
+                if (i == 5) or (i == 7): continue
+                if i <= 8:
+                    j = i
+                    sub_key = "qcd_scale"
+                else:
+                    j = i - 8
+                    sub_key ="pdf_scale"
 
-        for histogram in [h_mva_score, h_mva_score_10bin, h_mva_score_20bin, h_mva_score_30bin, h_mva_score_var1]:
+                new_weight = (lhe_weight[:, i] / lhe_weight[:, 0]) * total_weight
+
+                fill_hist_1d(histogram[f"{key}_{sub_key}{j}"], mva_score, new_weight, overflow_in_last_bin=True)
+
 
             nbins = h_mva_score[f"{key}"].GetNbinsX()
             print("nbins", nbins)
@@ -337,11 +350,11 @@ for key in samples_dict:
                 histogram[f"{key}_qcd_scaleUp"].SetBinContent(b, histogram[f"{key}"].GetBinContent(b) + sys_QCD)
                 histogram[f"{key}_qcd_scaleDown"].SetBinContent(b, histogram[f"{key}"].GetBinContent(b) - sys_QCD)
 
-                print("PDF sys ", sep=" |")
+                print("PDF sys ", sep=" |", end=" ")
                 for i in range(1, 100):
                     diff = abs(histogram[f"{key}_pdf_scale{i}"].GetBinContent(b) - bin_content)
                     sys_PDF += diff * diff
-                    print(sys_PDF, sep=" |")
+                    print(sys_PDF, sep=" |", end=" ")
                 
                 final_sys_PDF = (sys_PDF/99.0) ** 0.5
                 print("Final PDF sys", final_sys_PDF)
