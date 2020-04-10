@@ -20,6 +20,11 @@ parser.add_argument(
     )
 
 parser.add_argument(
+    "--year", type=str, default="2016",
+    help="dataset year, default=%(default)s"
+    )
+
+parser.add_argument(
     "--variables", type=str, default="../variables_map.json",
     help="json file: variables central and systematic map, default=%(default)s"
     )
@@ -103,10 +108,7 @@ for key in samples_dict:
 
         print("loading ... ", key, sample["name"])
 
-        if key in ["data_obs", "WJets"]:
-            df = uproot.lazyarrays(root_file, "otree", branches=ttree_branches, persistvirtual=True)
-        else:
-            df = uproot.lazyarrays(root_file, "otree", branches=ttree_branches + ["isResolved"], persistvirtual=True)
+        df = uproot.lazyarrays(root_file, "Events", branches=ttree_branches, persistvirtual=True)
 
         for new_name, var_name in variables_mapped.items():
             df[new_name] = df[var_name]
@@ -114,16 +116,27 @@ for key in samples_dict:
                 del df[var_name]
 
         # some derived columns
+        df["vbf_jj_Deta"] = np.abs(df["vbf_j1_eta"] - df["vbf_j2_eta"])
         df["fatjet_n2b1"] = df["fatjet_e3_v2_sdb1"] / (df["fatjet_e2_sdb1"])**2
         df["fatjet_n2b2"] = df["fatjet_e3_v2_sdb2"] / (df["fatjet_e2_sdb2"])**2
         df["ht"] = df["fatjet_pt"] + df["vbf_j1_pt"] + df["vbf_j2_pt"]
         df["zeppenfeld_w_Deta"] = df["zeppenfeld_w"] / df["vbf_jj_Deta"]
         df["zeppenfeld_v_Deta"] = df["zeppenfeld_v"] / df["vbf_jj_Deta"]
 
-        if "isResolved" not in df.columns:
-            df["isResolved"] = False
+        df["lept_channel"] = (df["lept1_m"] != 0.1056583745).astype(int)
+        df["w_mt"] = np.sqrt(df["w_m"]**2 + df["w_pt"]**2)
+
+        # till they are available
+        df["trig_eff_weight"] = 1.0
+        df["btag0_weight"] = 1.0
 
         if "data" in key:
+            df["gen_weight"] = 1.0
+            df["pu_weight"] = 1.0
+            df["pu_weight_up"] = 1.0
+            df["pu_weight_down"] = 1.0
+            df["trig_eff_weight"] = 1.0
+            df["id_eff_weight"] = 1.0
             df["btag0_weight"] = 1.0
 
         if args.mva != "":
@@ -139,6 +152,7 @@ for key in samples_dict:
 
 output_filename = args.output
 output_ = args.output.split(".awkd")[0]
+output_ = f"{output_}_{args.year}"
 
 if args.mva != "":
     mva_tag = f"_{args.suffix_out}"

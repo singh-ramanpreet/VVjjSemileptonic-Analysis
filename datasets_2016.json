@@ -72,13 +72,13 @@
         "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WJetsToLNu_HT_100To200_13TeV_all.root",   "xs": 1627.45  , "nMC": 79165700,  "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_200To400_13TeV_all.root",   "xs": 435.24   , "nMC": 38925814,  "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_400To600_13TeV_all.root",   "xs": 59.18    , "nMC": 7754249.5, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_600To800_13TeV_all.root",   "xs": 14.58    , "nMC": 18578602,  "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_800To1200_13TeV_all.root",  "xs": 6.655    , "nMC": 7688954.5, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_1200To2500_13TeV_all.root", "xs": 1.60809  , "nMC": 6708653.5, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_2500ToInf_13TeV_all.root",  "xs": 0.0389136, "nMC": 2520615.5, "nMCneg": 0}
+            {"name": "WJetsToLNu_HT_100To200_13TeV.root",   "xs": 1627.45  , "nMC": 79165700,  "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_200To400_13TeV.root",   "xs": 435.24   , "nMC": 38925814,  "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_400To600_13TeV.root",   "xs": 59.18    , "nMC": 7754249.5, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_600To800_13TeV.root",   "xs": 14.58    , "nMC": 18578602,  "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_800To1200_13TeV.root",  "xs": 6.655    , "nMC": 7688954.5, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_1200To2500_13TeV.root", "xs": 1.60809  , "nMC": 6708653.5, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_2500ToInf_13TeV.root",  "xs": 0.0389136, "nMC": 2520615.5, "nMCneg": 0}
         ]
     }
 }
