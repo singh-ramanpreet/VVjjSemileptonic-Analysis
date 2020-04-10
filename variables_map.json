@@ -167,7 +167,7 @@
         "central": "dilep_eta"
     },
 
-    "wv_m": {
+    "vv_m": {
         "central": "dibos_m",
         "jesUp": "dibos_m_scaleUp",
         "jesDown": "dibos_m_scaleDn"

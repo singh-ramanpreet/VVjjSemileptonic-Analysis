@@ -335,13 +335,6 @@ for i in dfs:
     lep_sel = lep_channel[args.lepton](df)
     region_sel = region_(df, args.lepton)
 
-    if "mva_score" not in df.columns:
-        df["mva_score"] = -999.0
-
-    if len(blind_data) != 0 and "data" in key:
-        for blind_var in blind_data:
-            df[blind_var] = -999.0
-
     if args.boson == "W":
         skim_df = df[lep_sel & region_sel]
         total_weight = xs_weight * skim_df["gen_weight"] * skim_df["trig_eff_weight"] \
@@ -412,7 +405,7 @@ for i in dfs:
     v_pt = skim_df["v_pt"]
     fill_hist_1d(h_v_pt[key], v_pt, total_weight, overflow_in_last_bin=True)
 
-    w_eta = skim_df["v_eta"]
+    v_eta = skim_df["v_eta"]
     fill_hist_1d(h_v_eta[key], v_eta, total_weight)
 
     v_mt = skim_df["v_mt"]
@@ -500,6 +493,18 @@ for i in dfs:
     # 2D hists
     #fill_hist_2d(h2_n2b1_tau21[key], fatjet_n2b1, fatjet_tau21, total_weight)
     #fill_hist_2d(h2_n2b2_tau21[key], fatjet_n2b2, fatjet_tau21, total_weight)
+    
+    if len(blind_data) != 0 and "data" in key:
+        for blind_var in blind_data:
+            print(blind_var[0])
+            list_of_histograms = [i[3] for i in hists_1D if blind_var[0] in i[3]]
+
+            for hist_to_blind in list_of_histograms:
+                exec(f"binA = h_{hist_to_blind}[key].FindBin({blind_var[1]})")
+                exec(f"binB = h_{hist_to_blind}[key].FindBin({blind_var[2]})")
+                print(binA, binB)
+                for i in range(binA, binB + 1):
+                    exec(f"h_{hist_to_blind}[key].SetBinContent(i, 0.0)")
 
 # write hists to root file
 # ========================
