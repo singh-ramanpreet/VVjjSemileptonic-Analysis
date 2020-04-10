@@ -124,10 +124,11 @@ for key in samples_dict:
         df["zeppenfeld_v_Deta"] = df["zeppenfeld_v"] / df["vbf_jj_Deta"]
 
         df["lept_channel"] = (df["lept1_m"] != 0.1056583745).astype(int)
-        df["w_mt"] = np.sqrt(df["w_m"]**2 + df["w_pt"]**2)
+        df["v_mt"] = np.sqrt(df["v_m"]**2 + df["v_pt"]**2)
 
         # till they are available
         df["trig_eff_weight"] = 1.0
+        df["trig_eff_weight2"] = 1.0
         df["btag0_weight"] = 1.0
 
         if "data" in key:
@@ -136,7 +137,9 @@ for key in samples_dict:
             df["pu_weight_up"] = 1.0
             df["pu_weight_down"] = 1.0
             df["trig_eff_weight"] = 1.0
+            df["trig_eff_weight2"] = 1.0
             df["id_eff_weight"] = 1.0
+            df["id_eff_weight2"] = 1.0
             df["btag0_weight"] = 1.0
 
         if args.mva != "":

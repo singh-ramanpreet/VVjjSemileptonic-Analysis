@@ -148,14 +148,13 @@ class book_hist_dict:
 # xbins, xlow, xup, variable
 hists_1D = [
     (40, 0, 800, "lept1_pt"),
-    #(30, 0, 300, "lept2_pt"),
+    (20, 0, 400, "lept2_pt"),
     (26, -2.6, 2.6, "lept1_eta"),
-    #(25, -2.5, 2.5, "lept2_eta"),
+    (26, -2.6, 2.6, "lept2_eta"),
     (34, -3.4, 3.4, "lept1_phi"),
-    #(32, -3.2, 3.2, "lept2_phi"),
+    (34, -3.4, 3.4, "lept2_phi"),
     (80, 0, 800, "pf_met_corr"),
     (34, -3.4, 3.4, "pf_met_corr_phi"),
-    (14, 0, 14, "njets"),
     # ak8 jet
     (24, 30.0, 160.0, "fatjet_m"),
     (80, 200.0, 2000.0, "fatjet_pt"),
@@ -164,10 +163,15 @@ hists_1D = [
     (40, 0.0, 0.5, "fatjet_n2b1"),
     (40, 0.0, 0.4, "fatjet_n2b2"),
     (40, 0.0, 1.0, "fatjet_tau21"),
+    # ak4ak4 jet
+    (24, 30.0, 160.0, "dijet_m"),
+    (80, 200.0, 2000.0, "dijet_pt"),
+    (26, -2.6, 2.6, "dijet_eta"),
+    (34, -3.4, 3.4, "dijet_phi"),
     # W
-    (50, 0.0, 1000.0, "w_pt"),
-    (40, -4.0, 4.0, "w_eta"),
-    (20, 0.0, 400.0, "w_mt"),
+    (50, 0.0, 1000.0, "v_pt"),
+    (40, -4.0, 4.0, "v_eta"),
+    (20, 0.0, 400.0, "v_mt"),
     # vbf jets
     (50, 0.0, 1000.0, "vbf_j1_pt"),
     (30, 0.0, 600.0, "vbf_j2_pt"),
@@ -182,15 +186,15 @@ hists_1D = [
     (20, -1.0, 1.0, "zeppenfeld_w_Deta"),
     (20, -1.0, 1.0, "zeppenfeld_v_Deta"),
     # W V system
-    (50, 0, 2500, "wv_m"),
+    (50, 0, 2500, "vv_m"),
     (np.array([600, 700, 800, 900,
-               1000, 1200, 1500, 2000, 2500]), 0, 0, "wv_m_8bin"),
+               1000, 1200, 1500, 2000, 2500]), 0, 0, "vv_m_8bin"),
     (np.array([50, 300, 500, 600, 700, 800, 900,
-               1000, 1200, 1500, 2000, 2500]), 0, 0, "wv_m_11bin"),
-    (1, 0.0, 1.0, "wv_m_3d"),
-    (60, 0.0, 600.0, "wv_pt"),
-    (20, -5.0, 5.0, "wv_eta"),
-    (34, -3.4, 3.4, "wv_phi"),
+               1000, 1200, 1500, 2000, 2500]), 0, 0, "vv_m_11bin"),
+    (1, 0.0, 1.0, "vv_m_3d"),
+    (60, 0.0, 600.0, "vv_pt"),
+    (20, -5.0, 5.0, "vv_eta"),
+    (34, -3.4, 3.4, "vv_phi"),
     (40, -1.0, 1.0, "mva_score"),
     (30, -1.0, 1.0, "mva_score_30bin"),
     (20, -1.0, 1.0, "mva_score_20bin"),
@@ -363,29 +367,26 @@ for i in dfs:
     lept1_pt = skim_df["lept1_pt"]
     fill_hist_1d(h_lept1_pt[key], lept1_pt, total_weight, overflow_in_last_bin=True)
 
-    #lept2_pt = skim_df["lept2_pt"]
-    #fill_hist_1d(h_lept2_pt[key], lept2_pt, total_weight)
+    lept2_pt = skim_df["lept2_pt"]
+    fill_hist_1d(h_lept2_pt[key], lept2_pt, total_weight, overflow_in_last_bin=True)
 
     lept1_eta = skim_df["lept1_eta"]
     fill_hist_1d(h_lept1_eta[key], lept1_eta, total_weight)
 
-    #lept2_eta = skim_df["lept2_eta"]
-    #fill_hist_1d(h_lept2_eta[key], lept2_eta, total_weight)
+    lept2_eta = skim_df["lept2_eta"]
+    fill_hist_1d(h_lept2_eta[key], lept2_eta, total_weight)
 
     lept1_phi = skim_df["lept1_phi"]
     fill_hist_1d(h_lept1_phi[key], lept1_phi, total_weight)
 
-    #lept2_phi = skim_df["lept2_phi"]
-    #fill_hist_1d(h_lept2_phi[key], lept2_phi, total_weight)
+    lept2_phi = skim_df["lept2_phi"]
+    fill_hist_1d(h_lept2_phi[key], lept2_phi, total_weight)
 
     pf_met_corr = skim_df["pf_met_corr"]
     fill_hist_1d(h_pf_met_corr[key], pf_met_corr, total_weight, overflow_in_last_bin=True)
 
     pf_met_corr_phi = skim_df["pf_met_corr_phi"]
     fill_hist_1d(h_pf_met_corr_phi[key], pf_met_corr_phi, total_weight)
-
-    njets = skim_df["njets"]
-    fill_hist_1d(h_njets[key], njets, total_weight)
 
     fatjet_m = skim_df["fatjet_m"]
     fill_hist_1d(h_fatjet_m[key], fatjet_m, total_weight, overflow_in_last_bin=True)
@@ -408,14 +409,14 @@ for i in dfs:
     fatjet_tau21 = skim_df["fatjet_tau21"]
     fill_hist_1d(h_fatjet_tau21[key], fatjet_tau21, total_weight, overflow_in_last_bin=True)
 
-    w_pt = skim_df["w_pt"]
-    fill_hist_1d(h_w_pt[key], w_pt, total_weight, overflow_in_last_bin=True)
+    v_pt = skim_df["v_pt"]
+    fill_hist_1d(h_v_pt[key], v_pt, total_weight, overflow_in_last_bin=True)
 
-    w_eta = skim_df["w_eta"]
-    fill_hist_1d(h_w_eta[key], w_eta, total_weight)
+    w_eta = skim_df["v_eta"]
+    fill_hist_1d(h_v_eta[key], v_eta, total_weight)
 
-    w_mt = skim_df["w_mt"]
-    fill_hist_1d(h_w_mt[key], w_mt, total_weight, overflow_in_last_bin=True)
+    v_mt = skim_df["v_mt"]
+    fill_hist_1d(h_v_mt[key], v_mt, total_weight, overflow_in_last_bin=True)
 
     vbf_j1_pt = skim_df["vbf_j1_pt"]
     fill_hist_1d(h_vbf_j1_pt[key], vbf_j1_pt, total_weight, overflow_in_last_bin=True)
@@ -450,40 +451,40 @@ for i in dfs:
     zeppenfeld_v_Deta = skim_df["zeppenfeld_v_Deta"]
     fill_hist_1d(h_zeppenfeld_v_Deta[key], zeppenfeld_v_Deta, total_weight)
 
-    wv_m = skim_df["wv_m"]
-    fill_hist_1d(h_wv_m[key], wv_m, total_weight, overflow_in_last_bin=True)
-    fill_hist_1d(h_wv_m_8bin[key], wv_m, total_weight, overflow_in_last_bin=True)
-    fill_hist_1d(h_wv_m_11bin[key], wv_m, total_weight, overflow_in_last_bin=True)
+    vv_m = skim_df["vv_m"]
+    fill_hist_1d(h_vv_m[key], vv_m, total_weight, overflow_in_last_bin=True)
+    fill_hist_1d(h_vv_m_8bin[key], vv_m, total_weight, overflow_in_last_bin=True)
+    fill_hist_1d(h_vv_m_11bin[key], vv_m, total_weight, overflow_in_last_bin=True)
 
     # 3d fit histogram filling
     # start
-    wv_m_bins = (150, 300, 450, 600, 1075, 1550, 2025, np.inf)
+    vv_m_bins = (150, 300, 450, 600, 1075, 1550, 2025, np.inf)
     vbf_jj_Deta_bins = (4.0, 5.0, 6.0, 10.0)
     vbf_jj_m_bins = (600, 800, 1200, np.inf)
 
-    if h_wv_m_3d[key].GetNbinsX() == 1:
-        new_x_bins = (len(vbf_jj_m_bins) - 1) * (len(vbf_jj_Deta_bins) - 1) * (len(wv_m_bins) - 1)
-        h_wv_m_3d[key].SetBins(new_x_bins, 0, new_x_bins)
+    if h_vv_m_3d[key].GetNbinsX() == 1:
+        new_x_bins = (len(vbf_jj_m_bins) - 1) * (len(vbf_jj_Deta_bins) - 1) * (len(vv_m_bins) - 1)
+        h_vv_m_3d[key].SetBins(new_x_bins, 0, new_x_bins)
 
-    wv_m_3d_data = np.column_stack([vbf_jj_m, vbf_jj_Deta, wv_m])
-    wv_m_3d_bins = (vbf_jj_m_bins, vbf_jj_Deta_bins, wv_m_bins)
-    wv_m_3d, wv_m_3d_edges = np.histogramdd(wv_m_3d_data, bins=wv_m_3d_bins, weights=total_weight)
+    vv_m_3d_data = np.column_stack([vbf_jj_m, vbf_jj_Deta, vv_m])
+    vv_m_3d_bins = (vbf_jj_m_bins, vbf_jj_Deta_bins, vv_m_bins)
+    vv_m_3d, vv_m_3d_edges = np.histogramdd(vv_m_3d_data, bins=vv_m_3d_bins, weights=total_weight)
 
-    wv_m_3d_flat = np.ndarray.flatten(wv_m_3d)
-    wv_m_3d_flat_bins = np.where(wv_m_3d_flat != 0.0)[0]
-    wv_m_3d_flat_weights = wv_m_3d_flat[wv_m_3d_flat_bins]
+    vv_m_3d_flat = np.ndarray.flatten(vv_m_3d)
+    vv_m_3d_flat_bins = np.where(vv_m_3d_flat != 0.0)[0]
+    vv_m_3d_flat_weights = vv_m_3d_flat[vv_m_3d_flat_bins]
 
-    fill_hist_1d(h_wv_m_3d[key], wv_m_3d_flat_bins, wv_m_3d_flat_weights)
+    fill_hist_1d(h_vv_m_3d[key], vv_m_3d_flat_bins, vv_m_3d_flat_weights)
     # end
 
-    wv_pt = skim_df["wv_pt"]
-    fill_hist_1d(h_wv_pt[key], wv_pt, total_weight, overflow_in_last_bin=True)
+    vv_pt = skim_df["vv_pt"]
+    fill_hist_1d(h_vv_pt[key], vv_pt, total_weight, overflow_in_last_bin=True)
 
-    wv_eta = skim_df["wv_eta"]
-    fill_hist_1d(h_wv_eta[key], wv_eta, total_weight)
+    vv_eta = skim_df["vv_eta"]
+    fill_hist_1d(h_vv_eta[key], vv_eta, total_weight)
 
-    wv_phi = skim_df["wv_phi"]
-    fill_hist_1d(h_wv_phi[key], wv_phi, total_weight)
+    vv_phi = skim_df["vv_phi"]
+    fill_hist_1d(h_vv_phi[key], vv_phi, total_weight)
 
     mva_score = skim_df["mva_score"]
     fill_hist_1d(h_mva_score[key], mva_score, total_weight)
