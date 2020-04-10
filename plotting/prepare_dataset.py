@@ -25,7 +25,7 @@ parser.add_argument(
     )
 
 parser.add_argument(
-    "--systematic", type=str, default="",
+    "--systematic", type=str, default="central",
     help="variables point to given systematic, default=%(default)s"
     )
 
@@ -59,15 +59,15 @@ variables_map = json.load(open(args.variables, "r"))
 
 for name_ in variables_map:
     systematic = args.systematic
-    if systematic not in variables_map[name_]:
-        print(f"systematic '{systematic}' not available for '{name_}'")
-        print(f"using central variable for '{name_}'")
-        print("")
-        systematic = "central"
+    if systematic != "central":
+        if systematic in variables_map[name_]:
+            print(f"using systematic '{systematic}' for '{name_}'")
+        else:
+            systematic = "central"
 
     variables_mapped[name_] = variables_map[name_][systematic]
 
-pprint(variables_mapped, width=1)
+#pprint(variables_mapped, width=1)
 ttree_branches = list(variables_mapped.values())
 
 # TMVA Reader
@@ -138,9 +138,16 @@ for key in samples_dict:
         dfs[f"{key}/{sample['name']}"] = {"xs_weight": xs_weight, "dframe": df}
 
 output_filename = args.output
+output_ = args.output.split(".awkd")[0]
 
-if args.systematic != "":
-    output_ = args.output.split(".awkd")[0]
-    output_filename = f"{output_}_{args.systematic}.awkd"
+if args.mva != "":
+    mva_tag = f"_{args.suffix_out}"
+else:
+    mva_tag = ""
+
+if args.systematic == "central":
+    output_filename = f"{output_}{mva_tag}.awkd"
+else:
+    output_filename = f"{output_}_{args.systematic}{mva_tag}.awkd"
 
 awkward.save(output_filename, dfs, mode="w")
