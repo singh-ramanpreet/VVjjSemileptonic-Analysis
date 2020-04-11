@@ -51,12 +51,12 @@ parser.add_argument(
     )
 
 parser.add_argument(
-    "--var_list", type=str, default="",
+    "--var-list", dest="var_list", type=str, default="",
     help="mva training variable list, default=%(default)s"
     )
 
 parser.add_argument(
-    "--info_out", type=str, default="theoryUnc",
+    "--info-out", dest="info_out", type=str, default="theoryUnc",
     help="additional string in output filename, default=%(default)s"
     )
 
@@ -263,22 +263,36 @@ for key in samples_dict:
 
         print("loading ... ", key, sample["name"])
 
-        df = uproot.lazyarrays(root_file, "otree", basketcache=uproot.cache.ThreadSafeArrayCache(10*1024**2))
+        df = uproot.lazyarrays(root_file, "Events", basketcache=uproot.cache.ThreadSafeArrayCache(100*1024**2))
         
         for new_name, var_name in variables_mapped.items():
             df[new_name] = df[var_name]
 
         # some derived columns
+        df["vbf_jj_Deta"] = np.abs(df["vbf_j1_eta"] - df["vbf_j2_eta"])
         df["fatjet_n2b1"] = df["fatjet_e3_v2_sdb1"] / (df["fatjet_e2_sdb1"])**2
         df["fatjet_n2b2"] = df["fatjet_e3_v2_sdb2"] / (df["fatjet_e2_sdb2"])**2
         df["ht"] = df["fatjet_pt"] + df["vbf_j1_pt"] + df["vbf_j2_pt"]
         df["zeppenfeld_w_Deta"] = df["zeppenfeld_w"] / df["vbf_jj_Deta"]
         df["zeppenfeld_v_Deta"] = df["zeppenfeld_v"] / df["vbf_jj_Deta"]
 
-        if "isResolved" not in df.columns:
-            df["isResolved"] = False
+        df["lept_channel"] = (df["lept1_m"] != 0.1056583745).astype(int)
+        df["v_mt"] = np.sqrt(df["v_m"]**2 + df["v_pt"]**2)
+
+        # till they are available
+        df["trig_eff_weight"] = 1.0
+        df["trig_eff_weight2"] = 1.0
+        df["btag0_weight"] = 1.0
 
         if "data" in key:
+            df["gen_weight"] = 1.0
+            df["pu_weight"] = 1.0
+            df["pu_weight_up"] = 1.0
+            df["pu_weight_down"] = 1.0
+            df["trig_eff_weight"] = 1.0
+            df["trig_eff_weight2"] = 1.0
+            df["id_eff_weight"] = 1.0
+            df["id_eff_weight2"] = 1.0
             df["btag0_weight"] = 1.0
 
         lep_sel = lep_channel[args.lepton](df)
@@ -309,9 +323,11 @@ for key in samples_dict:
         print("filling hists .... ")
 
         mva_score = skim_df["mva_score"]
-        for histogram in [h_mva_score, h_mva_score_10bin, h_mva_score_20bin,
-                          h_mva_score_30bin, h_mva_score_var1, h_mva_score_var10,
-                          h_mva_score_var11, h_mva_score_var15, h_mva_score_var20]:
+
+        list_of_mva_hists = [f"h_{i[3]}" for i in hists_1D if "mva_score" in i[3]]
+        list_of_mva_hists = [eval(i) for i in list_of_mva_hists]
+
+        for histogram in list_of_mva_hists:
 
             fill_hist_1d(histogram[key], mva_score, total_weight, overflow_in_last_bin=True)
 
