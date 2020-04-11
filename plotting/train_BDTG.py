@@ -23,6 +23,11 @@ parser.add_argument(
     )
 
 parser.add_argument(
+    "--var-set", dest="var_set", type=str, default="wv",
+    help="variable set wv or wjj, default=%(default)s"
+    )
+
+parser.add_argument(
     "--out-dir", dest="out_dir", type=str, default="BDTG",
     help="output directory for tmva, default=%(default)s"
     )
@@ -59,6 +64,7 @@ parser.add_argument(
 
 args = parser.parse_args()
 
+print(args)
 
 dfs = awkward.load(args.dframes)
 
@@ -70,7 +76,7 @@ bkgs = bkgs1 + bkgs2
 
 os.makedirs(args.out_dir, exist_ok=True)
 
-training_variables = [
+training_variables_wv = [
     "lept1_pt",
     "lept1_eta",
     "pf_met_corr",
@@ -93,6 +99,39 @@ training_variables = [
     "v_eta",
     "ht"
 ]
+
+training_variables_wjj = [
+    "lept1_pt",
+    "lept1_eta",
+    "pf_met_corr",
+    "vbf_jj_m",
+    "vbf_jj_Deta",
+    "vbf_j1_pt",
+    "vbf_j1_eta",
+    "vbf_j2_pt",
+    "vbf_j2_eta",
+    "dijet_m",
+    "dijet_pt",
+    "dijet_eta",
+    "vv_m",
+    "vv_pt",
+    "vv_eta",
+    "boson_centrality",
+    "zeppenfeld_w_Deta",
+    "zeppenfeld_v_Deta",
+    "v_pt",
+    "v_eta",
+    "ht"
+]
+
+if args.var_set == "wv":
+    training_variables = training_variables_wv
+
+elif args.var_set == "wjj":
+    training_variables = training_variables_wjj
+
+else:
+    print("select training variable set")
 
 weight_variables = [
     "gen_weight"

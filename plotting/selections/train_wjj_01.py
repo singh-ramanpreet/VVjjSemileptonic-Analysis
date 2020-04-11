@@ -43,11 +43,10 @@ def region_(df, lepton):
         (df["vbf_j1_pt"] > 50) &
         (df["vbf_j2_pt"] > 50) &
         (df["vbf_jj_Deta"] > 2.5) &
-        (df["fatjet_pt"] > 200) &
-        (np.abs(df["fatjet_eta"]) < 2.4) &
-        (df["fatjet_m"] > 65) &
-        (df["fatjet_m"] < 105) &
-        (df["fatjet_tau21"] < 0.55) &
+        (df["dijet_pt"] > 0) &
+        (np.abs(df["dijet_eta"]) < 2.4) &
+        (df["dijet_m"] > 65) &
+        (df["dijet_m"] < 105) &
         (df["boson_centrality"] > 0.0) &
         (np.abs(df["zeppenfeld_w_Deta"]) < 1.0) &
         (np.abs(df["zeppenfeld_v_Deta"]) < 1.0)
