@@ -104,6 +104,13 @@ for key in samples_dict:
         nMC = sample["nMC"]
         nMCneg = sample["nMCneg"]
 
+        if nMC == 0:
+            file_ = ROOT.TFile.Open(root_file)
+            total_events_hist = file_.Get("TotalEvents")
+            nMCneg = total_events_hist.GetBinContent(1)
+            nMC = total_events_hist.GetBinContent(2)
+            print(nMC, nMCneg)
+
         xs_weight = (lumi * xs) / (nMC - (2 * nMCneg))
 
         print("loading ... ", key, sample["name"])

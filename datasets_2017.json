@@ -1,0 +1,64 @@
+{    
+    "data_obs": {
+        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2017/",
+        "lumi": 1.0,
+        "filelist": [
+            {"name": "Data_noDup.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
+        ]
+    },
+    
+    "VBS_EWK": {
+        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2017/",
+        "lumi": 41530.0,
+        "filelist": [
+            {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.02982, "nMC": 0, "nMCneg": 0},
+            {"name": "WminusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root", "xs": 0.03259, "nMC": 0, "nMCneg": 0}, 
+            {"name": "WminusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"     , "xs": 0.1    , "nMC": 0, "nMCneg": 0},
+            {"name": "WplusTo2JWminusToLNuJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root" , "xs": 0.9107 , "nMC": 0, "nMCneg": 0},
+            {"name": "WplusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"       , "xs": 0.05401, "nMC": 0, "nMCneg": 0},
+            {"name": "WplusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root" , "xs": 0.9114 , "nMC": 0, "nMCneg": 0},
+            {"name": "WplusToLNuWplusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"  , "xs": 0.08793, "nMC": 0, "nMCneg": 0},
+            {"name": "WplusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.1825 , "nMC": 0, "nMCneg": 0},
+            {"name": "ZTo2LZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"           , "xs": 0.01589, "nMC": 0, "nMCneg": 0}
+        ]
+    },
+
+    "VBS_QCD": {
+        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2017/",
+        "lumi": 41530.0,
+        "filelist": [
+            {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 , "nMC": 0, "nMCneg": 0},
+            {"name": "WminusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root", "xs": 0.03203, "nMC": 0, "nMCneg": 0},
+            {"name": "WminusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"     , "xs": 1.166  , "nMC": 0, "nMCneg": 0},
+            {"name": "WplusTo2JWminusToLNuJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV.root"                  , "xs": 5.568  , "nMC": 0, "nMCneg": 0},
+            {"name": "WplusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"       , "xs": 0.575  , "nMC": 0, "nMCneg": 0},
+            {"name": "WplusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV.root"                  , "xs": 5.546  , "nMC": 0, "nMCneg": 0},
+            {"name": "WplusToLNuWplusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"  , "xs": 0.07584, "nMC": 0, "nMCneg": 0},
+            {"name": "WplusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 1.938  , "nMC": 0, "nMCneg": 0},
+            {"name": "ZTo2LZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"           , "xs": 0.3449 , "nMC": 0, "nMCneg": 0}
+        ]
+    },
+
+    "Top": {
+        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2017/",
+        "lumi": 41530.0,
+        "filelist": [
+            {"name": "TTToSemiLeptonic_TuneCP5_13TeV_powheg_pythia8.root", "xs": 364.3  , "nMC": 0, "nMCneg": 0}
+        ]
+    },
+    
+    "WJets": {
+        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2017/",
+        "lumi": 41530.0,
+        "filelist": [
+            {"name": "../2016/WJetsToLNu_HT_100To200_13TeV.root",   "xs": 1627.45  , "nMC": 79165700,  "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_200To400_TuneCP5_13TeV.root"  , "xs": 435.24   , "nMC": 0, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_400To600_TuneCP5_13TeV.root"  , "xs": 59.18    , "nMC": 0, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_600To800_TuneCP5_13TeV.root"  , "xs": 14.58    , "nMC": 0, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_800To1200_TuneCP5_13TeV.root" , "xs": 6.655    , "nMC": 0, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_1200To2500_TuneCP5_13TeV.root", "xs": 1.60809  , "nMC": 0, "nMCneg": 0},
+            {"name": "WJetsToLNu_HT_2500ToInf_TuneCP5_13TeV.root" , "xs": 0.0389136, "nMC": 0, "nMCneg": 0}
+        ]
+    }
+}
+

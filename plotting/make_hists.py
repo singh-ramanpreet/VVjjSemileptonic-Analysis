@@ -43,6 +43,11 @@ parser.add_argument(
     help="additional string in output filename, default=%(default)s"
     )
 
+parser.add_argument(
+    "--apply-L1PF", dest="apply_L1PF", action="store_true",
+    help="apply L1 pre-fire weight, default=%(default)s"
+    )
+
 args = parser.parse_args()
 
 # samples dict
@@ -350,6 +355,10 @@ for i in dfs:
 
     if apply_btag0Wgt:
         total_weight = total_weight * skim_df["btag0_weight"]
+
+    if args.apply_L1PF:
+        print("Applying L1 PreFire weights")
+        total_weight = total_weight * skim_df["L1PFWeight"]
 
     print("filling hists .... ")
 

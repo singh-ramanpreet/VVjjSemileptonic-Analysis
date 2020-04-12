@@ -243,6 +243,10 @@
         "central": "lep2_idEffWeight"
     },
 
+    "L1PFWeight": {
+        "central": "L1PFWeight"
+    },
+
     "LHEWeight": {
         "central": "LHEWeight"
     }

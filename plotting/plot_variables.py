@@ -132,10 +132,13 @@ h_WJets.SetFillColor(ROOT.TColor.GetColor(222, 90, 106))
 h_WJets.SetLineColor(ROOT.TColor.GetColor(222, 90, 106))
 h_WJets.SetFillStyle(1001)
 
-h_DYJets = hist_file.Get(f"DYJets_{variable}")
-h_DYJets.SetFillColor(ROOT.TColor.GetColor(200, 90, 106))
-h_DYJets.SetLineColor(ROOT.TColor.GetColor(200, 90, 106))
-h_DYJets.SetFillStyle(1001)
+if not skip_DYJets:
+    h_DYJets = hist_file.Get(f"DYJets_{variable}")
+    h_DYJets.SetFillColor(ROOT.TColor.GetColor(200, 90, 106))
+    h_DYJets.SetLineColor(ROOT.TColor.GetColor(200, 90, 106))
+    h_DYJets.SetFillStyle(1001)
+    if h_DYJets.GetEntries() == 0.0:
+        skip_DYJets = True
 
 h_VBS_QCD = hist_file.Get(f"VBS_QCD_{variable}")
 h_VBS_QCD.SetFillColor(ROOT.TColor.GetColor(248, 206, 104))
@@ -163,7 +166,6 @@ if not skip_WJets:
     legend.AddEntry(h_WJets, f"W + Jets ({h_WJets.Integral():.2f})", "f")
     h_mc.Add(h_WJets)
 
-if h_DYJets.GetEntries() == 0.0: skip_DYJets = True
 if not skip_DYJets:
     legend.AddEntry(h_DYJets, f"DY Jets ({h_DYJets.Integral():.2f})", "f")
     h_mc.Add(h_DYJets)
