@@ -165,9 +165,12 @@ hists_1D = [
     (40, 0.0, 1.0, "fatjet_tau21"),
     # ak4ak4 jet
     (24, 30.0, 160.0, "dijet_m"),
-    (80, 200.0, 2000.0, "dijet_pt"),
-    (26, -2.6, 2.6, "dijet_eta"),
-    (34, -3.4, 3.4, "dijet_phi"),
+    (80, 0.0, 800.0, "dijet_pt"),
+    (25, -5.0, 5.0, "dijet_eta"),
+    (60, 0.0, 600.0, "dijet_j1_pt"),
+    (60, 0.0, 600.0, "dijet_j2_pt"),
+    (20, -2.5, 2.5, "dijet_j1_eta"),
+    (20, -2.5, 2.5, "dijet_j2_eta"),
     # W
     (50, 0.0, 1000.0, "v_pt"),
     (40, -4.0, 4.0, "v_eta"),
@@ -307,7 +310,6 @@ if args.boson == "Z":
 region_ = sel_code.region_
 
 apply_btag0Wgt = sel_code.apply_btag0Wgt
-blind_data = sel_code.blind_data
 
 # add selection code to root file
 code_text = open(f"selections/{args.region}.py").read()
@@ -351,11 +353,7 @@ for i in dfs:
 
     print("filling hists .... ")
 
-    if "data" in key:
-        total_entries.Fill("data", len(skim_df))
-
-    else:
-        total_entries.Fill(key, len(skim_df))
+    total_entries.Fill(key, len(skim_df))
 
     lept1_pt = skim_df["lept1_pt"]
     fill_hist_1d(h_lept1_pt[key], lept1_pt, total_weight, overflow_in_last_bin=True)
@@ -401,6 +399,27 @@ for i in dfs:
 
     fatjet_tau21 = skim_df["fatjet_tau21"]
     fill_hist_1d(h_fatjet_tau21[key], fatjet_tau21, total_weight, overflow_in_last_bin=True)
+
+    dijet_m = skim_df["dijet_m"]
+    fill_hist_1d(h_dijet_m[key], dijet_m, total_weight, overflow_in_last_bin=True)
+
+    dijet_pt = skim_df["dijet_pt"]
+    fill_hist_1d(h_dijet_pt[key], dijet_pt, total_weight, overflow_in_last_bin=True)
+
+    dijet_eta = skim_df["dijet_eta"]
+    fill_hist_1d(h_dijet_eta[key], dijet_eta, total_weight, overflow_in_last_bin=True)
+
+    dijet_j1_pt = skim_df["dijet_j1_pt"]
+    fill_hist_1d(h_dijet_j1_pt[key], dijet_j1_pt, total_weight, overflow_in_last_bin=True)
+
+    dijet_j2_pt = skim_df["dijet_j2_pt"]
+    fill_hist_1d(h_dijet_j2_pt[key], dijet_j2_pt, total_weight, overflow_in_last_bin=True)
+
+    dijet_j1_eta = skim_df["dijet_j1_eta"]
+    fill_hist_1d(h_dijet_j1_eta[key], dijet_j1_eta, total_weight, overflow_in_last_bin=True)
+
+    dijet_j2_eta = skim_df["dijet_j2_eta"]
+    fill_hist_1d(h_dijet_j2_eta[key], dijet_j2_eta, total_weight, overflow_in_last_bin=True)
 
     v_pt = skim_df["v_pt"]
     fill_hist_1d(h_v_pt[key], v_pt, total_weight, overflow_in_last_bin=True)
@@ -493,18 +512,7 @@ for i in dfs:
     # 2D hists
     #fill_hist_2d(h2_n2b1_tau21[key], fatjet_n2b1, fatjet_tau21, total_weight)
     #fill_hist_2d(h2_n2b2_tau21[key], fatjet_n2b2, fatjet_tau21, total_weight)
-    
-    if len(blind_data) != 0 and "data" in key:
-        for blind_var in blind_data:
-            print(blind_var[0])
-            list_of_histograms = [i[3] for i in hists_1D if blind_var[0] in i[3]]
 
-            for hist_to_blind in list_of_histograms:
-                exec(f"binA = h_{hist_to_blind}[key].FindBin({blind_var[1]})")
-                exec(f"binB = h_{hist_to_blind}[key].FindBin({blind_var[2]})")
-                print(binA, binB)
-                for i in range(binA, binB + 1):
-                    exec(f"h_{hist_to_blind}[key].SetBinContent(i, 0.0)")
 
 # write hists to root file
 # ========================

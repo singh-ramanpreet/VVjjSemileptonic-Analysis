@@ -2,12 +2,6 @@ import numpy as np
 
 apply_btag0Wgt = True
 
-# blind data histograms
-# name x_low, x_high
-blind_data = [
-    ("mva_score", -1.0, 1.0)
-]
-
 def e_channel(df):
      return (
         (df["lept_channel"] == 1) &

@@ -1,10 +1,6 @@
 import numpy as np
 
-apply_btag0Wgt = True
-
-# blind data histograms
-# name x_low, x_high
-blind_data = []
+apply_btag0Wgt = False
 
 def e_channel(df):
      return (
@@ -41,8 +37,9 @@ def region_(df, lepton):
         (df["vbf_j1_pt"] > 50) &
         (df["vbf_j2_pt"] > 50) &
         (df["vbf_jj_Deta"] > 2.5) &
+        (df["dijet_j1_pt"] > 30) &
+        (df["dijet_j2_pt"] > 30) &
         (df["dijet_pt"] > 0) &
-        (np.abs(df["dijet_eta"]) < 2.4) &
         (df["dijet_m"] > 65) &
         (df["dijet_m"] < 105) &
         (df["boson_centrality"] > 0.0) &

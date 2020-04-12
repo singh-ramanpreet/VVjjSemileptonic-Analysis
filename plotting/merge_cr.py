@@ -18,12 +18,11 @@ for hist in list_of_histograms:
     name = hist.GetName()
     
     if "mva_score" in name:
+        print(name)
         get_hist = infile.Get(name)
         get_hist.Rebin(get_hist.GetNbinsX())
         print(get_hist.Integral())
         get_hist.Write()
-
-outfile.ls("*")
 
 outfile.Write()
 outfile.Close()

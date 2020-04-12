@@ -121,7 +121,7 @@ training_variables_wjj = [
     "zeppenfeld_v_Deta",
     "v_pt",
     "v_eta",
-    "ht"
+    "ht_resolved"
 ]
 
 if args.var_set == "wv":

@@ -1,10 +1,6 @@
 import numpy as np
 
-apply_btag0Wgt = True
-
-# blind data histograms
-# name x_low, x_high
-blind_data = []
+apply_btag0Wgt = False
 
 def e_channel(df):
      return (
