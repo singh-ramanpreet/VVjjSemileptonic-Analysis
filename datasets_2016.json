@@ -3,8 +3,7 @@
         "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
         "lumi": 1.0,
         "filelist": [
-            {"name": "SingleMuon.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0},
-            {"name": "SingleElectron.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
+            {"name": "Data_noDup.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
         ]
     },
     

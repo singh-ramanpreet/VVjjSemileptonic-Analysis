@@ -151,6 +151,26 @@
         "jesDown": "bos_AK4AK4_m_scaleDn"
     },
 
+    "dijet_j1_pt": {
+        "central": "bos_j1_AK4_pt",
+        "jesUp": "bos_j1_AK4_pt_scaleUp",
+        "jesDown": "bos_j1_AK4_pt_scaleDn"
+    },
+
+    "dijet_j1_eta": {
+        "central": "bos_j1_AK4_eta"
+    },
+
+    "dijet_j2_pt": {
+        "central": "bos_j2_AK4_pt",
+        "jesUp": "bos_j2_AK4_pt_scaleUp",
+        "jesDown": "bos_j2_AK4_pt_scaleDn"
+    },
+
+    "dijet_j2_eta": {
+        "central": "bos_j2_AK4_eta"
+    },
+
     "v_m": {
         "central": "dilep_m",
         "jesUp": "dilep_m_scaleUp",
