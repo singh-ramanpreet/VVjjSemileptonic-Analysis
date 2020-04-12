@@ -240,6 +240,8 @@ if draw_with_ratio:
 
     ratio.GetLowYaxis().SetNdivisions(lower_graph_ndivisions_y)
     ratio.GetXaxis().SetNdivisions(ndivisions_x)
+    if canvas_log_y:
+        ratio.GetXaxis().SetRange(2, 2) # brute force
 
     ratio.GetLowerRefYaxis().CenterTitle()
     ratio.GetLowerRefYaxis().SetTitleSize(0.04)
@@ -319,6 +321,7 @@ units = ""
 scale_signal = True
 canvas_log_y = False
 exec(plot_mc_data)
+scale_y_axis = 10
 upper_pad_min_y = 0.1
 scale_signal = False
 canvas_log_y = True
@@ -332,6 +335,7 @@ units = ""
 scale_signal = True
 canvas_log_y = False
 exec(plot_mc_data)
+scale_y_axis = 10
 upper_pad_min_y = 0.1
 scale_signal = False
 canvas_log_y = True
@@ -345,6 +349,7 @@ units = ""
 scale_signal = True
 canvas_log_y = False
 exec(plot_mc_data)
+scale_y_axis = 10
 upper_pad_min_y = 0.1
 scale_signal = False
 canvas_log_y = True

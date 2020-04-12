@@ -124,7 +124,6 @@ for key in samples_dict:
         df["zeppenfeld_w_Deta"] = df["zeppenfeld_w"] / df["vbf_jj_Deta"]
         df["zeppenfeld_v_Deta"] = df["zeppenfeld_v"] / df["vbf_jj_Deta"]
 
-
         df["lept_channel"] = (df["lept1_m"] != 0.1056583745).astype(int)
         df["v_mt"] = np.sqrt(df["v_m"]**2 + df["v_pt"]**2)
 

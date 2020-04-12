@@ -230,7 +230,6 @@ if args.boson == "Z":
 region_ = sel_code.region_
 
 apply_btag0Wgt = sel_code.apply_btag0Wgt
-blind_data = sel_code.blind_data
 
 # add selection code to root file
 code_text = open(f"selections/{args.region}.py").read()
@@ -273,6 +272,7 @@ for key in samples_dict:
         df["fatjet_n2b1"] = df["fatjet_e3_v2_sdb1"] / (df["fatjet_e2_sdb1"])**2
         df["fatjet_n2b2"] = df["fatjet_e3_v2_sdb2"] / (df["fatjet_e2_sdb2"])**2
         df["ht"] = df["fatjet_pt"] + df["vbf_j1_pt"] + df["vbf_j2_pt"]
+        df["ht_resolved"] = df["dijet_j1_pt"] + df["dijet_j2_pt"] + df["vbf_j1_pt"] + df["vbf_j2_pt"]
         df["zeppenfeld_w_Deta"] = df["zeppenfeld_w"] / df["vbf_jj_Deta"]
         df["zeppenfeld_v_Deta"] = df["zeppenfeld_v"] / df["vbf_jj_Deta"]
 
@@ -301,10 +301,6 @@ for key in samples_dict:
         var_data = np.column_stack(tuple([df[var] for var in variables]))
         mva_score = evaluate_reader(mva_reader, "BDT", var_data)
         df["mva_score"] = mva_score
-
-        if len(blind_data) != 0 and "data" in key:
-            for blind_var in blind_data:
-                df[blind_var] = -999.0
 
         if args.boson == "W":
             skim_df = df[lep_sel & region_sel]
