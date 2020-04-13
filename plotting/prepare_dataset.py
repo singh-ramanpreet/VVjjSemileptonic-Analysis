@@ -149,6 +149,7 @@ for key in samples_dict:
             df["id_eff_weight"] = 1.0
             df["id_eff_weight2"] = 1.0
             df["btag0_weight"] = 1.0
+            df["L1PFWeight"] = 1.0
 
         if args.mva != "":
             var_data = np.column_stack(tuple([df[var] for var in mva_variables]))

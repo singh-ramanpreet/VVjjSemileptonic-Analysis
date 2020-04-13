@@ -51,13 +51,18 @@ parser.add_argument(
     )
 
 parser.add_argument(
-    "--var-list", dest="var_list", type=str, default="",
+    "--mva-var-list", dest="var_list", type=str, default="",
     help="mva training variable list, default=%(default)s"
     )
 
 parser.add_argument(
     "--info-out", dest="info_out", type=str, default="theoryUnc",
     help="additional string in output filename, default=%(default)s"
+    )
+
+parser.add_argument(
+    "--apply-L1PF", dest="apply_L1PF", action="store_true",
+    help="apply L1 pre-fire weight, default=%(default)s"
     )
 
 args = parser.parse_args()
@@ -258,6 +263,13 @@ for key in samples_dict:
         nMC = sample["nMC"]
         nMCneg = sample["nMCneg"]
 
+        if nMC == 0:
+            file_ = ROOT.TFile.Open(root_file)
+            total_events_hist = file_.Get("TotalEvents")
+            nMCneg = total_events_hist.GetBinContent(1)
+            nMC = total_events_hist.GetBinContent(2)
+            print(nMC, nMCneg)
+
         xs_weight = (lumi * xs) / (nMC - (2 * nMCneg))
 
         print("loading ... ", key, sample["name"])
@@ -294,6 +306,7 @@ for key in samples_dict:
             df["id_eff_weight"] = 1.0
             df["id_eff_weight2"] = 1.0
             df["btag0_weight"] = 1.0
+            df["L1PFWeight"] = 1.0
 
         lep_sel = lep_channel[args.lepton](df)
         region_sel = region_(df, args.lepton)
@@ -315,6 +328,10 @@ for key in samples_dict:
 
         if apply_btag0Wgt:
             total_weight = total_weight * skim_df["btag0_weight"]
+
+        if args.apply_L1PF:
+            print("Applying L1 PreFire weights")
+            total_weight = total_weight * skim_df["L1PFWeight"]
 
         print("filling hists .... ")
 

@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("--rootfile", type=str, default="test.root")
 parser.add_argument("--blind", action="store_true")
+parser.add_argument("--year", type=str, default="2016")
 
 args = parser.parse_args()
 
@@ -214,6 +215,10 @@ if not draw_with_ratio:
     legend.Draw()
 
     if make_cms_text:
+        if args.year == "2016":
+            lumi_text = "#scale[1.0]{35.9 fb^{-1} (13 TeV)}"
+        if args.year == "2017":
+            lumi_text = "#scale[1.0]{41.5 fb^{-1} (13 TeV)}"
         CMS_text(
             canvas,
             cms_text_location="inside left",
@@ -223,7 +228,7 @@ if not draw_with_ratio:
             extra_text="#scale[1.0]{Preliminary}",
             extra_text_pos_y_scale=0.9,
             draw_lumi_text=True,
-            lumi_text="#scale[1.0]{35.9 fb^{-1} (13 TeV)}"
+            lumi_text=lumi_text
         )
 
 if draw_with_ratio:
@@ -269,6 +274,10 @@ if draw_with_ratio:
     legend.Draw()
     
     if make_cms_text:
+        if args.year == "2016":
+            lumi_text = "#scale[1.0]{35.9 fb^{-1} (13 TeV)}"
+        if args.year == "2017":
+            lumi_text = "#scale[1.0]{41.5 fb^{-1} (13 TeV)}"
         CMS_text(
             upper_pad,
             cms_text_scale=1.2,
@@ -280,7 +289,7 @@ if draw_with_ratio:
             extra_text_pos_x_scale=1.0,
             extra_text_pos_y_scale=0.94,
             draw_lumi_text=True,
-            lumi_text="#scale[1.1]{35.9 fb^{-1} (13 TeV)}"
+            lumi_text=lumi_text
         )
     
 canvas.Draw()
