@@ -219,6 +219,8 @@ if not draw_with_ratio:
             lumi_text = "#scale[1.0]{35.9 fb^{-1} (13 TeV)}"
         if args.year == "2017":
             lumi_text = "#scale[1.0]{41.5 fb^{-1} (13 TeV)}"
+        if args.year == "2018":
+            lumi_text = "#scale[1.0]{59.74 fb^{-1} (13 TeV)}"
         CMS_text(
             canvas,
             cms_text_location="inside left",
@@ -278,6 +280,8 @@ if draw_with_ratio:
             lumi_text = "#scale[1.0]{35.9 fb^{-1} (13 TeV)}"
         if args.year == "2017":
             lumi_text = "#scale[1.0]{41.5 fb^{-1} (13 TeV)}"
+        if args.year == "2018":
+            lumi_text = "#scale[1.0]{59.74 fb^{-1} (13 TeV)}"
         CMS_text(
             upper_pad,
             cms_text_scale=1.2,

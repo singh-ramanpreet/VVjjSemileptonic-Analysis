@@ -1,6 +1,6 @@
 {    
     "data_obs": {
-        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/WVJJTree_Apr9/2016/noDuplicate/",
         "lumi": 1.0,
         "filelist": [
             {"name": "Data_noDup.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
@@ -8,7 +8,7 @@
     },
     
     "VBS_EWK": {
-        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/WVJJTree_Apr9/2016/noDuplicate/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.02982, "nMC": 189086.0 , "nMCneg": 0},
@@ -24,7 +24,7 @@
     },
 
     "VBS_QCD": {
-        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/WVJJTree_Apr9/2016/noDuplicate/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 , "nMC": 489280.0 , "nMCneg": 0},
@@ -40,7 +40,7 @@
     },
 
     "DYJets": {
-        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/WVJJTree_Apr9/2016/noDuplicate/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 1012.296845, "nMC": 46443016.0, "nMCneg": 0},
@@ -51,7 +51,7 @@
     },
 
     "Top": {
-        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/WVJJTree_Apr9/2016/noDuplicate/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV_powheg_TuneCUETP8M1.root", "xs": 19.5741, "nMC": 5424956.0 , "nMCneg": 0        },
@@ -68,7 +68,7 @@
     },
     
     "WJets": {
-        "location": "/eos/cms/store/user/jlawhorn/WVJJTree_Apr9/2016/",
+        "location": "/eos/user/s/singhr/wv_vbs_ntuples/WVJJTree_Apr9/2016/noDuplicate/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WJetsToLNu_HT_100To200_13TeV.root",   "xs": 1627.45  , "nMC": 79165700,  "nMCneg": 0},
