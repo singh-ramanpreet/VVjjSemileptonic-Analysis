@@ -17,6 +17,10 @@
         "central": "lep1_m"
     },
 
+    "lept1_q": {
+        "central": "lep1_q"
+    },
+
     "lept2_pt": {
         "central": "lep2_pt",
         "lep_scaleUp": "lep2_pt_scaleUp",
@@ -33,6 +37,10 @@
 
     "lept2_m": {
         "central": "lep2_m"
+    },
+
+    "lept2_q": {
+        "central": "lep2_q"
     },
 
     "pf_met_corr": {

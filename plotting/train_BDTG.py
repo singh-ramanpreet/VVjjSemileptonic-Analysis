@@ -23,6 +23,11 @@ parser.add_argument(
     )
 
 parser.add_argument(
+    "--boson", type=str, default="W",
+    help="boson , default=%(default)s"
+    )
+
+parser.add_argument(
     "--var-set", dest="var_set", type=str, default="wv",
     help="variable set wv or wjj, default=%(default)s"
     )
@@ -69,10 +74,17 @@ print(args)
 dfs = awkward.load(args.dframes)
 
 keys = list(dfs.keys())
-sigs = [i for i in keys if "VBS_EWK/" in i]
-bkgs1 = [i for i in keys if "WJets/" in i]
-bkgs2 = [i for i in keys if "Top/" in i]
-bkgs = bkgs1 + bkgs2
+if args.boson == "W":
+    sigs = [i for i in keys if "VBS_EWK/" in i]
+    bkgs1 = [i for i in keys if "WJets/" in i]
+    bkgs2 = [i for i in keys if "Top/" in i]
+    bkgs = bkgs1 + bkgs2
+
+if args.boson == "Z":
+    sigs = [i for i in keys if "VBS_EWK/" in i]
+    bkgs1 = [i for i in keys if "DYJets/" in i]
+    bkgs2 = [] #[i for i in keys if "Top/" in i]
+    bkgs = bkgs1 + bkgs2
 
 os.makedirs(args.out_dir, exist_ok=True)
 
@@ -124,11 +136,67 @@ training_variables_wjj = [
     "ht_resolved"
 ]
 
+training_variables_zv = [
+    "lept1_pt",
+    "lept1_eta",
+    "lept2_pt",
+    "lept2_eta",
+    "vbf_jj_m",
+    "vbf_jj_Deta",
+    "vbf_j1_pt",
+    "vbf_j1_eta",
+    "vbf_j2_pt",
+    "vbf_j2_eta",
+    "fatjet_m",
+    "fatjet_pt",
+    "fatjet_eta",
+    "vv_m",
+    "vv_pt",
+    "vv_eta",
+    #"boson_centrality",
+    "zeppenfeld_w_Deta",
+    "zeppenfeld_v_Deta",
+    #"v_pt",
+    #"v_eta",
+    #"ht"
+]
+
+training_variables_zjj = [
+    "lept1_pt",
+    "lept1_eta",
+    "lept2_pt",
+    "lept2_eta",
+    "vbf_jj_m",
+    "vbf_jj_Deta",
+    "vbf_j1_pt",
+    "vbf_j1_eta",
+    "vbf_j2_pt",
+    "vbf_j2_eta",
+    "dijet_m",
+    "dijet_pt",
+    "dijet_eta",
+    "vv_m",
+    "vv_pt",
+    "vv_eta",
+    #"boson_centrality",
+    "zeppenfeld_w_Deta",
+    "zeppenfeld_v_Deta",
+    "v_pt",
+    "v_eta",
+    "ht_resolved"
+]
+
 if args.var_set == "wv":
     training_variables = training_variables_wv
 
 elif args.var_set == "wjj":
     training_variables = training_variables_wjj
+
+elif args.var_set == "zv":
+    training_variables = training_variables_zv
+
+elif args.var_set == "zjj":
+    training_variables = training_variables_zjj
 
 else:
     print("select training variable set")

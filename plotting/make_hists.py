@@ -179,6 +179,7 @@ hists_1D = [
     # W
     (50, 0.0, 1000.0, "v_pt"),
     (40, -4.0, 4.0, "v_eta"),
+    (20, 65, 105.0, "v_m"),
     (20, 0.0, 400.0, "v_mt"),
     # vbf jets
     (50, 0.0, 1000.0, "vbf_j1_pt"),
@@ -435,6 +436,9 @@ for i in dfs:
 
     v_eta = skim_df["v_eta"]
     fill_hist_1d(h_v_eta[key], v_eta, total_weight)
+
+    v_m = skim_df["v_m"]
+    fill_hist_1d(h_v_m[key], v_m, total_weight, overflow_in_last_bin=True)
 
     v_mt = skim_df["v_mt"]
     fill_hist_1d(h_v_mt[key], v_mt, total_weight, overflow_in_last_bin=True)
