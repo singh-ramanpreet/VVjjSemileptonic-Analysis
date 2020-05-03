@@ -9,8 +9,6 @@ PY_VER=`python -c "import sys; print('python{0}.{1}'.format(*sys.version_info))"
 export PYTHONPATH=$PYTHONUSERBASE/lib/$PY_VER/site-packages:$PYTHONPATH
 PATH=$PYTHONUSERBASE/bin:$PATH
 
-echo "now installing requirements"
-
-pip install --user -r requirements.txt
+echo "pip install --user -r ${DIR}/requirements.txt"
 
 cd -

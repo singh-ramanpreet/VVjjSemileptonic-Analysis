@@ -33,11 +33,11 @@ def m_channel2(df):
 def region_(df, lepton):
     
     if lepton == "m":
-        lept1_pt_cut = 35
+        lept1_pt_cut = 25
         lept2_pt_cut = 20
     
     if lepton == "e":
-        lept1_pt_cut = 40
+        lept1_pt_cut = 25
         lept2_pt_cut = 20
 
     return (

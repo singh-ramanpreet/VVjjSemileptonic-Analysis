@@ -33,11 +33,11 @@ def m_channel2(df):
 def region_(df, lepton):
     
     if lepton == "m":
-        lept1_pt_cut = 35
+        lept1_pt_cut = 30
         lept2_pt_cut = 20
     
     if lepton == "e":
-        lept1_pt_cut = 40
+        lept1_pt_cut = 30
         lept2_pt_cut = 20
 
     return (
@@ -53,6 +53,6 @@ def region_(df, lepton):
         (df["vbf_jj_Deta"] > 2.5) &
         (df["fatjet_pt"] > 200) &
         (np.abs(df["fatjet_eta"]) < 2.4) &
-        (((df["fatjet_m"] > 40) & (df["fatjet_m"] < 65)) |
-         ((df["fatjet_m"] > 105) & (df["fatjet_m"] < 150)))
+        (df["fatjet_m"] > 65) &
+        (df["fatjet_m"] < 105)
     )

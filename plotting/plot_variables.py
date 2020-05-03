@@ -2,6 +2,7 @@
 
 import ROOT
 ROOT.gROOT.SetBatch()
+ROOT.PyConfig.IgnoreCommandLineOptions = True
 import os
 import argparse
 from pyroot_cms_scripts import CMS_style, CMS_text
@@ -392,6 +393,31 @@ exec(plot_mc_data)
 exec(set_variable_defaults)
 variable = "lept1_phi"
 title_x = "#phi_{lept1}"
+signal_scale_up = 10
+canvas_log_y = False
+exec(plot_mc_data)
+
+
+exec(set_variable_defaults)
+variable = "lept2_pt"
+title_x = "p^{T}_{lept2}"
+units = "GeV"
+signal_scale_up = 10
+canvas_log_y = False
+exec(plot_mc_data)
+
+
+exec(set_variable_defaults)
+variable = "lept2_eta"
+title_x = "#eta_{lept2}"
+signal_scale_up = 10
+canvas_log_y = False
+exec(plot_mc_data)
+
+
+exec(set_variable_defaults)
+variable = "lept2_phi"
+title_x = "#phi_{lept2}"
 signal_scale_up = 10
 canvas_log_y = False
 exec(plot_mc_data)

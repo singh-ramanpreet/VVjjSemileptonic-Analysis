@@ -34,11 +34,11 @@ def region_(df, lepton):
     
     if lepton == "m":
         lept1_pt_cut = 35
-        lept2_pt_cut = 30
+        lept2_pt_cut = 20
     
     if lepton == "e":
         lept1_pt_cut = 40
-        lept2_pt_cut = 30
+        lept2_pt_cut = 20
 
     return (
         (df["lept1_pt"] > lept1_pt_cut) &

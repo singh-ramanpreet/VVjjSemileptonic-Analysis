@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import ROOT
+ROOT.gROOT.SetBatch()
+ROOT.PyConfig.IgnoreCommandLineOptions = True
 from pyroot_cms_scripts import CMS_style
 import os
 import argparse
@@ -61,12 +63,14 @@ print(ks_bkg)
 hs.SetLineColor(ROOT.kBlue)
 hs.SetFillColorAlpha(ROOT.kBlue, 0.5)
 hs.SetFillStyle(1001)
+hst.SetLineColor(ROOT.kBlue)
 hst.SetMarkerColor(ROOT.kBlue)
 hst.SetMarkerStyle(20)
 
 hb.SetLineColor(ROOT.kRed)
 hb.SetFillColorAlpha(ROOT.kRed, 0.5)
 hb.SetFillStyle(1001)
+hbt.SetLineColor(ROOT.kRed)
 hbt.SetMarkerColor(ROOT.kRed)
 hbt.SetMarkerStyle(20)
 
@@ -103,19 +107,29 @@ CMS_style.cd()
 canvas = ROOT.TCanvas()
 frame = canvas.DrawFrame(0.0, 0.0, 1.0, 1.0, ";Sig Eff.;Bkg Eff.")
 frame.Draw()
-legend = ROOT.TLegend(0.18, 0.87, 0.4, 0.92)
+legend = ROOT.TLegend(0.18, 0.84 - 0.04*len(configs), 0.43, 0.92)
+legend.SetTextFont(42)
 legend.SetBorderSize(1)
-for c in configs:
+for i, c in enumerate(configs):
+    color = ROOT.gStyle.GetColorPalette(200*i)
     r = roc[f"{c}_effBvsS"]
-    r.Draw("same C PLC")
+    r.SetLineColor(color)
+    r.Draw("same C")
     auc = 1 - (r.Integral()/100)
     legend.AddEntry(r, f"{c} ({auc:.3f})", "l")
+
+    rt = roc[f"{c}_effBvsS_train"]
+    rt.SetLineStyle(ROOT.kDashed)
+    rt.SetLineColor(color)
+    rt.Draw("same C")
+    auc = 1 - (rt.Integral()/100)
+    legend.AddEntry(rt, f"{c} ({auc:.3f}) (train)", "l")
 legend.Draw()
 canvas.SetLogy(0)
 canvas.SetGrid()
 canvas.Draw()
 os.makedirs(f"{plots_dir}", exist_ok=True)
-canvas.SaveAs(f"{plots_dir}/roc.pdf")
-canvas.SaveAs(f"{plots_dir}/roc.png")
+canvas.SaveAs(f"{plots_dir}/{'_'.join(c for c in configs)}_roc.pdf")
+canvas.SaveAs(f"{plots_dir}/{'_'.join(c for c in configs)}_roc.png")
 """
 exec(draw_roc)
