@@ -105,6 +105,11 @@ legend.SetTextSize(0.03)
 legend.SetNColumns(leg_columns)
 
 h_data = hist_file.Get(f"{hists_subdirectory}/data_obs_{variable}")
+if type(h_data) == ROOT.TObject:
+    # no data histogram, get some other to get the binning
+    h_data = hist_file.Get(f"{hists_subdirectory}/VBS_EWK_{variable}").Clone(f"data_obs_{variable}")
+    skip_data = True
+
 h_data.SetMarkerSize(0.8)
 
 if skip_data:

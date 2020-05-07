@@ -3,6 +3,8 @@ export PYTHONUNBUFFERED=true
 
 #mva="wv_BDTG6"
 #mva="wjj_BDTG6"
+#mva="zv_BDTG1"
+#mva="zv_BDTG1"
 mva="None"
 
 boson="Z"
@@ -14,8 +16,9 @@ year="2016"
 
 #region_list=("cr_wjets_wv_01" "cr_top_wv_01" "train_wv_01")
 #region_list=("cr_wjets_wjj_01" "cr_top_wjj_01" "train_wjj_01")
-#region_list=("cr_wjets_zv_01" "cr_top_zv_01" "train_zv_01")
-region_list=("cr_wjets_zjj_01" "cr_top_zjj_01" "train_zjj_01")
+region_list=("cr_wjets_zv_01" "cr_top_zv_01" "train_zv_01")
+#region_list=("cr_wjets_zjj_01" "cr_top_zjj_01" "train_zjj_01")
+#region_list=("train_zv_02" "train_zv_03" "train_zv_04")
 
 applyL1Weight=false
 do_train_systematics=false

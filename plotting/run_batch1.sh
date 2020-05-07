@@ -1,8 +1,11 @@
 #!/bin/bash
 export PYTHONUNBUFFERED=true
 
-mva_folder="wv_BDTG6"
-mva_tag="wv_BDTG6"
+#mva_folder="wv_BDTG6"
+#mva_tag="wv_BDTG6"
+
+mva_folder="zjj_BDTG1"
+mva_tag="zjj_BDTG1"
 
 for i in "central" "jesUp" "jesDown"; do
     ./prepare_dataset.py \

@@ -180,15 +180,11 @@
     },
 
     "v_m": {
-        "central": "dilep_m",
-        "jesUp": "dilep_m_scaleUp",
-        "jesDown": "dilep_m_scaleDn"
+        "central": "dilep_m"
     },
 
     "v_pt": {
-        "central": "dilep_pt",
-        "jesUp": "dilep_pt_scaleUp",
-        "jesDown": "dilep_pt_scaleDn"
+        "central": "dilep_pt"
     },
 
     "v_eta": {
