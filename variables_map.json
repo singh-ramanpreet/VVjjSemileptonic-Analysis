@@ -1,4 +1,12 @@
 {
+    "run": {
+        "central": "run"
+    },
+
+    "evt": {
+        "central": "evt"
+    },
+
     "lept1_pt": {
         "central": "lep1_pt",
         "lep_scaleUp": "lep1_pt_scaleUp",
