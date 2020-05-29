@@ -45,8 +45,8 @@ if args.rebin != 1:
 draw_mva = """
 CMS_style.cd()
 canvas = ROOT.TCanvas("", "", 600, 600)
-legend = ROOT.TLegend(0.6, 0.8, 0.93, 0.92, f"{c}")
-legend.SetNColumns(2)
+legend = ROOT.TLegend(0.55, 0.8, 0.93, 0.92, f"{c}")
+legend.SetNColumns(3)
 legend.SetTextFont(42)
 legend.SetBorderSize(1)
 
@@ -76,11 +76,11 @@ hbt.SetMarkerStyle(20)
 
 legend.AddEntry(hs, "Signal", "lf")
 legend.AddEntry(hst, "Signal (Train)", "ep")
-#legend.AddEntry("", f"KS-S {ks_signal}", "")
+legend.AddEntry("", f"KS-S {ks_signal}", "")
 
 legend.AddEntry(hb, "Bkg", "lf")
 legend.AddEntry(hbt, "Bkg (Train)", "ep")
-#legend.AddEntry("", f"KS-B {ks_bkg}", "")
+legend.AddEntry("", f"KS-B {ks_bkg}", "")
 
 frame = max(hs, hst, hb, hbt, key=lambda x: x.GetMaximum()).Clone("frame")
 frame.SetMaximum(1.4 * frame.GetMaximum())
