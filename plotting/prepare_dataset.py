@@ -116,6 +116,9 @@ for key in samples_dict:
         print("=========================================")
         print("loading ... ", key, sample["name"])
 
+        # Disable MT because TMVA Evaluation is not thread-safe
+        ROOT.ROOT.DisableImplicitMT()
+
         df = ROOT.RDataFrame("Events", root_file)
         variables_out = ROOT.std.vector("string")()
 
