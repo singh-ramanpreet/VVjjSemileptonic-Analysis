@@ -15,6 +15,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--datasets", type=str, default="../datasets_2016.json",
                     help="json file: info of datasets, default=%(default)s")
 
+parser.add_argument("--sample-tag", dest="sample_tag", type=str, default="all",
+                    help="sample tag to process from json file, default=%(default)s")
+
 parser.add_argument("--year", type=str, default="2016",
                     help="dataset year, default=%(default)s")
 
@@ -93,6 +96,8 @@ samples_dict = json.load(open(args.datasets, "r"))
 
 for key in samples_dict:
 
+    if args.sample_tag != "all" and args.sample_tag != key: continue
+
     location = samples_dict[key]["location"]
     filelist = samples_dict[key]["filelist"]
     lumi = samples_dict[key]["lumi"]
@@ -124,24 +129,23 @@ for key in samples_dict:
 
         # making it sure for data
         # will set them equal to 1.0f
-        if "data" in key:
-            weights_map_DATA = [
-                "btag0_weight",
-                "gen_weight",
-                "pu_weight",
-                "pu_weight_PUUp",
-                "pu_weight_PUDown",
-                "lept1_trig_eff_weight",
-                "lept2_trig_eff_weight",
-                "lept1_id_eff_weight",
-                "lept2_id_eff_weight",
-                "L1PFWeight",
-            ]
+        weights_map_DATA = [
+            "btag0_weight",
+             "gen_weight",
+             "pu_weight",
+             "pu_weight_PUUp",
+             "pu_weight_PUDown",
+             "lept1_trig_eff_weight",
+             "lept2_trig_eff_weight",
+             "lept1_id_eff_weight",
+             "lept2_id_eff_weight",
+             "L1PFWeight",
+        ]
 
         for new_name, var_name in variables_map.items():
             variables_out.push_back(new_name)
             if new_name != var_name:
-                if new_name in weights_map_DATA:
+                if new_name in weights_map_DATA and "data" in key:
                     print(f"Setting <== {new_name} ==> equal to 1.0f for DATA")
                     df = df.Define(new_name, "1.0f")
                 else:

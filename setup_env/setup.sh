@@ -9,6 +9,8 @@ PY_VER=`python -c "import sys; print('python{0}.{1}'.format(*sys.version_info))"
 export PYTHONPATH=$PYTHONUSERBASE/lib/$PY_VER/site-packages:$PYTHONPATH
 PATH=$PYTHONUSERBASE/bin:$PATH
 
-echo "pip install --user -r ${DIR}/requirements.txt"
+if [[ ${1} == "with-install" ]]; then
+    pip install --user -r requirements.txt
+fi
 
 cd -
