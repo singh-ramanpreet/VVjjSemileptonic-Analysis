@@ -1,0 +1,147 @@
+{
+    "run": "run",
+    "evt": "evt",
+
+    "gen_weight": "genWeight",
+
+    "pu_weight": "puWeight",
+    "pu_weight_PUUp": "puWeight_Up",
+    "pu_weight_PUDown": "puWeight_Dn",
+
+    "L1PFWeight": "L1PFWeight",
+
+    "LHEWeight": "LHEWeight",
+
+    "lept1_pt": "lep1_pt",
+    "lept1_lepPtUp": "lep1_pt_scaleUp",
+    "lept1_lepPtDown": "lep1_pt_scaleDn",
+
+    "lept1_eta": "lep1_eta",
+    "lept1_phi": "lep1_phi",
+    "lept1_m": "lep1_m",
+    "lept1_q": "lep1_q",
+    "lept1_id_eff_weight": "lep1_idEffWeight",
+    "lept1_trig_eff_weight": "1.0f",
+
+    "lept2_pt": "lep2_pt",
+    "lept2_lepPtUp": "lep2_pt_scaleUp",
+    "lept2_lepPtDown": "lep2_pt_scaleDn",
+
+    "lept2_eta": "lep2_eta",
+    "lept2_phi": "lep2_phi",
+    "lept2_m": "lep2_m",
+    "lept2_q": "lep2_q",
+    "lept2_id_eff_weight": "lep2_idEffWeight",
+    "lept2_trig_eff_weight": "1.0f",
+
+    "lept_channel": "lept1_m > 0.105 ? 0: 1",
+
+    "pf_met_corr": "MET",
+    "pf_met_corr_jesUp": "MET_scaleUp",
+    "pf_met_corr_jesDown": "MET_scaleDn",
+
+    "pf_met_corr_phi": "MET_phi",
+
+    "nBTagJet_loose": "nBtag_loose",
+    "btag0_weight": "1.0f",
+
+    "vbf_j1_pt": "vbf1_AK4_pt",
+    "vbf_j1_pt_jesUp": "vbf1_AK4_pt_scaleUp",
+    "vbf_j1_pt_jesDown": "vbf1_AK4_pt_scaleDn",
+
+    "vbf_j1_eta": "vbf1_AK4_eta",
+    "vbf_j1_phi": "vbf1_AK4_phi",
+    "vbf_j1_gqid": "vbf1_AK4_gqid.vbf1_AK4_qgid",
+
+    "vbf_j2_pt": "vbf2_AK4_pt",
+    "vbf_j2_pt_jesUp": "vbf2_AK4_pt_scaleUp",
+    "vbf_j2_pt_jesDown": "vbf2_AK4_pt_scaleDn",
+
+    "vbf_j2_eta": "vbf2_AK4_eta",
+    "vbf_j2_phi": "vbf2_AK4_phi",
+    "vbf_j2_gqid": "vbf2_AK4_gqid.vbf2_AK4_qgid",
+
+    "vbf_jj_m": "vbf_m",
+    "vbf_jj_m_jesUp": "vbf_m_scaleUp",
+    "vbf_jj_m_jesDown": "vbf_m_scaleDn",
+
+    "fatjet_m": "bos_PuppiAK8_m_sd0_corr",
+    "fatjet_m_jesUp": "bos_PuppiAK8_m_sd0_corr_scaleUp",
+    "fatjet_m_jesDown": "bos_PuppiAK8_m_sd0_corr_scaleDn",
+
+    "fatjet_pt": "bos_PuppiAK8_pt",
+    "fatjet_pt_jesUp": "bos_PuppiAK8_pt_scaleUp",
+    "fatjet_pt_jesDown": "bos_PuppiAK8_pt_scaleDn",
+
+    "fatjet_eta": "bos_PuppiAK8_eta",
+    "fatjet_phi": "bos_PuppiAK8_phi",
+    "fatjet_tau21": "bos_PuppiAK8_tau2tau1",
+
+    "dijet_pt": "bos_AK4AK4_pt",
+    "dijet_pt_jesUp": "bos_AK4AK4_pt_scaleUp",
+    "dijet_pt_jesDown": "bos_AK4AK4_pt_scaleDn",
+
+    "dijet_m": "bos_AK4AK4_m",
+    "dijet_m_jesUp": "bos_AK4AK4_m_scaleUp",
+    "dijet_m_jesDown": "bos_AK4AK4_m_scaleDn",
+
+    "dijet_phi": "bos_AK4AK4_phi",
+    "dijet_eta": "bos_AK4AK4_eta",
+
+    "dijet_j1_pt": "bos_j1_AK4_pt",
+    "dijet_j1_pt_jesUp": "bos_j1_AK4_pt_scaleUp",
+    "dijet_j1_pt_jesDown": "bos_j1_AK4_pt_scaleDn",
+
+    "dijet_j1_eta": "bos_j1_AK4_eta",
+    "dijet_j1_phi": "bos_j1_AK4_phi",
+
+    "dijet_j2_pt": "bos_j2_AK4_pt",
+    "dijet_j2_pt_jesUp": "bos_j2_AK4_pt_scaleUp",
+    "dijet_j2_pt_jesDown": "bos_j2_AK4_pt_scaleDn",
+
+    "dijet_j2_eta": "bos_j2_AK4_eta",
+    "dijet_j2_phi": "bos_j2_AK4_phi",
+
+    "v_m": "dilep_m",
+    "v_m_jesUp": "dilep_m_scaleUp",
+    "v_m_jesDown": "dilep_m_scaleDn",
+
+    "v_pt": "dilep_pt",
+    "v_pt_jesUp": "dilep_pt_scaleUp",
+    "v_pt_jesDown": "dilep_pt_scaleDn",
+
+    "v_eta": "dilep_eta",
+    "v_phi": "dilep_phi",
+
+    "v_mt": "sqrt(v_m*v_m + v_pt*v_pt)",
+    "v_mt_jesUp": "sqrt(v_m_jesUp*v_m_jesUp + v_pt_jesUp*v_pt_jesUp)",
+    "v_mt_jesDown": "sqrt(v_m_jesDown*v_m_jesDown + v_pt_jesDown*v_pt_jesDown)",
+
+    "vv_m": "dibos_m",
+    "vv_m_jesUp": "dibos_m_scaleUp",
+    "vv_m_jesDown": "dibos_m_scaleDn",
+
+    "vv_pt": "dibos_pt",
+    "vv_pt_jesUp": "dibos_pt_scaleUp",
+    "vv_pt_jesDown": "dibos_pt_scaleDn",
+
+    "vv_eta": "dibos_eta",
+    "vv_phi": "dibos_phi",
+
+    "zeppenfeld_v": "zeppHad",
+    "zeppenfeld_w": "zeppLep",
+    "boson_centrality": "bosCent",
+
+    "vbf_jj_Deta": "fabs(vbf_j1_eta - vbf_j2_eta)",
+
+    "ht": "fatjet_pt + vbf_j1_pt + vbf_j2_pt",
+    "ht_jesUp": "fatjet_pt_jesUp + vbf_j1_pt_jesUp + vbf_j2_pt_jesUp",
+    "ht_jesDown": "fatjet_pt_jesDown + vbf_j1_pt_jesDown + vbf_j2_pt_jesDown",
+
+    "ht_resolved": "dijet_j1_pt + dijet_j2_pt + vbf_j1_pt + vbf_j2_pt",
+    "ht_resolved_jesUp": "dijet_j1_pt_jesUp + dijet_j2_pt_jesUp + vbf_j1_pt_jesUp + vbf_j2_pt_jesUp",
+    "ht_resolved_jesDown": "dijet_j1_pt_jesDown + dijet_j2_pt_jesDown + vbf_j1_pt_jesDown + vbf_j2_pt_jesDown",
+
+    "zeppenfeld_w_Deta": "zeppenfeld_w / vbf_jj_Deta",
+    "zeppenfeld_v_Deta": "zeppenfeld_v / vbf_jj_Deta"
+}

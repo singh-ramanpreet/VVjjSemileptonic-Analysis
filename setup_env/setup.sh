@@ -2,7 +2,7 @@
 
 DIR=$( dirname "${BASH_SOURCE[0]}" )
 cd $DIR
-source /cvmfs/sft.cern.ch/lcg/views/LCG_96python3/x86_64-centos7-gcc8-opt/setup.sh
+source /cvmfs/sft.cern.ch/lcg/views/LCG_97python3/x86_64-centos7-gcc8-opt/setup.sh
 
 export PYTHONUSERBASE=`pwd`
 PY_VER=`python -c "import sys; print('python{0}.{1}'.format(*sys.version_info))"`

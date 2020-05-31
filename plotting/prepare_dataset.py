@@ -1,94 +1,94 @@
 #!/usr/bin/env python3
 
 import argparse
-import ROOT
-ROOT.PyConfig.IgnoreCommandLineOptions = True
 import os
 import json
-import numpy as np
-import awkward
-import uproot
+import ROOT
+
+from collections import OrderedDict
 from pprint import pprint
-from array import array
-from root_numpy.tmva import evaluate_reader
+
+ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument(
-    "--datasets", type=str, default="../datasets_2016.json",
-    help="json file: info of datasets, default=%(default)s"
-    )
+parser.add_argument("--datasets", type=str, default="../datasets_2016.json",
+                    help="json file: info of datasets, default=%(default)s")
 
-parser.add_argument(
-    "--year", type=str, default="2016",
-    help="dataset year, default=%(default)s"
-    )
+parser.add_argument("--year", type=str, default="2016",
+                    help="dataset year, default=%(default)s")
 
-parser.add_argument(
-    "--variables", type=str, default="../variables_map.json",
-    help="json file: variables central and systematic map, default=%(default)s"
-    )
+parser.add_argument("--variables", type=str, default="../variables_map.json",
+                    help="json file: variables central and systematic map, default=%(default)s")
 
-parser.add_argument(
-    "--systematic", type=str, default="central",
-    help="variables point to given systematic, default=%(default)s"
-    )
+parser.add_argument("--mva-name", dest="mva_name", action="append",
+                    help="name of mva: wjj, wv, zjj, zv, default=%(default)s")
 
-parser.add_argument(
-    "--output", type=str, default="df_dataset.awkd",
-    help="awkd file output name, default=%(default)s"
-    )
+parser.add_argument("--mva-xml", dest="mva_xml", action="append",
+                    help="mva training weight file (xml), default=%(default)s")
 
-parser.add_argument(
-    "--suffix-out", dest="suffix_out", type=str, default="BDT",
-    help="additional suffix in output filename, default=%(default)s"
-    )
+parser.add_argument("--mva-var-list", dest="mva_var_list", action="append",
+                    help="mva training variable list, default=%(default)s")
 
-parser.add_argument(
-    "--mva", type=str, default="",
-    help="mva training weight file (xml), default=%(default)s"
-    )
-
-parser.add_argument(
-    "--mva-var-list", dest="mva_vars", type=str, default="",
-    help="mva training variable list, default=%(default)s"
-    )
+parser.add_argument("--output", type=str, default="2016",
+                    help="output directory, default=%(default)s")
 
 args = parser.parse_args()
 
-# map variables to be used
-print(f"Preparing data_frames for systematic '{args.systematic}'")
+# variables map
+variables_map = OrderedDict(json.load(open(args.variables, "r")))
+pprint(variables_map, width=120)
 
-variables_mapped = {}
-variables_map = json.load(open(args.variables, "r"))
+# make TMVA readers in ROOT c++ namespace
+if len(args.mva_name) != 0:
 
-for name_ in variables_map:
-    systematic = args.systematic
-    if systematic != "central":
-        if systematic in variables_map[name_]:
-            print(f"using systematic '{systematic}' for '{name_}'")
-        else:
-            systematic = "central"
+    evaluate_mva_var_list = {i: {} for i in args.mva_name}
 
-    variables_mapped[name_] = variables_map[name_][systematic]
+    for mva_name, mva_xml, mva_var_list in zip(args.mva_name, args.mva_xml, args.mva_var_list):
 
-#pprint(variables_mapped, width=1)
-ttree_branches = list(variables_mapped.values())
+        print(f"MVA: {mva_name} --> training file: {mva_xml} --> variables list: {mva_var_list}")
 
-# TMVA Reader
-if args.mva != "":
-    mva_variables = open(args.mva_vars).readlines()
-    mva_variables = [i.rstrip("\n") for i in mva_variables]
+        mva_variables = open(mva_var_list).readlines()
+        mva_variables = [i.rstrip("\n") for i in mva_variables]
 
-    mva_reader = ROOT.TMVA.Reader()
+        ROOT.gInterpreter.ProcessLine(f"TMVA::Reader mva_reader_{mva_name};")
+        for var in mva_variables:
+             ROOT.gInterpreter.ProcessLine(f"""
+             Float_t {var}_{mva_name};
+             mva_reader_{mva_name}.AddVariable("{var}", &{var}_{mva_name});
+             """)
+        ROOT.gInterpreter.ProcessLine(f"""
+        mva_reader_{mva_name}.BookMVA("BDT", "{mva_xml}")
+        """)
 
-    for var in mva_variables:
-        mva_reader.AddVariable(var, array("f", [-999.0]))
+        # central
+        evaluate_mva_var_list[mva_name]["central"] = f"std::vector<Double_t>{{{','.join(mva_variables)}}}"
+        # jesUp, jesDown
+        systematics = ("jesUp", "jesDown")
+        for systematic in systematics:
+            var_list_ = []
+            for var in mva_variables:
+                if var == "v_m" and (mva_name == "zjj" or mva_name == "zv"):
+                    var_list_.append(var)
+                elif var + "_" + systematic in variables_map:
+                    var_list_.append(var + "_" + systematic)
+                else:
+                    var_list_.append(var)
 
-    mva_reader.BookMVA("BDT", args.mva)
+            evaluate_mva_var_list[mva_name][systematic] = f"std::vector<Double_t>{{{','.join(var_list_)}}}"
+
+        print("=========================================")
+        print(f"MVA {mva_name} will be evaluated with: ")
+        print("central: -->")
+        print(evaluate_mva_var_list[mva_name]["central"])
+        for systematic in systematics:
+            print(f"{systematic}: -->")
+            print(evaluate_mva_var_list[mva_name][systematic])
+        print("=========================================")
+
+#input("....")
 
 # Loop over samples
-dfs = {}
 samples_dict = json.load(open(args.datasets, "r"))
 
 for key in samples_dict:
@@ -113,67 +113,58 @@ for key in samples_dict:
 
         xs_weight = (lumi * xs) / (nMC - (2 * nMCneg))
 
+        print("=========================================")
         print("loading ... ", key, sample["name"])
 
-        df = uproot.lazyarrays(root_file, "Events", branches=ttree_branches, persistvirtual=True)
+        df = ROOT.RDataFrame("Events", root_file)
+        variables_out = ROOT.std.vector("string")()
 
-        for new_name, var_name in variables_mapped.items():
-            df[new_name] = df[var_name]
-            if new_name != var_name:
-                del df[var_name]
-
-        # some derived columns
-        df["vbf_jj_Deta"] = np.abs(df["vbf_j1_eta"] - df["vbf_j2_eta"])
-        df["fatjet_n2b1"] = df["fatjet_e3_v2_sdb1"] / (df["fatjet_e2_sdb1"])**2
-        df["fatjet_n2b2"] = df["fatjet_e3_v2_sdb2"] / (df["fatjet_e2_sdb2"])**2
-        df["ht"] = df["fatjet_pt"] + df["vbf_j1_pt"] + df["vbf_j2_pt"]
-        df["ht_resolved"] = df["dijet_j1_pt"] + df["dijet_j2_pt"] + df["vbf_j1_pt"] + df["vbf_j2_pt"]
-        df["zeppenfeld_w_Deta"] = df["zeppenfeld_w"] / df["vbf_jj_Deta"]
-        df["zeppenfeld_v_Deta"] = df["zeppenfeld_v"] / df["vbf_jj_Deta"]
-
-        df["lept_channel"] = (df["lept1_m"] != 0.1056583745).astype(int)
-        df["v_mt"] = np.sqrt(df["v_m"]**2 + df["v_pt"]**2)
-
-        # till they are available
-        df["trig_eff_weight"] = 1.0
-        df["trig_eff_weight2"] = 1.0
-        df["btag0_weight"] = 1.0
-
+        # making it sure for data
+        # will set them equal to 1.0f
         if "data" in key:
-            df["gen_weight"] = 1.0
-            df["pu_weight"] = 1.0
-            df["pu_weight_up"] = 1.0
-            df["pu_weight_down"] = 1.0
-            df["trig_eff_weight"] = 1.0
-            df["trig_eff_weight2"] = 1.0
-            df["id_eff_weight"] = 1.0
-            df["id_eff_weight2"] = 1.0
-            df["btag0_weight"] = 1.0
-            df["L1PFWeight"] = 1.0
+            weights_map_DATA = [
+                "btag0_weight",
+                "gen_weight",
+                "pu_weight",
+                "pu_weight_PUUp",
+                "pu_weight_PUDown",
+                "lept1_trig_eff_weight",
+                "lept2_trig_eff_weight",
+                "lept1_id_eff_weight",
+                "lept2_id_eff_weight",
+                "L1PFWeight",
+            ]
 
-        if args.mva != "":
-            var_data = np.column_stack(tuple([df[var] for var in mva_variables]))
-            mva_score = evaluate_reader(mva_reader, "BDT", var_data)
-            df["mva_score"] = mva_score
-        else:
-            df["mva_score"] = -999.0
+        for new_name, var_name in variables_map.items():
+            variables_out.push_back(new_name)
+            if new_name != var_name:
+                if new_name in weights_map_DATA:
+                    print(f"Setting <== {new_name} ==> equal to 1.0f for DATA")
+                    df = df.Define(new_name, "1.0f")
+                else:
+                    df = df.Define(new_name, var_name)
 
-        print(df["mva_score"][:5])
+        if len(args.mva_name) != 0:
+            for mva_ in args.mva_name:
+                for sys in ("central", "jesUp", "jesDown"):
+                    mva_value = f"mva_reader_{mva_}.EvaluateMVA({evaluate_mva_var_list[mva_][sys]}, \"BDT\")"
+                    if sys == "central":
+                        mva_out_name = f"mva_score_{mva_}"
+                    else:
+                        mva_out_name = f"mva_score_{mva_}_{sys}"
+                    print(f"MVA {mva_} {sys} value is stored in: {mva_out_name}, calculated using {mva_value.split('.')[0]}")
 
-        dfs[f"{key}/{sample['name']}"] = {"xs_weight": xs_weight, "dframe": df}
+                    df = df.Define(mva_out_name, mva_value)
+                    variables_out.push_back(mva_out_name)
 
-output_filename = args.output
-output_ = args.output.split(".awkd")[0]
-output_ = f"{output_}_{args.year}"
+        df = df.Define("sample_tag", "return std::string(\""+key+"\");")
+        variables_out.push_back("sample_tag")
 
-if args.mva != "":
-    mva_tag = f"_{args.suffix_out}"
-else:
-    mva_tag = ""
+        df = df.Define("xs_weight", str(xs_weight))
+        variables_out.push_back("xs_weight")
 
-if args.systematic == "central":
-    output_filename = f"{output_}{mva_tag}.awkd"
-else:
-    output_filename = f"{output_}_{args.systematic}{mva_tag}.awkd"
+        os.makedirs(args.output, exist_ok=True)
+        output_filename = f"{args.output}/{sample['name']}"
+        df.Snapshot("Events", output_filename, variables_out)
 
-awkward.save(output_filename, dfs, mode="w")
+print("DONE")
