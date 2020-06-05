@@ -18,9 +18,8 @@ args = parser.parse_args()
 
 
 ROOT.ROOT.EnableImplicitMT(4)
-
-
 df = ROOT.RDataFrame("Events", f"{args.in_dir}/*.root")
+
 
 samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", "WJets", "DYJets_LO", "DYJets_HT", "DYJets_NLO"]
 
@@ -295,6 +294,22 @@ def merge_overflow_bin(hist):
     n = hist.GetNbinsX()
     hist.SetBinContent(n, hist.GetBinContent(n) + hist.GetBinContent(n + 1))
 
+
+# start the event loop
+#progress_counter = df.Histo1D(("progress", "progress", 1, 0, 1), "evt")
+#ROOT.gInterpreter.ProcessLine("""
+#    const auto poolSize = ROOT::GetImplicitMTPoolSize();
+#    auto cpph = (ROOT::RDF::RResultPtr<TH1D> * )TPython::Eval("progress_counter");
+#    auto print_entries = [&poolSize](unsigned int, TH1D &h_)
+#    {
+#        int entries = h_.GetEntries();
+#        std::cout<< ">>> Entries processed: " << entries << " per thread"<< std::endl;
+#    };
+#    cpph->OnPartialResultSlot(10000, print_entries);
+#    progress_counter.GetValue()
+#""")
+
+
 out = ROOT.TFile(args.output, "recreate")
 histograms_dict_v = {}
 
@@ -315,4 +330,4 @@ for region in histograms_dict:
 out.cd()
 out.Close()
 
-ROOT.RDF.SaveGraph(df, f"{args.output.replace('.root', '.dot')}")
+#ROOT.RDF.SaveGraph(df, f"{args.output.replace('.root', '.dot')}")
