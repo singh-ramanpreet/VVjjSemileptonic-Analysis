@@ -1,157 +1,192 @@
 #!/usr/bin/env python3
 
-import sys
-import os
-import json
-import numpy as np
 import ROOT
-ROOT.PyConfig.IgnoreCommandLineOptions = True
-import awkward
-import uproot
 import argparse
-import importlib
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument(
-    "--dframes", type=str, default="df.awkd",
-    help="awkd file of datasets df prepared, default=%(default)s"
-    )
+parser.add_argument("--in-dir", dest="in_dir", type=str, default="../2018_May11",
+                    help="region to produce hists for, default=%(default)s")
 
-parser.add_argument(
-    "--lepton", type=str, default="m",
-    help="muon or electron channel, default=%(default)s"
-    )
+parser.add_argument("--regions", action="append", default=[],
+                    help="region to produce hists for, default=%(default)s")
 
-parser.add_argument(
-    "--boson", type=str, default="W",
-    help="W or Z, default=%(default)s"
-    )
-
-parser.add_argument(
-    "--region", type=str, default="signal_loose_W",
-    help="region , default=%(default)s"
-    )
-
-parser.add_argument(
-    "--output", type=str, default="",
-    help="output filename, default='region'_'info_out'_'lepton'.root"
-    )
-
-parser.add_argument(
-    "--info_out", type=str, default="",
-    help="additional string in output filename, default=%(default)s"
-    )
-
-parser.add_argument(
-    "--apply-L1PF", dest="apply_L1PF", action="store_true",
-    help="apply L1 pre-fire weight, default=%(default)s"
-    )
+parser.add_argument("--output", type=str, default="hists.root",
+                    help="hists output filename, default=%(default)s")
 
 args = parser.parse_args()
 
-# samples dict
-# ============
-samples_dict = list(awkward.load(args.dframes))
-samples_dict = dict.fromkeys([i.split("/")[0] for i in samples_dict])
 
-# a class to book multiple hists
-# ==============================
-class book_hist_dict:
-    def __init__(self, xbins, xlow=0, xup=1, titleX="",
-                 ybins=None, ylow=None, yup=None, titleY="",
-                 keys=[], keys_sub=[]):
-        self.xbins = xbins
-        self.xlow = xlow
-        self.xup = xup
-        self.titleX = titleX
-        self.ybins = ybins
-        self.ylow = ylow
-        self.yup = yup
-        self.titleY = titleY
-        self.keys = keys
-        self.keys_sub = keys_sub
+ROOT.ROOT.EnableImplicitMT(4)
+df = ROOT.RDataFrame("Events", f"{args.in_dir}/*.root")
 
-    def hist_1D(self):
-        if type(self.xbins) == int:
-            variable = ROOT.TH1F("", "", self.xbins, self.xlow, self.xup)
-            bw = variable.GetBinWidth(1)
 
-        elif type(self.xbins) == np.ndarray:
-            variable = ROOT.TH1F("", "", len(self.xbins) - 1, self.xbins.astype(np.float64))
-            bw = None
+samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", "WJets", "DYJets_LO", "DYJets_HT", "DYJets_NLO"]
 
-        else:
-            return None
+df_samples = {}
+for sample_ in samples_name:
+    df_samples[sample_] = df.Filter(f"sample_tag == \"{sample_}\"")
 
-        titleX = self.titleX
-        if bw is not None:
-            titleY = f"Events/{bw}"
-        else:
-            titleY = "Events"
 
-        variable.SetTitle(f"{titleX};{titleX};{titleY}")
-        variable.SetName(titleX)
+selections = {}
+selections["el_ch"] = "lept_channel == 1 && fabs(lept1_eta) < 2.5 && !(fabs(lept1_eta) > 1.4442 && fabs(lept1_eta) < 1.566)"
+selections["el2_ch"] = selections["el_ch"].replace("lept1", "lept2")
 
-        return variable
+selections["mu_ch"] = "lept_channel == 0 && fabs(lept1_eta) < 2.4"
+selections["mu2_ch"] = selections["mu_ch"].replace("lept1", "lept2")
 
-    def hist_2D(self):
-        if type(self.xbins) == int:
+selections["z_ch"] = "lept1_pt > LEPT1_PT_CUT && lept2_pt > LEPT2_PT_CUT" \
+                     " && lept1_q * lept2_q < 0" \
+                     " && v_m > 75 && v_m < 105"
 
-            if type(self.ybins) == int:
-                variable = ROOT.TH2F("", "", self.xbins, self.xlow, self.xup,
-                                     self.ybins, self.ylow, self.yup)
+selections["w_ch"] = "lept1_pt > LEPT1_PT_CUT && pf_met_corr > MET_CUT" \
+                     " && lept2_pt < 0"
 
-            elif type(self.ybins) == np.ndarray:
-                variable = ROOT.TH2F("", "", self.xbins, self.xlow, self.xup,
-                                     len(self.ybins) - 1, self.ybins.astype(np.float64))
+selections["z_mu_ch"] = selections["z_ch"] + " && " + selections["mu_ch"] + " && " + selections["mu2_ch"]
+selections["z_el_ch"] = selections["z_ch"] + " && " + selections["el_ch"] + " && " + selections["el2_ch"]
 
-        elif type(self.xbins) == np.ndarray:
-            if type(self.ybins) == int:
-                variable = ROOT.TH2F("", "", len(self.xbins) - 1, self.xbins.astype(np.float64),
-                                     self.ybins, self.ylow, self.yup)
+selections["w_mu_ch"] = selections["w_ch"] + " && " + selections["mu_ch"] + " && " + selections["mu2_ch"]
+selections["w_el_ch"] = selections["w_ch"] + " && " + selections["el_ch"] + " && " + selections["el2_ch"]
 
-            elif type(self.ybins) == np.ndarray:
-                variable = ROOT.TH2F("", "", len(self.xbins) - 1, self.xbins.astype(np.float64),
-                                     len(self.ybins) - 1, self.ybins.astype(np.float64))
+selections["vbf_jets"] = "vbf_jj_m > 500" \
+                         " && vbf_j1_pt > 50" \
+                         " && vbf_j2_pt > 50" \
+                         " && vbf_jj_Deta > 2.5"
 
-        else:
-            return None
+selections["resolved_jets"] = "dijet_pt > 0" \
+                                " && dijet_j2_pt > 30" \
+                                " && dijet_j1_pt > 30" \
+                                " && dijet_m > 65 && dijet_m < 105"
 
-        titleX = self.titleX
-        titleY = self.titleY
+selections["resolved_jets_sb"] = "dijet_pt > 0" \
+                                " && dijet_j2_pt > 30" \
+                                " && dijet_j1_pt > 30" \
+                                " && ((dijet_m > 40 && dijet_m < 65) || (dijet_m > 105 && dijet_m < 150))"
 
-        variable.SetTitle(f"{titleX}_{titleY};{titleX};{titleY}")
-        variable.SetName(f"{titleX}_{titleY}")
+selections["boosted_jets"] = "fatjet_pt > 200" \
+                                " && fabs(fatjet_eta) < 2.4" \
+                                " && fatjet_tau21 < 0.55" \
+                                " && fatjet_m > 65 && fatjet_m < 105"
 
-        return variable
+selections["boosted_jets_sb"] = "fatjet_pt > 200" \
+                                " && fabs(fatjet_eta) < 2.4" \
+                                " && fatjet_tau21 < 0.55" \
+                                " && ((fatjet_m > 40 && fatjet_m < 65) || (fatjet_m > 105 && fatjet_m < 150))"
 
-    def clone(self):
 
-        if self.ybins is None:
-            hist_ = self.hist_1D()
-        else:
-            hist_ = self.hist_2D()
+#"boson_centrality > 0.0"
+#"zeppenfeld_w_Deta < 1.0"
+#"zeppenfeld_v_Deta < 1.0"
 
-        hist_dict = {}
+##############
+### ZJJ
+selections["z_common_m"] = selections["z_mu_ch"].replace("LEPT1_PT_CUT", "35").replace("LEPT2_PT_CUT", "20") \
+                            + " && " + selections["vbf_jets"] \
+                            + " && nBTagJet_loose == 0"
 
-        for key in self.keys:
-            name_ = f"{key}_{hist_.GetName()}"
-            hist_dict[key] = hist_.Clone()
-            hist_dict[key].SetName(name_)
+selections["z_common_e"] = selections["z_el_ch"].replace("LEPT1_PT_CUT", "40").replace("LEPT2_PT_CUT", "20") \
+                            + " && " + selections["vbf_jets"] \
+                            + " && nBTagJet_loose == 0"
 
-            for key_sub in self.keys_sub:
-                name = f"{name_}_{key_sub}"
-                hist_dict[f"{key}_{key_sub}"] = hist_.Clone()
-                hist_dict[f"{key}_{key_sub}"].SetName(name)
+selections_regions = {}
+selections_regions["sr_zjj_m"] = selections["z_common_m"] + " && " + selections["resolved_jets"]
+selections_regions["sr_zjj_e"] = selections["z_common_e"] + " && " + selections["resolved_jets"]
 
-        return hist_dict
+selections_regions["cr_vjets_zjj_m"] = selections["z_common_m"] + " && " + selections["resolved_jets_sb"]
+selections_regions["cr_vjets_zjj_e"] = selections["z_common_e"] + " && " + selections["resolved_jets_sb"]
 
-# book histograms
-# ===============
+selections_regions["cr_top_zjj_m"] = selections_regions["sr_zjj_m"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+selections_regions["cr_top_zjj_e"] = selections_regions["sr_zjj_e"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
 
-# xbins, xlow, xup, variable
-hists_1D = [
+### ZV
+selections_regions["sr_zv_m"] = selections["z_common_m"] + " && " + selections["boosted_jets"]
+selections_regions["sr_zv_e"] = selections["z_common_e"] + " && " + selections["boosted_jets"]
+
+selections_regions["cr_vjets_zv_m"] = selections["z_common_m"] + " && " + selections["boosted_jets_sb"]
+selections_regions["cr_vjets_zv_e"] = selections["z_common_e"] + " && " + selections["boosted_jets_sb"]
+
+selections_regions["cr_top_zv_m"] = selections_regions["sr_zv_m"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+selections_regions["cr_top_zv_e"] = selections_regions["sr_zv_e"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+
+##############
+##############
+### WJJ
+selections["w_common_m"] = selections["w_mu_ch"].replace("LEPT1_PT_CUT", "35").replace("MET_CUT", "40") \
+                            + " && " + selections["vbf_jets"] \
+                            + " && nBTagJet_loose == 0" 
+
+selections["w_common_e"] = selections["w_el_ch"].replace("LEPT1_PT_CUT", "40").replace("MET_CUT", "40") \
+                            + " && " + selections["vbf_jets"] \
+                            + " && nBTagJet_loose == 0"
+
+selections_regions["sr_wjj_m"] = selections["w_common_m"] + " && " + selections["resolved_jets"]
+selections_regions["sr_wjj_e"] = selections["w_common_e"] + " && " + selections["resolved_jets"]
+
+selections_regions["cr_vjets_wjj_m"] = selections["w_common_m"] + " && " + selections["resolved_jets_sb"]
+selections_regions["cr_vjets_wjj_e"] = selections["w_common_e"] + " && " + selections["resolved_jets_sb"]
+
+selections_regions["cr_top_wjj_m"] = selections_regions["sr_wjj_m"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+selections_regions["cr_top_wjj_e"] = selections_regions["sr_wjj_e"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+
+### WV
+selections_regions["sr_wv_m"] = selections["w_common_m"] + " && " + selections["resolved_jets"]
+selections_regions["sr_wv_e"] = selections["w_common_e"] + " && " + selections["resolved_jets"]
+
+selections_regions["cr_vjets_wv_m"] = selections["w_common_m"] + " && " + selections["resolved_jets_sb"]
+selections_regions["cr_vjets_wv_e"] = selections["w_common_e"] + " && " + selections["resolved_jets_sb"]
+
+selections_regions["cr_top_wv_m"] = selections_regions["sr_wv_m"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+selections_regions["cr_top_wv_e"] = selections_regions["sr_wv_e"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+
+##############
+
+weight_w = "xs_weight * gen_weight * pu_weight * btag0_weight * lept1_trig_eff_weight * lept1_id_eff_weight"
+weight_z =  weight_w + " * lept2_trig_eff_weight * lept2_id_eff_weight"
+
+##############
+
+jes_var_Z_replace = [
+    "vbf_jj_m",
+    "vbf_j1_pt",
+    "vbf_j2_pt",
+    "dijet_m",
+    "dijet_pt",
+    "dijet_j1_pt",
+    "dijet_j2_pt",
+    "fatjet_m",
+    "fatjet_pt"
+]
+
+jes_var_W_replace = jes_var_Z_replace
+
+for jes_sys in ("jesUp", "jesDown"):
+    
+    for region in ("sr_zjj_m", "sr_zjj_e", "sr_zv_m", "sr_zv_e"):
+        
+        temp_string = selections_regions[region]
+        
+        for jes_var in jes_var_Z_replace:
+            
+            temp_string = temp_string.replace(jes_var, f"{jes_var}_{jes_sys}")
+    
+        selections_regions[f"{region}_{jes_sys}"] =  temp_string
+
+
+    for region in ("sr_wjj_m", "sr_wjj_e", "sr_wv_m", "sr_wv_e"):
+        
+        temp_string = selections_regions[region]
+        
+        for jes_var in jes_var_W_replace:
+            
+            temp_string = temp_string.replace(jes_var, f"{jes_var}_{jes_sys}")
+    
+        selections_regions[f"{region}_{jes_sys}"] =  temp_string
+##############
+
+ROOT.TH1.SetDefaultSumw2()
+
+##############
+hists_models_1D = [
     (40, 0, 800, "lept1_pt"),
     (20, 0, 400, "lept2_pt"),
     (26, -2.6, 2.6, "lept1_eta"),
@@ -165,8 +200,6 @@ hists_1D = [
     (80, 200.0, 2000.0, "fatjet_pt"),
     (26, -2.6, 2.6, "fatjet_eta"),
     (34, -3.4, 3.4, "fatjet_phi"),
-    (40, 0.0, 0.5, "fatjet_n2b1"),
-    (40, 0.0, 0.4, "fatjet_n2b2"),
     (40, 0.0, 1.0, "fatjet_tau21"),
     # ak4ak4 jet
     (24, 30.0, 160.0, "dijet_m"),
@@ -196,360 +229,105 @@ hists_1D = [
     (20, -1.0, 1.0, "zeppenfeld_v_Deta"),
     # W V system
     (50, 0, 2500, "vv_m"),
-    (np.array([600, 700, 800, 900,
-               1000, 1200, 1500, 2000, 2500]), 0, 0, "vv_m_8bin"),
-    (np.array([50, 300, 500, 600, 700, 800, 900,
-               1000, 1200, 1500, 2000, 2500]), 0, 0, "vv_m_11bin"),
-    (1, 0.0, 1.0, "vv_m_3d"),
     (60, 0.0, 600.0, "vv_pt"),
     (20, -5.0, 5.0, "vv_eta"),
     (34, -3.4, 3.4, "vv_phi"),
-    (40, -1.0, 1.0, "mva_score"),
-    (30, -1.0, 1.0, "mva_score_30bin"),
-    (20, -1.0, 1.0, "mva_score_20bin"),
-    (10, -1.0, 1.0, "mva_score_10bin"),
-    (34, -1.0, 0.7, "mva_score_var1"),
-    (np.array([-1.0, -0.300, -0.150, 0.000, 0.100,
-               0.200, 0.300, 0.400, 0.500, 0.600, 1]), 0, 0, "mva_score_var10"),
-    (np.array([-1.0, -0.300, -0.150, 0.000, 0.100,
-               0.200, 0.300, 0.400, 0.500, 0.600, 0.700, 1]), 0, 0, "mva_score_var11"),
-    (np.array([-1.0, -0.350, -0.250, -0.150,
-               -0.050, -0.000, 0.100, 0.150,
-               0.250, 0.300, 0.350, 0.450,
-               0.500, 0.600, 0.650, 1]), 0, 0, "mva_score_var15"),
-    (np.array([-1.0, -0.400, -0.300, -0.200, -0.150,
-               -0.050, -0.000, 0.050, 0.100, 0.150,
-               0.200, 0.250, 0.300, 0.350, 0.400,
-               0.450, 0.500, 0.550, 0.600, 0.700, 1.0]), 0, 0, "mva_score_var20")
+    (40, -1.0, 1.0, "mva_score_wjj"),
+    (40, -1.0, 1.0, "mva_score_zjj"),
+    (40, -1.0, 1.0, "mva_score_wv"),
+    (40, -1.0, 1.0, "mva_score_zv")
 ]
 
-hists_2D = [
-    (40, 0.0, 0.5, "n2b1",
-     40, 0.0, 1.0, "tau21"),
-    (40, 0.0, 0.4, "n2b2",
-     40, 0.0, 1.0, "tau21"),
+hists_models_1D_jesUp = [
+    (40, -1.0, 1.0, "mva_score_wjj_jesUp"),
+    (40, -1.0, 1.0, "mva_score_zjj_jesUp"),
+    (40, -1.0, 1.0, "mva_score_wv_jesUp"),
+    (40, -1.0, 1.0, "mva_score_zv_jesUp")
 ]
 
-hist_keys = list(samples_dict.keys())
-
-ROOT.TH1.SetDefaultSumw2()
-
-for histogram in hists_1D:
-    make_hists = (
-        f"h_{histogram[3]} = book_hist_dict("
-        f"xbins=histogram[0], xlow=histogram[1],"
-        f"xup=histogram[2], titleX=histogram[3],"
-        f"keys=hist_keys)"
-    )
-    exec(f"{make_hists}.clone()")
-
-for histogram in hists_2D:
-    make_hists = (
-        f"h2_{histogram[3]}_{histogram[7]} = book_hist_dict("
-        f"xbins=histogram[0], xlow=histogram[1],"
-        f"xup=histogram[2], titleX=histogram[3],"
-        f"ybins=histogram[4], ylow=histogram[5],"
-        f"yup=histogram[6], titleY=histogram[7],"
-        f"keys=hist_keys)"
-    )
-    exec(f"{make_hists}.clone()")
-
-# fill ROOT histogram with numpy array
-# ===================================
-def fill_hist_1d(hist, array, weight=1.0, overflow_in_last_bin=False):
-
-    if len(array) == 0:
-        return None
-
-    if type(weight) == float:
-        for v in array:
-            hist.Fill(v, weight)
-
-    else:
-        for v, w in zip(array, weight):
-            hist.Fill(v, w)
-
-    if overflow_in_last_bin:
-        last_bin = hist.GetNbinsX()
-        last_content = hist.GetBinContent(last_bin)
-        overflow_bin = last_bin + 1
-        overflow_content = hist.GetBinContent(overflow_bin)
-
-        hist.SetBinContent(last_bin, last_content + overflow_content)
-        hist.SetBinContent(overflow_bin, 0.0)
-
-    return None
-
-def fill_hist_2d(hist, array1, array2, weight=1.0):
-
-    if len(array1) == 0:
-        return None
-
-    if type(weight) == float:
-        for v1, v2 in zip(array1, array2):
-            hist.Fill(v1, v2, weight)
-
-    else:
-        for v1, v2, w in zip(array1, array2, weight):
-            hist.Fill(v1, v2, w)
-
-    return None
-
-# total raw entries in data sets
-total_entries = book_hist_dict(xbins=1, titleX="total_entries").hist_1D()
-total_entries.SetCanExtend(ROOT.TH1.kAllAxes)
-
-# selection code import
-sel_code = importlib.import_module(f"selections.{args.region}")
-
-lep_channel = {
-    "e": sel_code.e_channel,
-    "m": sel_code.m_channel
-}
-
-if args.boson == "Z":
-    lep_channel2 = {
-        "e": sel_code.e_channel2,
-        "m": sel_code.m_channel2
-    }
-
-region_ = sel_code.region_
-
-apply_btag0Wgt = sel_code.apply_btag0Wgt
-
-# add selection code to root file
-code_text = open(f"selections/{args.region}.py").read()
-ttext = ROOT.TText(0.0, 0.0, "\n" + code_text)
-ttext.SetName("selection_code")
-
-
-# loop over samples, apply selections,
-# and fill histograms.
-# ===================================
-
-dfs = awkward.load(args.dframes)
-
-for i in dfs:
-
-    xs_weight = dfs[i]["xs_weight"]
-
-    df = dfs[i]["dframe"]
-
-    key = i.split("/")[0]
-    filename = i.split("/")[1]
-
-    print(key, xs_weight, filename)
-
-    lep_sel = lep_channel[args.lepton](df)
-    region_sel = region_(df, args.lepton)
-
-    if args.boson == "W":
-        skim_df = df[lep_sel & region_sel]
-        total_weight = xs_weight * skim_df["gen_weight"] * skim_df["trig_eff_weight"] \
-                        * skim_df["id_eff_weight"] * skim_df["pu_weight"]
-
-    if args.boson == "Z":
-        lep_sel2 = lep_channel2[args.lepton](df)
-        skim_df = df[lep_sel & lep_sel2 & region_sel]
-        total_weight = xs_weight * skim_df["gen_weight"] * skim_df["trig_eff_weight"] * skim_df["trig_eff_weight2"] \
-                        * skim_df["id_eff_weight"] * skim_df["id_eff_weight2"] * skim_df["pu_weight"]
-
-    if apply_btag0Wgt:
-        total_weight = total_weight * skim_df["btag0_weight"]
-
-    if args.apply_L1PF:
-        print("Applying L1 PreFire weights")
-        total_weight = total_weight * skim_df["L1PFWeight"]
-
-    print("filling hists .... ")
-
-    total_entries.Fill(key, len(skim_df))
-
-    lept1_pt = skim_df["lept1_pt"]
-    fill_hist_1d(h_lept1_pt[key], lept1_pt, total_weight, overflow_in_last_bin=True)
-
-    lept2_pt = skim_df["lept2_pt"]
-    fill_hist_1d(h_lept2_pt[key], lept2_pt, total_weight, overflow_in_last_bin=True)
-
-    lept1_eta = skim_df["lept1_eta"]
-    fill_hist_1d(h_lept1_eta[key], lept1_eta, total_weight)
-
-    lept2_eta = skim_df["lept2_eta"]
-    fill_hist_1d(h_lept2_eta[key], lept2_eta, total_weight)
-
-    lept1_phi = skim_df["lept1_phi"]
-    fill_hist_1d(h_lept1_phi[key], lept1_phi, total_weight)
-
-    lept2_phi = skim_df["lept2_phi"]
-    fill_hist_1d(h_lept2_phi[key], lept2_phi, total_weight)
-
-    pf_met_corr = skim_df["pf_met_corr"]
-    fill_hist_1d(h_pf_met_corr[key], pf_met_corr, total_weight, overflow_in_last_bin=True)
-
-    pf_met_corr_phi = skim_df["pf_met_corr_phi"]
-    fill_hist_1d(h_pf_met_corr_phi[key], pf_met_corr_phi, total_weight)
-
-    fatjet_m = skim_df["fatjet_m"]
-    fill_hist_1d(h_fatjet_m[key], fatjet_m, total_weight, overflow_in_last_bin=True)
-
-    fatjet_pt = skim_df["fatjet_pt"]
-    fill_hist_1d(h_fatjet_pt[key], fatjet_pt, total_weight, overflow_in_last_bin=True)
-
-    fatjet_eta = skim_df["fatjet_eta"]
-    fill_hist_1d(h_fatjet_eta[key], fatjet_eta, total_weight)
-
-    fatjet_phi = skim_df["fatjet_phi"]
-    fill_hist_1d(h_fatjet_phi[key], fatjet_phi, total_weight)
-
-    fatjet_n2b1 = skim_df["fatjet_n2b1"]
-    fill_hist_1d(h_fatjet_n2b1[key], fatjet_n2b1, total_weight, overflow_in_last_bin=True)
-
-    fatjet_n2b2 = skim_df["fatjet_n2b2"]
-    fill_hist_1d(h_fatjet_n2b2[key], fatjet_n2b2, total_weight, overflow_in_last_bin=True)
-
-    fatjet_tau21 = skim_df["fatjet_tau21"]
-    fill_hist_1d(h_fatjet_tau21[key], fatjet_tau21, total_weight, overflow_in_last_bin=True)
-
-    dijet_m = skim_df["dijet_m"]
-    fill_hist_1d(h_dijet_m[key], dijet_m, total_weight, overflow_in_last_bin=True)
-
-    dijet_pt = skim_df["dijet_pt"]
-    fill_hist_1d(h_dijet_pt[key], dijet_pt, total_weight, overflow_in_last_bin=True)
-
-    dijet_eta = skim_df["dijet_eta"]
-    fill_hist_1d(h_dijet_eta[key], dijet_eta, total_weight, overflow_in_last_bin=True)
-
-    dijet_j1_pt = skim_df["dijet_j1_pt"]
-    fill_hist_1d(h_dijet_j1_pt[key], dijet_j1_pt, total_weight, overflow_in_last_bin=True)
-
-    dijet_j2_pt = skim_df["dijet_j2_pt"]
-    fill_hist_1d(h_dijet_j2_pt[key], dijet_j2_pt, total_weight, overflow_in_last_bin=True)
-
-    dijet_j1_eta = skim_df["dijet_j1_eta"]
-    fill_hist_1d(h_dijet_j1_eta[key], dijet_j1_eta, total_weight, overflow_in_last_bin=True)
-
-    dijet_j2_eta = skim_df["dijet_j2_eta"]
-    fill_hist_1d(h_dijet_j2_eta[key], dijet_j2_eta, total_weight, overflow_in_last_bin=True)
-
-    v_pt = skim_df["v_pt"]
-    fill_hist_1d(h_v_pt[key], v_pt, total_weight, overflow_in_last_bin=True)
-
-    v_eta = skim_df["v_eta"]
-    fill_hist_1d(h_v_eta[key], v_eta, total_weight)
-
-    v_m = skim_df["v_m"]
-    fill_hist_1d(h_v_m[key], v_m, total_weight, overflow_in_last_bin=True)
-
-    v_mt = skim_df["v_mt"]
-    fill_hist_1d(h_v_mt[key], v_mt, total_weight, overflow_in_last_bin=True)
-
-    vbf_j1_pt = skim_df["vbf_j1_pt"]
-    fill_hist_1d(h_vbf_j1_pt[key], vbf_j1_pt, total_weight, overflow_in_last_bin=True)
-
-    vbf_j2_pt = skim_df["vbf_j2_pt"]
-    fill_hist_1d(h_vbf_j2_pt[key], vbf_j2_pt, total_weight, overflow_in_last_bin=True)
-
-    vbf_j1_eta = skim_df["vbf_j1_eta"]
-    fill_hist_1d(h_vbf_j1_eta[key], vbf_j1_eta, total_weight)
-
-    vbf_j2_eta = skim_df["vbf_j2_eta"]
-    fill_hist_1d(h_vbf_j2_eta[key], vbf_j2_eta, total_weight)
-
-    vbf_j1_phi = skim_df["vbf_j1_phi"]
-    fill_hist_1d(h_vbf_j1_phi[key], vbf_j1_phi, total_weight)
-
-    vbf_j2_phi = skim_df["vbf_j2_phi"]
-    fill_hist_1d(h_vbf_j2_phi[key], vbf_j2_phi, total_weight)
-
-    vbf_jj_Deta = skim_df["vbf_jj_Deta"]
-    fill_hist_1d(h_vbf_jj_Deta[key], vbf_jj_Deta, total_weight)
-
-    vbf_jj_m = skim_df["vbf_jj_m"]
-    fill_hist_1d(h_vbf_jj_m[key], vbf_jj_m, total_weight)
-
-    boson_centrality = skim_df["boson_centrality"]
-    fill_hist_1d(h_boson_centrality[key], boson_centrality, total_weight)
-
-    zeppenfeld_w_Deta = skim_df["zeppenfeld_w_Deta"]
-    fill_hist_1d(h_zeppenfeld_w_Deta[key], zeppenfeld_w_Deta, total_weight)
-
-    zeppenfeld_v_Deta = skim_df["zeppenfeld_v_Deta"]
-    fill_hist_1d(h_zeppenfeld_v_Deta[key], zeppenfeld_v_Deta, total_weight)
-
-    vv_m = skim_df["vv_m"]
-    fill_hist_1d(h_vv_m[key], vv_m, total_weight, overflow_in_last_bin=True)
-    fill_hist_1d(h_vv_m_8bin[key], vv_m, total_weight, overflow_in_last_bin=True)
-    fill_hist_1d(h_vv_m_11bin[key], vv_m, total_weight, overflow_in_last_bin=True)
-
-    # 3d fit histogram filling
-    # start
-    vv_m_bins = (150, 300, 450, 600, 1075, 1550, 2025, np.inf)
-    vbf_jj_Deta_bins = (4.0, 5.0, 6.0, 10.0)
-    vbf_jj_m_bins = (600, 800, 1200, np.inf)
-
-    if h_vv_m_3d[key].GetNbinsX() == 1:
-        new_x_bins = (len(vbf_jj_m_bins) - 1) * (len(vbf_jj_Deta_bins) - 1) * (len(vv_m_bins) - 1)
-        h_vv_m_3d[key].SetBins(new_x_bins, 0, new_x_bins)
-
-    vv_m_3d_data = np.column_stack([vbf_jj_m, vbf_jj_Deta, vv_m])
-    vv_m_3d_bins = (vbf_jj_m_bins, vbf_jj_Deta_bins, vv_m_bins)
-    vv_m_3d, vv_m_3d_edges = np.histogramdd(vv_m_3d_data, bins=vv_m_3d_bins, weights=total_weight)
-
-    vv_m_3d_flat = np.ndarray.flatten(vv_m_3d)
-    vv_m_3d_flat_bins = np.where(vv_m_3d_flat != 0.0)[0]
-    vv_m_3d_flat_weights = vv_m_3d_flat[vv_m_3d_flat_bins]
-
-    fill_hist_1d(h_vv_m_3d[key], vv_m_3d_flat_bins, vv_m_3d_flat_weights)
-    # end
-
-    vv_pt = skim_df["vv_pt"]
-    fill_hist_1d(h_vv_pt[key], vv_pt, total_weight, overflow_in_last_bin=True)
-
-    vv_eta = skim_df["vv_eta"]
-    fill_hist_1d(h_vv_eta[key], vv_eta, total_weight)
-
-    vv_phi = skim_df["vv_phi"]
-    fill_hist_1d(h_vv_phi[key], vv_phi, total_weight)
-
-    mva_score = skim_df["mva_score"]
-    fill_hist_1d(h_mva_score[key], mva_score, total_weight)
-    fill_hist_1d(h_mva_score_10bin[key], mva_score, total_weight)
-    fill_hist_1d(h_mva_score_20bin[key], mva_score, total_weight)
-    fill_hist_1d(h_mva_score_30bin[key], mva_score, total_weight)
-    fill_hist_1d(h_mva_score_var1[key], mva_score, total_weight, overflow_in_last_bin=True)
-    fill_hist_1d(h_mva_score_var10[key], mva_score, total_weight, overflow_in_last_bin=True)
-    fill_hist_1d(h_mva_score_var11[key], mva_score, total_weight, overflow_in_last_bin=True)
-    fill_hist_1d(h_mva_score_var15[key], mva_score, total_weight, overflow_in_last_bin=True)
-    fill_hist_1d(h_mva_score_var20[key], mva_score, total_weight, overflow_in_last_bin=True)
-
-    # 2D hists
-    #fill_hist_2d(h2_n2b1_tau21[key], fatjet_n2b1, fatjet_tau21, total_weight)
-    #fill_hist_2d(h2_n2b2_tau21[key], fatjet_n2b2, fatjet_tau21, total_weight)
-
-
-# write hists to root file
-# ========================
-
-if args.output == "":
-    out_hist_filename = f"{args.region}_{args.lepton}.root"
-    if args.info_out != "":
-        out_hist_filename = f"{args.region}_{args.info_out}_{args.lepton}.root"
-else:
-    out_hist_filename = args.output
-
-out_hist_file = ROOT.TFile(out_hist_filename, "recreate")
-out_hist_file.cd()
-
-for k in samples_dict:
-
-    for histogram in hists_1D:
-        exec(f"h_{histogram[3]}[k].Write()")
-
-    for histogram in hists_2D:
-        exec(f"h2_{histogram[3]}_{histogram[7]}[k].Write()")
-
-total_entries.Write()
-ttext.Write()
-
-out_hist_file.Write()
-out_hist_file.Close()
+hists_models_1D_jesDown = [
+    (40, -1.0, 1.0, "mva_score_wjj_jesDown"),
+    (40, -1.0, 1.0, "mva_score_zjj_jesDown"),
+    (40, -1.0, 1.0, "mva_score_wv_jesDown"),
+    (40, -1.0, 1.0, "mva_score_zv_jesDown")
+]
+
+
+histograms_dict = {}
+df_samples_regions = {}
+
+for region in args.regions:
+
+    print (selections_regions[region])
+
+    histograms_dict[region] = {}
+
+    for sample_ in samples_name:
+
+        df_samples_regions[sample_ + region] = df_samples[sample_].Filter(selections_regions[region])
+        print(sample_, region)
+
+        if ("zv" in region) or ("zjj" in region):
+            weight = weight_z
+        else:
+            weight = weight_w
+        print("Weight -> ", weight)
+
+
+        if "jesUp" in region:
+            hists_models = hists_models_1D_jesUp
+        elif "jesDown" in region:
+            hists_models = hists_models_1D_jesDown
+        else:
+            hists_models = hists_models_1D
+        
+        
+        for h_ in hists_models:
+            
+            hist_name = sample_+ "_" + h_[3]
+            hist_model = ROOT.RDF.TH1DModel(f"{hist_name}", f"{hist_name}", h_[0], h_[1], h_[2])               
+            histograms_dict[region][hist_name] = \
+                    df_samples_regions[sample_ + region].Define("total_weight", weight).Histo1D(hist_model, h_[3], "total_weight")
+
+
+def merge_overflow_bin(hist):
+    n = hist.GetNbinsX()
+    hist.SetBinContent(n, hist.GetBinContent(n) + hist.GetBinContent(n + 1))
+
+
+# start the event loop
+#progress_counter = df.Histo1D(("progress", "progress", 1, 0, 1), "evt")
+#ROOT.gInterpreter.ProcessLine("""
+#    const auto poolSize = ROOT::GetImplicitMTPoolSize();
+#    auto cpph = (ROOT::RDF::RResultPtr<TH1D> * )TPython::Eval("progress_counter");
+#    auto print_entries = [&poolSize](unsigned int, TH1D &h_)
+#    {
+#        int entries = h_.GetEntries();
+#        std::cout<< ">>> Entries processed: " << entries << " per thread"<< std::endl;
+#    };
+#    cpph->OnPartialResultSlot(10000, print_entries);
+#    progress_counter.GetValue()
+#""")
+
+
+out = ROOT.TFile(args.output, "recreate")
+histograms_dict_v = {}
+
+for region in histograms_dict:
+
+    out.mkdir(region)
+    out.cd(region)
+    print(region)
+
+    histograms_dict_v[region] = {}
+    for hist_name in histograms_dict[region]:
+        
+        print(hist_name)
+        histograms_dict_v[region][hist_name] = histograms_dict[region][hist_name].GetValue()
+        merge_overflow_bin(histograms_dict_v[region][hist_name])
+        histograms_dict_v[region][hist_name].Write()
+
+out.cd()
+out.Close()
+
+#ROOT.RDF.SaveGraph(df, f"{args.output.replace('.root', '.dot')}")

@@ -1,10 +1,11 @@
 #!/bin/bash
+# ./run_prepare.sh {local, condor} <year> <output-folder> <sample-tag-string>
 
 if [[ ${1} == "condor" ]]; then
     tar -xzf setup.tar.gz
     cd WVAnalysis
     source setup_env/setup.sh
-    cd plotting
+    cd prepare
 fi
 
 year=${2}

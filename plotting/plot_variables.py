@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import ROOT
+import ctypes
 ROOT.gROOT.SetBatch()
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 import os
@@ -31,10 +32,10 @@ title_x = ""
 units = ""
 custom_title_y = ""
 show_bw = True
-scale_y_axis = 1.4
+scale_y_axis = 1.8
 canvas_log_y = False
 axis_max_digits = 4
-leg_pos = [0.55, 0.65, 0.95, 0.9]
+leg_pos = [0.45, 0.65, 0.95, 0.9]
 leg_columns = 2
 
 draw_with_ratio = True
@@ -67,7 +68,7 @@ signal_scale_up = 10
 make_cms_text = True
 
 plots_dir = f"{hist_filename.split('/')[-1].split('.')[0]}"
-os.makedirs(f"{plots_dir}", exist_ok=True)
+os.makedirs(f"{plots_dir}/{hists_subdirectory}", exist_ok=True)
 """
 
 plot_mc_data = """
@@ -139,7 +140,10 @@ if not skip_VBS_QCD:
     h_VBS_QCD.SetLineColor(ROOT.TColor.GetColor(248, 206, 104))
     h_VBS_QCD.SetFillStyle(1001)
     if h_VBS_QCD.GetEntries() != 0.0:
-        legend.AddEntry(h_VBS_QCD, f"VBS QCD ({h_VBS_QCD.Integral():.2f})", "f")
+        error = ctypes.c_double(0.0)
+        bin_last = h_VBS_QCD.GetNbinsX()
+        integral = h_VBS_QCD.IntegralAndError(0, bin_last, error)
+        legend.AddEntry(h_VBS_QCD, f"VBS QCD ({integral:.2f}, {error.value:.2f})", "f")
         h_mc.Add(h_VBS_QCD)
 
 if not skip_Top:
@@ -148,7 +152,10 @@ if not skip_Top:
     h_Top.SetLineColor(ROOT.TColor.GetColor(155, 152, 204))
     h_Top.SetFillStyle(1001)
     if h_Top.GetEntries() != 0.0:
-        legend.AddEntry(h_Top, f"Top ({h_Top.Integral():.2f})", "f")
+        error = ctypes.c_double(0.0)
+        bin_last = h_Top.GetNbinsX()
+        integral = h_Top.IntegralAndError(0, bin_last, error)
+        legend.AddEntry(h_Top, f"Top ({integral:.2f}, {error.value:.2f})", "f")
         h_mc.Add(h_Top)
 
 if not skip_WJets:
@@ -157,16 +164,22 @@ if not skip_WJets:
     h_WJets.SetLineColor(ROOT.TColor.GetColor(222, 90, 106))
     h_WJets.SetFillStyle(1001)
     if h_WJets.GetEntries() != 0.0:
-        legend.AddEntry(h_WJets, f"W + Jets ({h_WJets.Integral():.2f})", "f")
+        error = ctypes.c_double(0.0)
+        bin_last = h_WJets.GetNbinsX()
+        integral = h_WJets.IntegralAndError(0, bin_last, error)
+        legend.AddEntry(h_WJets, f"W + Jets ({integral:.2f}, {error.value:.2f})", "f")
         h_mc.Add(h_WJets)
 
 if not skip_DYJets:
-    h_DYJets = hist_file.Get(f"{hists_subdirectory}/DYJets_{variable}")
+    h_DYJets = hist_file.Get(f"{hists_subdirectory}/DYJets_LO_{variable}")
     h_DYJets.SetFillColor(ROOT.TColor.GetColor(200, 90, 106))
     h_DYJets.SetLineColor(ROOT.TColor.GetColor(200, 90, 106))
     h_DYJets.SetFillStyle(1001)
     if h_DYJets.GetEntries() != 0.0:
-        legend.AddEntry(h_DYJets, f"DY Jets ({h_DYJets.Integral():.2f})", "f")
+        error = ctypes.c_double(0.0)
+        bin_last = h_DYJets.GetNbinsX()
+        integral = h_DYJets.IntegralAndError(0, bin_last, error)
+        legend.AddEntry(h_DYJets, f"DY Jets ({integral:.2f}, {error.value:.2f})", "f")
         h_mc.Add(h_DYJets)
 
 if not skip_VBS_EWK:
@@ -175,11 +188,15 @@ if not skip_VBS_EWK:
     h_VBS_EWK.SetLineWidth(2)
     h_VBS_EWK.SetLineStyle(ROOT.kDashed)
     h_VBS_EWK.SetFillStyle(0)
+
+    error = ctypes.c_double(0.0)
+    bin_last = h_VBS_EWK.GetNbinsX()
+    integral = h_VBS_EWK.IntegralAndError(0, bin_last, error)
     if signal_scale_up != 1:
-        legend.AddEntry(h_VBS_EWK, f"#splitline{{VBS EWK ({h_VBS_EWK.Integral():.2f})}}{{x {signal_scale_up}}}", "l")
+        legend.AddEntry(h_VBS_EWK, f"#splitline{{VBS EWK ({integral:.2f}, {error.value:.2f})}}{{x {signal_scale_up}}}", "l")
         h_VBS_EWK.Scale(signal_scale_up)
     else:
-        legend.AddEntry(h_VBS_EWK, f"VBS EWK ({h_VBS_EWK.Integral():.2f})", "l")
+        legend.AddEntry(h_VBS_EWK, f"VBS EWK ({integral:.2f}, {error.value:.2f})", "l")
         
 legend.AddEntry(h_mc, f"Tot. MC ({h_mc.GetStack().Last().Integral():.2f})", "")
 
@@ -299,83 +316,85 @@ if draw_with_ratio:
         )
     
 canvas.Draw()
-if hists_subdirectory != "/":
-    extra_tag = hists_subdirectory.replace("/", "_")
-else:
-    extra_tag = ""
+#if hists_subdirectory != "/":
+#    extra_tag = hists_subdirectory.replace("/", "_")
+#else:
+#    extra_tag = ""
+
+extra_tag = ""
 
 if canvas_log_y:
     extra_tag += "_log"
 else:
     extra_tag += ""
 
-canvas.SaveAs(f"{plots_dir}/{variable}{extra_tag}.png")
-canvas.SaveAs(f"{plots_dir}/{variable}{extra_tag}.pdf")
+canvas.SaveAs(f"{plots_dir}_LO/{hists_subdirectory}/{variable}{extra_tag}.png")
+canvas.SaveAs(f"{plots_dir}_LO/{hists_subdirectory}/{variable}{extra_tag}.pdf")
 """
 
-exec(set_variable_defaults)
-total_entries = ROOT.TFile.Open(hist_filename)
-h_total_entries = total_entries.Get("total_entries")
-canvas = ROOT.TCanvas("", "", 800, 500)
-h_total_entries.SetStats(0)
-h_total_entries.SetBins(7, 0, 1)
-h_total_entries.SetTitle(";;")
-h_total_entries.GetYaxis().SetLabelSize(0)
-h_total_entries.GetYaxis().SetTickSize(0)
-h_total_entries.SetLabelSize(0.05)
-h_total_entries.SetMarkerSize(2)
-h_total_entries.Draw("hist text0")
-print("Raw total entries")
-canvas.Draw()
-canvas.SaveAs(f"{plots_dir}/total_entries.pdf")
-canvas.SaveAs(f"{plots_dir}/total_entries.png")
+#exec(set_variable_defaults)
+#total_entries = ROOT.TFile.Open(hist_filename)
+#h_total_entries = total_entries.Get("total_entries")
+#canvas = ROOT.TCanvas("", "", 800, 500)
+#h_total_entries.SetStats(0)
+#h_total_entries.SetBins(7, 0, 1)
+#h_total_entries.SetTitle(";;")
+#h_total_entries.GetYaxis().SetLabelSize(0)
+#h_total_entries.GetYaxis().SetTickSize(0)
+#h_total_entries.SetLabelSize(0.05)
+#h_total_entries.SetMarkerSize(2)
+#h_total_entries.Draw("hist text0")
+#print("Raw total entries")
+#canvas.Draw()
+#canvas.SaveAs(f"{plots_dir}/total_entries.pdf")
+#canvas.SaveAs(f"{plots_dir}/total_entries.png")
 
-exec(set_variable_defaults)
-hist_file = ROOT.TFile.Open(hist_filename)
-selection_code = hist_file.Get("_e/selection_code")
-print(selection_code.GetTitle(), file=open(f"{plots_dir}/selection_code.txt", "w"))
-
-
-exec(set_variable_defaults)
-variable = "mva_score_var10"
-title_x = "MVA Score"
-signal_scale_up = 10
-canvas_log_y = False
-exec(plot_mc_data)
-
-scale_y_axis = 10
-upper_pad_min_y = 0.1
-signal_scale_up = 1
-canvas_log_y = True
-exec(plot_mc_data)
+#exec(set_variable_defaults)
+#hist_file = ROOT.TFile.Open(hist_filename)
+#selection_code = hist_file.Get("_e/selection_code")
+#print(selection_code.GetTitle(), file=open(f"{plots_dir}/selection_code.txt", "w"))
 
 
-exec(set_variable_defaults)
-variable = "mva_score_var11"
-title_x = "MVA Score"
-signal_scale_up = 10
-canvas_log_y = False
-exec(plot_mc_data)
-
-scale_y_axis = 10
-upper_pad_min_y = 0.1
-signal_scale_up = 1
-canvas_log_y = True
-exec(plot_mc_data)
-
-
-exec(set_variable_defaults)
-variable = "mva_score_var15"
-title_x = "MVA Score"
-signal_scale_up = 10
-canvas_log_y = False
-exec(plot_mc_data)
-
-scale_y_axis = 10
-upper_pad_min_y = 0.1
-signal_scale_up = 1
-canvas_log_y = True
-exec(plot_mc_data)
+#exec(set_variable_defaults)
+#variable = "mva_score_var10"
+#title_x = "MVA Score"
+#signal_scale_up = 10
+#canvas_log_y = False
+#exec(plot_mc_data)
+#
+#scale_y_axis = 10
+#upper_pad_min_y = 0.1
+#signal_scale_up = 1
+#canvas_log_y = True
+#exec(plot_mc_data)
+#
+#
+#exec(set_variable_defaults)
+#variable = "mva_score_var11"
+#title_x = "MVA Score"
+#signal_scale_up = 10
+#canvas_log_y = False
+#exec(plot_mc_data)
+#
+#scale_y_axis = 10
+#upper_pad_min_y = 0.1
+#signal_scale_up = 1
+#canvas_log_y = True
+#exec(plot_mc_data)
+#
+#
+#exec(set_variable_defaults)
+#variable = "mva_score_var15"
+#title_x = "MVA Score"
+#signal_scale_up = 10
+#canvas_log_y = False
+#exec(plot_mc_data)
+#
+#scale_y_axis = 10
+#upper_pad_min_y = 0.1
+#signal_scale_up = 1
+#canvas_log_y = True
+#exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -474,22 +493,6 @@ exec(plot_mc_data)
 exec(set_variable_defaults)
 variable = "fatjet_phi"
 title_x = "#phi_{V}"
-signal_scale_up = 10
-canvas_log_y = False
-exec(plot_mc_data)
-
-
-exec(set_variable_defaults)
-variable = "fatjet_n2b1"
-title_x = "N^{1}_{2} (V)"
-signal_scale_up = 10
-canvas_log_y = False
-exec(plot_mc_data)
-
-
-exec(set_variable_defaults)
-variable = "fatjet_n2b2"
-title_x = "N^{2}_{2} (V)"
 signal_scale_up = 10
 canvas_log_y = False
 exec(plot_mc_data)
