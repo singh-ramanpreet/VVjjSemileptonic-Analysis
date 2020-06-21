@@ -5,86 +5,57 @@ import os
 import numpy as np
 import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
-import inspect
-import awkward
 import argparse
-import importlib
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument(
-    "--dframes", type=str, default="df_dataset_2016.awkd",
-    help="awkd file of datasets df prepared, default=%(default)s"
-    )
-
-parser.add_argument(
-    "--region", type=str, default="train_wv_01",
-    help="region , default=%(default)s"
-    )
-
-parser.add_argument(
-    "--boson", type=str, default="W",
-    help="boson , default=%(default)s"
-    )
-
-parser.add_argument(
-    "--var-set", dest="var_set", type=str, default="wv",
-    help="variable set wv or wjj, default=%(default)s"
-    )
-
-parser.add_argument(
-    "--out-dir", dest="out_dir", type=str, default="BDTG",
-    help="output directory for tmva, default=%(default)s"
-    )
-
-parser.add_argument(
-    "--BDT-NTrees", dest="BDT_NTrees", type=str, default="100",
-    help="BDT-Config, default=%(default)s"
-    )
-
-parser.add_argument(
-    "--BDT-MinNodeSize", dest="BDT_MinNodeSize", type=str, default="10%",
-    help="BDT-Config, default=%(default)s"
-    )
-
-parser.add_argument(
-    "--BDT-MaxDepth", dest="BDT_MaxDepth", type=str, default="3",
-    help="BDT-Config, default=%(default)s"
-    )
-
-parser.add_argument(
-    "--BDT-nCuts", dest="BDT_nCuts", type=str, default="100",
-    help="BDT-Config, default=%(default)s"
-    )
-
-parser.add_argument(
-    "--BDT-Shrinkage", dest="BDT_Shrinkage", type=str, default="0.05",
-    help="BDT-Config, default=%(default)s"
-    )
-
-parser.add_argument(
-    "--BDT-BaggedFrac", dest="BDT_BaggedFrac", type=str, default="0.5",
-    help="BDT-Config, default=%(default)s"
-    )
+parser.add_argument("--in-dir", dest="in_dir", type=str, default="2018_Jun4",
+                    help="prepared root files dir relative to /store/user/singhr/, default=%(default)s")
+parser.add_argument("--boson", type=str, default="W", help="default=%(default)s")
+parser.add_argument("--var-set", dest="var_set", type=str, default="wv",
+                    help="variable set wv or wjj, default=%(default)s")
+parser.add_argument("--out-dir", dest="out_dir", type=str, default="BDTG",
+                    help="output directory for tmva, default=%(default)s")
+parser.add_argument("--BDT-NTrees", dest="BDT_NTrees", type=str, default="100", help="BDT-Config, default=%(default)s")
+parser.add_argument("--BDT-MinNodeSize", dest="BDT_MinNodeSize", type=str, default="10%", help="BDT-Config, default=%(default)s")
+parser.add_argument("--BDT-MaxDepth", dest="BDT_MaxDepth", type=str, default="3", help="BDT-Config, default=%(default)s")
+parser.add_argument("--BDT-nCuts", dest="BDT_nCuts", type=str, default="100", help="BDT-Config, default=%(default)s")
+parser.add_argument("--BDT-Shrinkage", dest="BDT_Shrinkage", type=str, default="0.05", help="BDT-Config, default=%(default)s")
+parser.add_argument("--BDT-BaggedFrac", dest="BDT_BaggedFrac", type=str, default="0.5", help="BDT-Config, default=%(default)s")
 
 args = parser.parse_args()
 
 print(args)
 
-dfs = awkward.load(args.dframes)
+df = ROOT.RDataFrame("Events", f"root://cmseos.fnal.gov//store/user/singhr/{args.in_dir}/*.root")
 
-keys = list(dfs.keys())
-if args.boson == "W":
-    sigs = [i for i in keys if "VBS_EWK/" in i]
-    bkgs1 = [i for i in keys if "WJets/" in i]
-    bkgs2 = [i for i in keys if "Top/" in i]
-    bkgs = bkgs1 + bkgs2
+preselect_z_e = "lept_channel == 1 && fabs(lept1_eta) < 2.5 && !(fabs(lept1_eta) > 1.4442 && fabs(lept1_eta) < 1.566)" \
+                " && fabs(lept2_eta) < 2.5 && !(fabs(lept2_eta) > 1.4442 && fabs(lept2_eta) < 1.566)" \
+                " && lept1_pt > 40"
 
-if args.boson == "Z":
-    sigs = [i for i in keys if "VBS_EWK/" in i]
-    bkgs1 = [i for i in keys if "DYJets/" in i]
-    bkgs2 = [] #[i for i in keys if "Top/" in i]
-    bkgs = bkgs1 + bkgs2
+preselect_z_m = "lept_channel == 0 && fabs(lept1_eta) < 2.4" \
+                " && fabs(lept2_eta) < 2.4" \
+                " && lept1_pt > 35"
+
+preselect_z_sr = "lept2_pt > 20" \
+                 " && lept1_q * lept2_q < 0" \
+                 " && v_m > 75 && v_m < 105" \
+                 " && vbf_jj_m > 500" \
+                 " && vbf_j1_pt > 50" \
+                 " && vbf_j2_pt > 50" \
+                 " && vbf_jj_Deta > 2.5"
+
+preselect_zv = preselect_z_sr  + " && fatjet_pt > 200 && fabs(fatjet_eta) < 2.4" \
+                                 " && fatjet_tau21 < 0.55" \
+                                 " && fatjet_m > 65 && fatjet_m < 105"
+
+preselect_zjj = preselect_z_sr + " && dijet_pt > 0" \
+                                 " && dijet_j2_pt > 30 && dijet_j1_pt > 30" \
+                                 " && dijet_m > 65 && dijet_m < 105"
+
+training_region_zv = preselect_zv + " && ((" + preselect_z_e + ") || (" + preselect_z_m + "))"
+training_region_zjj = preselect_zjj + " && ((" + preselect_z_e + ") || (" + preselect_z_m + "))"
+
 
 os.makedirs(args.out_dir, exist_ok=True)
 
@@ -194,78 +165,38 @@ elif args.var_set == "wjj":
 
 elif args.var_set == "zv":
     training_variables = training_variables_zv
+    training_region = training_region_zv
 
 elif args.var_set == "zjj":
     training_variables = training_variables_zjj
+    training_region = training_region_zjj
 
 else:
     print("select training variable set")
 
-weight_variables = [
-    "gen_weight"
-]
+print(training_variables)
+print(training_region)
 
 variables_ = open(f"{args.out_dir}/variable_list.txt", "w")
 for i in training_variables:
     print(i, file=variables_)
 variables_.close()
 
-preselection_code = importlib.import_module(f"selections.{args.region}")
-preselection = preselection_code.region_
 
-print(inspect.getsource(preselection))
+df_training_region = df.Filter(training_region).Define("training_weight", "xs_weight * gen_weight")
 
-X_sig = None
-w_sig = None
+if args.boson == "Z":
+    df_training_sig = df_training_region.Filter("sample_tag == \"VBS_EWK\"").AsNumpy()
+    df_training_bkg = df_training_region.Filter("sample_tag == \"DYJets_LO\"").AsNumpy()
 
-for sig_key in sigs:
-    df = dfs[sig_key]["dframe"]
-    xs_w = dfs[sig_key]["xs_weight"]
+X_sig = np.column_stack([df_training_sig[i] for i in training_variables])
+w_sig = df_training_sig["training_weight"]
 
-    preselect_df = df[preselection(df, "m") | preselection(df, "e")]
+X_bkg = np.column_stack([df_training_bkg[i] for i in training_variables])
+w_bkg = df_training_bkg["training_weight"]
 
-    training_columns = [preselect_df[i] for i in training_variables]
-
-    X_ = np.column_stack(training_columns)
-    w_ = xs_w
-    for i in weight_variables:
-        w_ = w_ * preselect_df[i]
-
-    if X_sig is None:
-        X_sig = X_
-        w_sig = w_
-
-    else:
-        X_sig = np.concatenate([X_sig, X_])
-        w_sig = np.concatenate([w_sig, w_])
 
 print("Signal dataset shape: ", X_sig.shape)
-
-
-X_bkg = None
-w_bkg = None
-
-for bkg_key in bkgs:
-    df = dfs[bkg_key]["dframe"]
-    xs_w = dfs[bkg_key]["xs_weight"]
-
-    preselect_df = df[preselection(df, "m") | preselection(df, "e")]
-
-    training_columns = [preselect_df[i] for i in training_variables]
-
-    X_ = np.column_stack(training_columns)
-    w_ = xs_w
-    for i in weight_variables:
-        w_ = w_ * preselect_df[i]
-
-    if X_bkg is None:
-        X_bkg = X_
-        w_bkg = w_
-
-    else:
-        X_bkg = np.concatenate([X_bkg, X_])
-        w_bkg = np.concatenate([w_bkg, w_])
-
 print("Background dataset shape: ", X_bkg.shape)
 
 def make_std_vector(X):
