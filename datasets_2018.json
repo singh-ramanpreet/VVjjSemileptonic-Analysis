@@ -1,6 +1,6 @@
 {    
     "data_obs": {
-        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_May11/",
+        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_Jun20/2018/",
         "lumi": 1.0,
         "filelist": [
             {"name": "Data_noDup.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
@@ -8,7 +8,7 @@
     },
     
     "VBS_EWK": {
-        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_May11/",
+        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_Jun20/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.02982, "nMC": 0, "nMCneg": 0},
@@ -24,7 +24,7 @@
     },
 
     "VBS_QCD": {
-        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_May11/",
+        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_Jun20/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 , "nMC": 0, "nMCneg": 0},
@@ -40,15 +40,16 @@
     },
 
     "Top": {
-        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_May11/",
+        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_Jun20/2018/",
         "lumi": 59740.0,
         "filelist": [
-            {"name": "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8.root", "xs": 365.34  , "nMC": 0, "nMCneg": 0}
+            {"name": "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8.root", "xs": 365.34, "nMC": 0, "nMCneg": 0},
+            {"name": "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8.root",        "xs": 86.99 , "nMC": 0, "nMCneg": 0}
         ]
     },
     
-    "WJets": {
-        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_May11/",
+    "WJets_HT": {
+        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_Jun20/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "WJetsToLNu_HT-70To100_TuneCP5_13TeV-madgraphMLM-pythia8.root"   , "xs": 1292.0   , "nMC": 0, "nMCneg": 0},
@@ -63,7 +64,7 @@
     },
 
     "DYJets_HT": {
-        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_May11/",
+        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_Jun20/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "DYJetsToLL_M-50_HT-70to100_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8.root"   , "xs": 167.33  , "nMC": 0, "nMCneg": 0},
@@ -78,7 +79,7 @@
     },
 
     "DYJets_LO": {
-        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_May11/",
+        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_Jun4/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8.root", "xs": 876.9, "nMC": 0, "nMCneg": 0},
@@ -89,7 +90,7 @@
     },
 
     "DYJets_NLO": {
-        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_May11/",
+        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_Jun20/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "DYJetsToLL_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8.root", "xs": 4758.516, "nMC": 0, "nMCneg": 0},

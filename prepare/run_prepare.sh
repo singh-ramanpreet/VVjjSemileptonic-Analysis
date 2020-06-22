@@ -11,11 +11,13 @@ fi
 year=${2}
 output=${3}
 sampleTag=${4}
+sampleNumber=${5}
 logFile=${year}_${sampleTag}_prepare.log
 
 python3 -u prepare_dataset.py \
 --datasets ../datasets_${year}.json \
 --sample-tag ${sampleTag} \
+--sample-number ${sampleNumber} \
 --year ${year} \
 --output ${output} \
 --mva-name zv \

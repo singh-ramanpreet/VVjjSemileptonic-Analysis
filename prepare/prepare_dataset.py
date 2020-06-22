@@ -18,6 +18,9 @@ parser.add_argument("--datasets", type=str, default="../datasets_2016.json",
 parser.add_argument("--sample-tag", dest="sample_tag", type=str, default="all",
                     help="sample tag to process from json file, default=%(default)s")
 
+parser.add_argument("--sample-number", dest="sample_number", type=str, default="all",
+                    help="sample number in filelist of sample tag to process, default=%(default)s")
+
 parser.add_argument("--year", type=str, default="2016",
                     help="dataset year, default=%(default)s")
 
@@ -43,7 +46,7 @@ variables_map = OrderedDict(json.load(open(args.variables, "r")))
 pprint(variables_map, width=120)
 
 # make TMVA readers in ROOT c++ namespace
-if len(args.mva_name) != 0:
+if args.mva_name != None:
 
     evaluate_mva_var_list = {i: {} for i in args.mva_name}
 
@@ -102,7 +105,9 @@ for key in samples_dict:
     filelist = samples_dict[key]["filelist"]
     lumi = samples_dict[key]["lumi"]
 
-    for sample in filelist:
+    for i, sample in enumerate(filelist):
+
+        if args.sample_number != "all" and args.sample_number != str(i): continue
 
         root_file = location + sample["name"]
         xs = sample["xs"]
@@ -151,7 +156,7 @@ for key in samples_dict:
                 else:
                     df = df.Define(new_name, var_name)
 
-        if len(args.mva_name) != 0:
+        if args.mva_name != None:
             for mva_ in args.mva_name:
                 for sys in ("central", "jesUp", "jesDown"):
                     mva_value = f"mva_reader_{mva_}.EvaluateMVA({evaluate_mva_var_list[mva_][sys]}, \"BDT\")"
