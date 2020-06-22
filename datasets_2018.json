@@ -30,9 +30,9 @@
             {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 , "nMC": 0, "nMCneg": 0},
             {"name": "WminusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root", "xs": 0.03203, "nMC": 0, "nMCneg": 0},
             {"name": "WminusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"     , "xs": 1.166  , "nMC": 0, "nMCneg": 0},
-            {"name": "WplusTo2JWminusToLNuJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root" , "xs": 5.568  , "nMC": 0, "nMCneg": 0},
+            {"name": "WplusTo2JWminusToLNuJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV.root"                  , "xs": 5.568  , "nMC": 0, "nMCneg": 0},
             {"name": "WplusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"       , "xs": 0.575  , "nMC": 0, "nMCneg": 0},
-            {"name": "WplusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root" , "xs": 5.546  , "nMC": 0, "nMCneg": 0},
+            {"name": "WplusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV.root"                  , "xs": 5.546  , "nMC": 0, "nMCneg": 0},
             {"name": "WplusToLNuWplusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"  , "xs": 0.07584, "nMC": 0, "nMCneg": 0},
             {"name": "WplusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 1.938  , "nMC": 0, "nMCneg": 0},
             {"name": "ZTo2LZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"           , "xs": 0.3449 , "nMC": 0, "nMCneg": 0}
