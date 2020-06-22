@@ -183,11 +183,16 @@ for i in training_variables:
 variables_.close()
 
 
-df_training_region = df.Filter(training_region).Define("training_weight", "xs_weight * gen_weight")
+df_training_region = df.Filter(training_region).Define("training_weight", "xs_weight")
+
+columns = training_variables + ["training_weight"]
 
 if args.boson == "Z":
-    df_training_sig = df_training_region.Filter("sample_tag == \"VBS_EWK\"").AsNumpy()
-    df_training_bkg = df_training_region.Filter("sample_tag == \"DYJets_LO\"").AsNumpy()
+    df_training_sig_ = df_training_region.Filter("sample_tag == \"VBS_EWK\"")
+    df_training_bkg_ = df_training_region.Filter("sample_tag == \"DYJets_LO\"")
+
+    df_training_sig = df_training_sig_.AsNumpy(columns=columns)
+    df_training_bkg = df_training_bkg_.AsNumpy(columns=columns)
 
 X_sig = np.column_stack([df_training_sig[i] for i in training_variables])
 w_sig = df_training_sig["training_weight"]
