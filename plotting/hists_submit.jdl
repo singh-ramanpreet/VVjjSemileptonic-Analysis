@@ -9,6 +9,7 @@ executable    = run_make_hists.sh
 transfer_input  = True
 transfer_output = True
 transfer_input_files = run_make_hists.sh, setup.tar.gz
+transfer_output_files = $(hist_file).root
 
 log           = /dev/null
 output        = $(hist_file).out

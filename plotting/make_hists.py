@@ -20,6 +20,8 @@ parser.add_argument("--threads", type=int, default=4,
 
 args = parser.parse_args()
 
+stopwatch = ROOT.TStopwatch()
+stopwatch.Start()
 
 ROOT.ROOT.EnableImplicitMT(args.threads)
 nThreads = ROOT.ROOT.GetImplicitMTPoolSize()
@@ -367,5 +369,7 @@ for region in histograms_dict:
 
 out.cd()
 out.Close()
+
+stopwatch.Print()
 
 #ROOT.RDF.SaveGraph(df, f"{args.output.replace('.root', '.dot')}")

@@ -31,8 +31,7 @@ output=${5}
 
 if [[ ${1} == "condor" ]]; then
     ls -al
-    xrdcp -rf ${output} root://cmseos.fnal.gov//store/user/rsingh/
-    rm -rvf ${output}
+    mv -vf ${output} ../../${output}
     cd ../../
     ls -al
     rm -vf *docker*
