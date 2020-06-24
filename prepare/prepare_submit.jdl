@@ -19,13 +19,17 @@ error         = $(log_filename).err
 stream_error  = True
 stream_output = True
 
-year = 2018
-output_dir = 2018_Jun20
+year = 2017
+output_dir = 2017_Jun20
 
 arguments = condor $(year) $(output_dir) $(sample_name) $(sample_i)
 
 sample_name = $(Item)
 sample_i = $(Step)
 
+queue 1 in data_obs
 queue 9 in VBS_EWK
 queue 9 in VBS_QCD
+queue 9 in Top
+queue 8 in WJets_HT
+queue 4 in DYJets_LO

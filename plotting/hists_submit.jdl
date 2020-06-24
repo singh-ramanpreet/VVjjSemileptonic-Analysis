@@ -1,0 +1,28 @@
+#request_cpus   = 8
+request_memory = 8 GB
+
+universe      = vanilla
++DesiredOS   = "SL7"
+x509userproxy = $ENV(X509_USER_PROXY)
+executable    = run_make_hists.sh
+
+transfer_input  = True
+transfer_output = True
+transfer_input_files = run_make_hists.sh, setup.tar.gz
+
+log           = /dev/null
+output        = $(hist_file).out
+error         = $(hist_file).err
+stream_error  = True
+stream_output = True
+
+
+in_dir = 2018_Jun20
+
+arguments = condor $(channel) $(in_dir) 0 $(hist_file).root
+
+hist_file = hists_$(in_dir)_$(channel)
+channel = $(Item)
+
+#queue 1 in (zv, zjj, wv, wjj)
+queue 1 in (wv)

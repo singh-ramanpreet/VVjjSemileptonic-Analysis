@@ -8,7 +8,7 @@
     },
     
     "VBS_EWK": {
-        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_Jun20/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_Jun20/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.02982, "nMC": 0, "nMCneg": 0},
@@ -24,7 +24,7 @@
     },
 
     "VBS_QCD": {
-        "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_Jun20/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_Jun20/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 , "nMC": 0, "nMCneg": 0},
@@ -43,8 +43,15 @@
         "location": "root://eoscms.cern.ch//eos/cms/store/user/jlawhorn/WVJJTree_Jun20/2018/",
         "lumi": 59740.0,
         "filelist": [
-            {"name": "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8.root", "xs": 365.34, "nMC": 0, "nMCneg": 0},
-            {"name": "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8.root",        "xs": 86.99 , "nMC": 0, "nMCneg": 0}
+            {"name": "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8.root",                    "xs": 365.34, "nMC": 0, "nMCneg": 0},
+            {"name": "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8.root",                           "xs": 86.99 , "nMC": 0, "nMCneg": 0},
+            {"name": "TTToHadronic_TuneCP5_13TeV-powheg-pythia8.root",                        "xs": 377.96, "nMC": 0, "nMCneg": 0},
+            {"name": "ST_s-channel_antitop_leptonDecays_13TeV-PSweights_powheg-pythia.root",  "xs": 1.33,   "nMC": 0, "nMCneg": 0},
+            {"name": "ST_s-channel_top_leptonDecays_13TeV-PSweights_powheg-pythia.root",      "xs": 2.13,   "nMC": 0, "nMCneg": 0},
+            {"name": "ST_t-channel_antitop_5f_TuneCP5_13TeV-powheg-pythia8.root",             "xs": 27.19,  "nMC": 0, "nMCneg": 0},
+            {"name": "ST_t-channel_top_5f_TuneCP5_13TeV-powheg-pythia8.root",                 "xs": 45.70,  "nMC": 0, "nMCneg": 0},
+            {"name": "ST_tW_DS_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8.root", "xs": 12.04,  "nMC": 0, "nMCneg": 0},
+            {"name": "ST_tW_DS_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8.root",     "xs": 12.04,  "nMC": 0, "nMCneg": 0}
         ]
     },
     

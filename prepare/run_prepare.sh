@@ -21,11 +21,11 @@ python3 -u prepare_dataset.py \
 --year ${year} \
 --output ${output} \
 --mva-name zv \
---mva-xml zv_BDTG1/weights/VBS_BDT.weights.xml \
---mva-var-list zv_BDTG1/variable_list.txt \
+--mva-xml zv_BDTG2/weights/VBS_BDT.weights.xml \
+--mva-var-list zv_BDTG2/variable_list.txt \
 --mva-name zjj \
---mva-xml zjj_BDTG1/weights/VBS_BDT.weights.xml \
---mva-var-list zjj_BDTG1/variable_list.txt \
+--mva-xml zjj_BDTG2/weights/VBS_BDT.weights.xml \
+--mva-var-list zjj_BDTG2/variable_list.txt \
 --mva-name wv \
 --mva-xml wv_BDTG6/weights/VBS_BDT.weights.xml \
 --mva-var-list wv_BDTG6/variable_list.txt \

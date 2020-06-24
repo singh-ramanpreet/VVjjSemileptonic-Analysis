@@ -15,6 +15,7 @@ parser.add_argument("-f", "--rootfile", type=str, default="test.root")
 parser.add_argument("-b", "--blind", action="store_true")
 parser.add_argument("-y", "--year", type=str, default="2016")
 parser.add_argument("-s", "--sub-dir", dest="sub_dir", type=str, default="/")
+parser.add_argument("-m", "--mva-type", dest="mva_type", type=str, default="wjj")
 parser.add_argument("-B", "--boson", type=str, default="W")
 
 args = parser.parse_args()
@@ -116,9 +117,6 @@ h_data.SetMarkerSize(0.8)
 if skip_data:
     h_data.Reset()
 
-if h_data.GetEntries() != 0.0:
-    legend.AddEntry(h_data, f"Data ({h_data.Integral():.2f})", "pe")
-
 if len(blind_data) != 0:
     for blind_var in blind_data:
         if blind_var[0] in h_data.GetName():
@@ -126,6 +124,9 @@ if len(blind_data) != 0:
             binB = h_data.FindBin(blind_var[2])
             for i in range(binA, binB + 1):
                 h_data.SetBinContent(i, 0.0)
+
+if h_data.GetEntries() != 0.0:
+    legend.AddEntry(h_data, f"Data ({h_data.Integral():.2f})", "pe")
 
 bw = h_data.GetBinWidth(1)
 
@@ -159,7 +160,7 @@ if not skip_Top:
         h_mc.Add(h_Top)
 
 if not skip_WJets:
-    h_WJets = hist_file.Get(f"{hists_subdirectory}/WJets_{variable}")
+    h_WJets = hist_file.Get(f"{hists_subdirectory}/WJets_HT_{variable}")
     h_WJets.SetFillColor(ROOT.TColor.GetColor(222, 90, 106))
     h_WJets.SetLineColor(ROOT.TColor.GetColor(222, 90, 106))
     h_WJets.SetFillStyle(1001)
@@ -328,8 +329,8 @@ if canvas_log_y:
 else:
     extra_tag += ""
 
-canvas.SaveAs(f"{plots_dir}_LO/{hists_subdirectory}/{variable}{extra_tag}.png")
-canvas.SaveAs(f"{plots_dir}_LO/{hists_subdirectory}/{variable}{extra_tag}.pdf")
+canvas.SaveAs(f"{plots_dir}/{hists_subdirectory}/{variable}{extra_tag}.png")
+canvas.SaveAs(f"{plots_dir}/{hists_subdirectory}/{variable}{extra_tag}.pdf")
 """
 
 #exec(set_variable_defaults)
@@ -383,18 +384,31 @@ canvas.SaveAs(f"{plots_dir}_LO/{hists_subdirectory}/{variable}{extra_tag}.pdf")
 #exec(plot_mc_data)
 #
 #
-#exec(set_variable_defaults)
-#variable = "mva_score_var15"
-#title_x = "MVA Score"
-#signal_scale_up = 10
-#canvas_log_y = False
-#exec(plot_mc_data)
-#
-#scale_y_axis = 10
-#upper_pad_min_y = 0.1
-#signal_scale_up = 1
-#canvas_log_y = True
-#exec(plot_mc_data)
+exec(set_variable_defaults)
+variable = f"mva_score_{args.mva_type}"
+title_x = f"MVA Score {args.mva_type}"
+signal_scale_up = 10
+canvas_log_y = False
+exec(plot_mc_data)
+
+scale_y_axis = 10
+upper_pad_min_y = 0.1
+signal_scale_up = 1
+canvas_log_y = True
+exec(plot_mc_data)
+
+exec(set_variable_defaults)
+variable = f"mva_score_{args.mva_type}_var1"
+title_x = f"MVA Score {args.mva_type}"
+signal_scale_up = 10
+canvas_log_y = False
+exec(plot_mc_data)
+
+scale_y_axis = 10
+upper_pad_min_y = 0.1
+signal_scale_up = 1
+canvas_log_y = True
+exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
