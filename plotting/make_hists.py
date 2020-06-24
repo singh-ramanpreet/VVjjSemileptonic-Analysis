@@ -25,6 +25,23 @@ ROOT.ROOT.EnableImplicitMT(args.threads)
 nThreads = ROOT.ROOT.GetImplicitMTPoolSize()
 print(f"Using {nThreads} Threads")
 df = ROOT.RDataFrame("Events", f"root://cmseos.fnal.gov//store/user/singhr/{args.in_dir}/*.root")
+count = df.Count()
+total_entries = count.GetValue()
+
+# progress bar
+ROOT.gInterpreter.ProcessLine("""
+    auto count = (ROOT::RDF::RResultPtr<ULong64_t> *)TPython::Eval("count");
+    int total_entries = TPython::Eval("total_entries");
+    std::string progress;
+    std::mutex bar_mutex;
+    auto bar_print = [&progress, &bar_mutex](unsigned int, ULong64_t &)
+    {
+        std::lock_guard<std::mutex> lg(bar_mutex);
+        progress.push_back('#');
+        std::cout << "\\r[" << std::left << std::setw(100) << progress << "]" << std::flush;
+    };
+    count->OnPartialResultSlot(total_entries / 100, bar_print);
+""")
 
 
 samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", "WJets_HT", "DYJets_LO"]
@@ -327,18 +344,9 @@ def merge_overflow_bin(hist):
 
 
 # start the event loop
-#progress_counter = df.Histo1D(("progress", "progress", 1, 0, 1), "evt")
-#ROOT.gInterpreter.ProcessLine("""
-#    const auto poolSize = ROOT::GetImplicitMTPoolSize();
-#    auto cpph = (ROOT::RDF::RResultPtr<TH1D> * )TPython::Eval("progress_counter");
-#    auto print_entries = [&poolSize](unsigned int, TH1D &h_)
-#    {
-#        int entries = h_.GetEntries();
-#        std::cout<< ">>> Entries processed: " << entries << " per thread"<< std::endl;
-#    };
-#    cpph->OnPartialResultSlot(10000, print_entries);
-#    progress_counter.GetValue()
-#""")
+progress_counter = df.Histo1D(("progress", "progress", 1, 0, 1), "evt")
+progress_counter.GetValue()
+print("\nLoop Completed")
 
 
 out = ROOT.TFile(args.output, "recreate")
@@ -348,12 +356,11 @@ for region in histograms_dict:
 
     out.mkdir(region)
     out.cd(region)
-    print(region)
 
     histograms_dict_v[region] = {}
     for hist_name in histograms_dict[region]:
         
-        print(hist_name)
+        print(region, hist_name)
         histograms_dict_v[region][hist_name] = histograms_dict[region][hist_name].GetValue()
         merge_overflow_bin(histograms_dict_v[region][hist_name])
         histograms_dict_v[region][hist_name].Write()
