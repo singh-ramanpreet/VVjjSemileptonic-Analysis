@@ -1,6 +1,6 @@
 #!/bin/bash
 export PYTHONUNBUFFERED=true
-# ./run_make_hists.sh {local, condor} <channel> <in-dir> <threads> <hist out name>
+# ./run_make_hists.sh {local, condor} <region> <in-dir> <threads> <hist out name>
 
 if [[ ${1} == "condor" ]]; then
     tar -xzf setup.tar.gz
@@ -9,23 +9,14 @@ if [[ ${1} == "condor" ]]; then
     cd plotting
 fi
 
-channel=${2}
+region=${2}
 in_dir=${3}
 threads=${4}
 output=${5}
 
 ./make_hists.py \
 --in-dir ${in_dir} \
---regions sr_${channel}_m \
---regions sr_${channel}_m_jesUp \
---regions sr_${channel}_m_jesDown \
---regions sr_${channel}_e \
---regions sr_${channel}_e_jesUp \
---regions sr_${channel}_e_jesDown \
---regions cr_vjets_${channel}_m \
---regions cr_vjets_${channel}_e \
---regions cr_top_${channel}_m \
---regions cr_top_${channel}_e \
+--regions ${region} \
 --output ${output} \
 --threads ${threads}
 

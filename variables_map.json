@@ -10,7 +10,11 @@
 
     "L1PFWeight": "L1PFWeight",
 
-    "LHEWeight": "LHEWeight",
+    "nScaleWeight": "nScaleWeight",
+    "scaleWeight": "scaleWeight",
+
+    "nPdfWeight": "nPdfWeight",
+    "pdfWeight": "pdfWeight",
 
     "lept1_pt": "lep1_pt",
     "lept1_lepPtUp": "lep1_pt_scaleUp",

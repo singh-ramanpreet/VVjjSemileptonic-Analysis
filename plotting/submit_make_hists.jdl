@@ -1,0 +1,45 @@
+#request_cpus   = 8
+request_memory = 8 GB
+
+universe      = vanilla
++DesiredOS   = "SL7"
+x509userproxy = $ENV(X509_USER_PROXY)
+executable    = run_make_hists.sh
+
+transfer_input  = True
+transfer_output = True
+transfer_input_files = run_make_hists.sh, setup.tar.gz
+transfer_output_files = $(hist_file).root
+
+log           = /dev/null
+output        = $(hist_file).out
+error         = /dev/null
+stream_error  = True
+stream_output = True
+
+# uncomment below or input from cmd line
+#in_dir = 2016_Jun30
+
+arguments = condor $(region) $(in_dir) 0 $(hist_file).root
+
+hist_file = hists_$(in_dir)_$(region)
+
+# uncomment below or input from cmd line
+#channel = wv
+queue 1 region from (
+sr_$(channel)_l
+sr_$(channel)_m
+sr_$(channel)_e
+sr_$(channel)_l_pdfUp
+sr_$(channel)_l_pdfDown
+sr_$(channel)_l_qcdUp
+sr_$(channel)_l_qcdDown
+sr_$(channel)_l_jesUp
+sr_$(channel)_l_jesDown
+cr_vjets_$(channel)_l
+cr_vjets_$(channel)_m
+cr_vjets_$(channel)_e
+cr_top_$(channel)_l
+cr_top_$(channel)_m
+cr_top_$(channel)_e
+)

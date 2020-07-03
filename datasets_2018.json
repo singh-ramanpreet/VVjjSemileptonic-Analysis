@@ -8,7 +8,7 @@
     },
     
     "VBS_EWK": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_Jun20/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/WVJJTree_Jun30/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.02982, "nMC": 0, "nMCneg": 0},
@@ -24,7 +24,7 @@
     },
 
     "VBS_QCD": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_Jun20/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/WVJJTree_Jun30/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 , "nMC": 0, "nMCneg": 0},

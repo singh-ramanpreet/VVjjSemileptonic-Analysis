@@ -109,25 +109,24 @@ selections["z_common_e"] = selections["z_el_ch"].replace("LEPT1_PT_CUT", "40").r
                             + " && " + selections["vbf_jets"] \
                             + " && nBTagJet_loose == 0"
 
+selections["z_common_l"] = "((" + selections["z_common_m"] + ") || (" + selections["z_common_e"] + "))"
+
+
 selections_regions = {}
-selections_regions["sr_zjj_m"] = selections["z_common_m"] + " && " + selections["resolved_jets"]
-selections_regions["sr_zjj_e"] = selections["z_common_e"] + " && " + selections["resolved_jets"]
+for i in ("m", "e", "l"):
+    selections_regions[f"sr_zjj_{i}"] = selections[f"z_common_{i}"] + " && " + selections["resolved_jets"]
 
-selections_regions["cr_vjets_zjj_m"] = selections["z_common_m"] + " && " + selections["resolved_jets_sb"]
-selections_regions["cr_vjets_zjj_e"] = selections["z_common_e"] + " && " + selections["resolved_jets_sb"]
+    selections_regions[f"cr_vjets_zjj_{i}"] = selections[f"z_common_{i}"] + " && " + selections["resolved_jets_sb"]
 
-selections_regions["cr_top_zjj_m"] = selections_regions["sr_zjj_m"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
-selections_regions["cr_top_zjj_e"] = selections_regions["sr_zjj_e"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+    selections_regions[f"cr_top_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
 
-### ZV
-selections_regions["sr_zv_m"] = selections["z_common_m"] + " && " + selections["boosted_jets"]
-selections_regions["sr_zv_e"] = selections["z_common_e"] + " && " + selections["boosted_jets"]
 
-selections_regions["cr_vjets_zv_m"] = selections["z_common_m"] + " && " + selections["boosted_jets_sb"]
-selections_regions["cr_vjets_zv_e"] = selections["z_common_e"] + " && " + selections["boosted_jets_sb"]
+    ### ZV
+    selections_regions[f"sr_zv_{i}"] = selections[f"z_common_{i}"] + " && " + selections["boosted_jets"]
 
-selections_regions["cr_top_zv_m"] = selections_regions["sr_zv_m"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
-selections_regions["cr_top_zv_e"] = selections_regions["sr_zv_e"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+    selections_regions[f"cr_vjets_zv_{i}"] = selections[f"z_common_{i}"] + " && " + selections["boosted_jets_sb"]
+
+    selections_regions[f"cr_top_zv_{i}"] = selections_regions[f"sr_zv_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
 
 ##############
 ##############
@@ -146,33 +145,32 @@ selections["w_common_e"] = selections["w_el_ch"].replace("LEPT1_PT_CUT", "40").r
                             + " && fabs(zeppenfeld_v_Deta) < 1.0" \
                             + " && nBTagJet_loose == 0"
 
-selections_regions["sr_wjj_m"] = selections["w_common_m"] + " && " + selections["resolved_jets"]
-selections_regions["sr_wjj_e"] = selections["w_common_e"] + " && " + selections["resolved_jets"]
+selections["w_common_l"] = "((" + selections["w_common_m"] + ") || (" + selections["w_common_e"] + "))"
 
-selections_regions["cr_vjets_wjj_m"] = selections["w_common_m"] + " && " + selections["resolved_jets_sb"]
-selections_regions["cr_vjets_wjj_e"] = selections["w_common_e"] + " && " + selections["resolved_jets_sb"]
 
-selections_regions["cr_top_wjj_m"] = selections_regions["sr_wjj_m"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
-selections_regions["cr_top_wjj_e"] = selections_regions["sr_wjj_e"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+for i in ("m", "e", "l"):
+    selections_regions[f"sr_wjj_{i}"] = selections[f"w_common_{i}"] + " && " + selections["resolved_jets"]
 
-### WV
-selections_regions["sr_wv_m"] = selections["w_common_m"] + " && " + selections["boosted_jets"]
-selections_regions["sr_wv_e"] = selections["w_common_e"] + " && " + selections["boosted_jets"]
+    selections_regions[f"cr_vjets_wjj_{i}"] = selections[f"w_common_{i}"] + " && " + selections["resolved_jets_sb"]
 
-selections_regions["cr_vjets_wv_m"] = selections["w_common_m"] + " && " + selections["boosted_jets_sb"]
-selections_regions["cr_vjets_wv_e"] = selections["w_common_e"] + " && " + selections["boosted_jets_sb"]
+    selections_regions[f"cr_top_wjj_{i}"] = selections_regions[f"sr_wjj_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
 
-selections_regions["cr_top_wv_m"] = selections_regions["sr_wv_m"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
-selections_regions["cr_top_wv_e"] = selections_regions["sr_wv_e"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+    ### WV
+    selections_regions[f"sr_wv_{i}"] = selections[f"w_common_{i}"] + " && " + selections["boosted_jets"]
 
+    selections_regions[f"cr_vjets_wv_{i}"] = selections[f"w_common_{i}"] + " && " + selections["boosted_jets_sb"]
+
+    selections_regions[f"cr_top_wv_{i}"] = selections_regions[f"sr_wv_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
 ##############
 
-weight_w = "xs_weight * gen_weight * pu_weight * btag0_weight * lept1_trig_eff_weight * lept1_id_eff_weight"
+#weight_w = "xs_weight * gen_weight * pu_weight * btag0_weight * lept1_trig_eff_weight * lept1_id_eff_weight"
+weight_w = "xs_weight * gen_weight * pu_weight"
 
 if "2017" in args.in_dir:
     weight_w = "L1PFWeight * " + weight_w
 
-weight_z =  weight_w + " * lept2_trig_eff_weight * lept2_id_eff_weight"
+#weight_z =  weight_w + " * lept2_trig_eff_weight * lept2_id_eff_weight"
+weight_z =  weight_w
 
 ##############
 
@@ -188,11 +186,11 @@ jes_var_Z_replace = [
     "fatjet_pt"
 ]
 
-jes_var_W_replace = jes_var_Z_replace
+jes_var_W_replace = ["pf_met_corr"] + jes_var_Z_replace
 
 for jes_sys in ("jesUp", "jesDown"):
     
-    for region in ("sr_zjj_m", "sr_zjj_e", "sr_zv_m", "sr_zv_e"):
+    for region in ("sr_zjj_l", "sr_zv_l"):
         
         temp_string = selections_regions[region]
         
@@ -203,7 +201,7 @@ for jes_sys in ("jesUp", "jesDown"):
         selections_regions[f"{region}_{jes_sys}"] =  temp_string
 
 
-    for region in ("sr_wjj_m", "sr_wjj_e", "sr_wv_m", "sr_wv_e"):
+    for region in ("sr_wjj_l", "sr_wv_l"):
         
         temp_string = selections_regions[region]
         
@@ -212,6 +210,16 @@ for jes_sys in ("jesUp", "jesDown"):
             temp_string = temp_string.replace(jes_var, f"{jes_var}_{jes_sys}")
     
         selections_regions[f"{region}_{jes_sys}"] =  temp_string
+##############
+# pdf qcd sys
+# make keys
+
+for pdf_qcd_sys in ("pdfUp", "pdfDown", "qcdUp", "qcdDown"):
+
+    for region in ("sr_zjj_l", "sr_zv_l", "sr_wjj_l", "sr_wv_l"):
+
+        selections_regions[f"{region}_{pdf_qcd_sys}"] =  selections_regions[region]
+
 ##############
 
 ROOT.TH1.SetDefaultSumw2()
@@ -277,26 +285,15 @@ hists_models_1D = [
     (1, -1.0, 1.0, "mva_score_zv", "mva_score_zv_1bin")
 ]
 
-hists_models_1D_jesUp = [
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_wjj_jesUp", "mva_score_wjj_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_zjj_jesUp", "mva_score_zjj_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_wv_jesUp", "mva_score_wv_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_zv_jesUp", "mva_score_zv_var1"),
-    (40, -1.0, 1.0, "mva_score_wjj_jesUp", "mva_score_wjj"),
-    (40, -1.0, 1.0, "mva_score_zjj_jesUp", "mva_score_zjj"),
-    (40, -1.0, 1.0, "mva_score_wv_jesUp", "mva_score_wv"),
-    (40, -1.0, 1.0, "mva_score_zv_jesUp", "mva_score_zv")
-]
-
-hists_models_1D_jesDown = [
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_wjj_jesDown", "mva_score_wjj_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_zjj_jesDown", "mva_score_zjj_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_wv_jesDown", "mva_score_wv_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_zv_jesDown", "mva_score_zv_var1"),
-    (40, -1.0, 1.0, "mva_score_wjj_jesDown", "mva_score_wjj"),
-    (40, -1.0, 1.0, "mva_score_zjj_jesDown", "mva_score_zjj"),
-    (40, -1.0, 1.0, "mva_score_wv_jesDown", "mva_score_wv"),
-    (40, -1.0, 1.0, "mva_score_zv_jesDown", "mva_score_zv")
+hists_models_1D_SYS = [
+    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_wjj", "mva_score_wjj_var1"),
+    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_zjj", "mva_score_zjj_var1"),
+    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_wv", "mva_score_wv_var1"),
+    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_zv", "mva_score_zv_var1"),
+    (40, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj"),
+    (40, -1.0, 1.0, "mva_score_zjj", "mva_score_zjj"),
+    (40, -1.0, 1.0, "mva_score_wv", "mva_score_wv"),
+    (40, -1.0, 1.0, "mva_score_zv", "mva_score_zv")
 ]
 
 
@@ -305,7 +302,7 @@ df_samples_regions = {}
 
 for region in args.regions:
 
-    print (selections_regions[region])
+    print(selections_regions[region])
 
     histograms_dict[region] = {}
 
@@ -318,19 +315,21 @@ for region in args.regions:
             weight = weight_z
         else:
             weight = weight_w
-        print("Weight -> ", weight)
+        print("Weight >>> ", weight)
 
 
-        if "jesUp" in region:
-            hists_models = hists_models_1D_jesUp
-        elif "jesDown" in region:
-            hists_models = hists_models_1D_jesDown
+        if "jes" in region:
+            hists_models = hists_models_1D_SYS
+        elif "pdf" in region:
+            hists_models = hists_models_1D_SYS
+        elif "qcd" in region:
+            hists_models = hists_models_1D_SYS
         else:
             hists_models = hists_models_1D
-        
-        
+
+
         for h_ in hists_models:
-            
+
             hist_name = sample_+ "_" + h_[4]
             if type(h_[0]) == np.ndarray:
                 hist_model = ROOT.RDF.TH1DModel(f"{hist_name}", f"{hist_name}", len(h_[0]) - 1, h_[0])
@@ -338,6 +337,27 @@ for region in args.regions:
                 hist_model = ROOT.RDF.TH1DModel(f"{hist_name}", f"{hist_name}", h_[0], h_[1], h_[2])
             histograms_dict[region][hist_name] = \
                     df_samples_regions[sample_ + region].Define("total_weight", weight).Histo1D(hist_model, h_[3], "total_weight")
+
+            if ("pdf" in region) or ("qcd" in region):
+                if ("VBS_EWK" in sample_) or ("VBS_QCD" in sample_):
+                    if ("2016" in args.in_dir) or ("2017" in args.in_dir) or ("2018" in args.in_dir):
+                        nPDF = 103
+                        for i in range(nPDF):
+                            weight_pdf = weight + f" * pdfWeight[{i}]"
+                            histograms_dict[region][hist_name + f"_pdf_{i}"] = \
+                                df_samples_regions[sample_ + region].Define("total_weight", weight_pdf).Histo1D(hist_model, h_[3], "total_weight")
+
+                    if ("2016" in args.in_dir):
+                        for i, j in enumerate([20, 0, 5, 15, 25, 35, 40]):
+                            weight_qcd = weight + f" * scaleWeight[{j}]"
+                            histograms_dict[region][hist_name + f"_qcd_{i}"] = \
+                                df_samples_regions[sample_ + region].Define("total_weight", weight_qcd).Histo1D(hist_model, h_[3], "total_weight")
+
+                    if ("2017" in args.in_dir) or ("2018" in args.in_dir):
+                        for i, j in enumerate([4, 0, 1, 3, 5, 7, 8]):
+                            weight_qcd = weight + f" * scaleWeight[{j}]"
+                            histograms_dict[region][hist_name + f"_qcd_{i}"] = \
+                                df_samples_regions[sample_ + region].Define("total_weight", weight_qcd).Histo1D(hist_model, h_[3], "total_weight")
 
 
 def merge_overflow_bin(hist):
@@ -356,16 +376,87 @@ histograms_dict_v = {}
 
 for region in histograms_dict:
 
-    out.mkdir(region)
-    out.cd(region)
-
+    # Get All the histograms first
     histograms_dict_v[region] = {}
     for hist_name in histograms_dict[region]:
-        
+
         print(region, hist_name)
         histograms_dict_v[region][hist_name] = histograms_dict[region][hist_name].GetValue()
         merge_overflow_bin(histograms_dict_v[region][hist_name])
-        histograms_dict_v[region][hist_name].Write()
+
+
+    t_directory = region
+    for i in ("zv", "zjj", "wv", "wjj"):
+        t_directory = t_directory.replace(f"_{i}", "")
+
+    out.cd()
+    out.mkdir(t_directory)
+    out.cd(t_directory)
+
+    # loop again to write, etc.
+    for hist_name in histograms_dict[region]:
+
+        # skip over intermediate hists
+        if "_pdf_" in hist_name: continue
+        if "_qcd_" in hist_name: continue
+
+        if ("pdf" in region):
+            if ("VBS_EWK" in hist_name) or ("VBS_QCD" in hist_name):
+                if ("2016" in args.in_dir) or ("2017" in args.in_dir) or ("2018" in args.in_dir):
+                    nbins = histograms_dict_v[region][hist_name].GetNbinsX()
+                    for bin_ in range(nbins):
+                        sys_pdf = 0.0
+                        # pdf weight 0, a.k.a central value peaks at 1, not equal to 1 !!
+                        bin_content = histograms_dict_v[region][hist_name + "_pdf_0"].GetBinContent(bin_)
+                        # first normal loop over 100 replicas
+                        # https://arxiv.org/pdf/1510.03865v2.pdf
+                        for i in range(1, 101):
+                            diff_ = abs(histograms_dict_v[region][hist_name + f"_pdf_{i}"].GetBinContent(bin_) - bin_content)
+                            sys_pdf += diff_ * diff_
+                        sys_pdf = (sys_pdf) ** 0.5
+
+                        # now alphas var index 101 (0.116), 102 (0.120)
+                        bin_content_alphas_0116 = histograms_dict_v[region][hist_name + f"_pdf_101"].GetBinContent(bin_)
+                        bin_content_alphas_0120 = histograms_dict_v[region][hist_name + f"_pdf_102"].GetBinContent(bin_)
+                        sys_pdf_alphas = 0.5 * (0.0015 / 0.002) * (bin_content_alphas_0120 - bin_content_alphas_0116)
+
+                        # final combined sys pdf
+                        sys_pdf = ((sys_pdf)**2 + (sys_pdf_alphas)**2)**0.5
+
+
+                        nominal_bin_content = histograms_dict_v[region][hist_name].GetBinContent(bin_)
+                        if "Up" in region:
+                            histograms_dict_v[region][hist_name].SetBinContent(bin_, nominal_bin_content + sys_pdf)
+                        if "Down" in region:
+                            histograms_dict_v[region][hist_name].SetBinContent(bin_, nominal_bin_content - sys_pdf)
+
+                histograms_dict_v[region][hist_name].Write()
+
+        elif ("qcd" in region):
+            if ("VBS_EWK" in hist_name) or ("VBS_QCD" in hist_name):
+                if ("2016" in args.in_dir) or ("2017" in args.in_dir) or ("2018" in args.in_dir):
+                    nbins = histograms_dict_v[region][hist_name].GetNbinsX()
+                    for bin_ in range(nbins):
+                        sys_qcd = 0.0
+                        # scale weight is 1 for central, so no need to use separate central hist
+                        bin_content = histograms_dict_v[region][hist_name + "_qcd_0"].GetBinContent(bin_)
+                        # find the largest error
+                        for i in range(1, 7):
+                            diff_ = abs(histograms_dict_v[region][hist_name + f"_qcd_{i}"].GetBinContent(bin_) - bin_content)
+                            if diff_ > sys_qcd:
+                                sys_qcd = diff_
+
+
+                        nominal_bin_content = histograms_dict_v[region][hist_name].GetBinContent(bin_)
+                        if "Up" in region:
+                            histograms_dict_v[region][hist_name].SetBinContent(bin_, nominal_bin_content + sys_qcd)
+                        if "Down" in region:
+                            histograms_dict_v[region][hist_name].SetBinContent(bin_, nominal_bin_content - sys_qcd)
+
+                histograms_dict_v[region][hist_name].Write()
+
+        else:
+            histograms_dict_v[region][hist_name].Write()
 
 out.cd()
 out.Close()
