@@ -131,6 +131,23 @@ for key in samples_dict:
 
         df = ROOT.RDataFrame("Events", root_file)
         variables_out = ROOT.std.vector("string")()
+        count = df.Count()
+        total_entries = count.GetValue()
+
+        # progress bar
+        ROOT.gInterpreter.ProcessLine("""
+            auto count = (ROOT::RDF::RResultPtr<ULong64_t> *)TPython::Eval("count");
+            int total_entries = TPython::Eval("total_entries");
+            std::string progress;
+            std::mutex bar_mutex;
+            auto bar_print = [&progress, &bar_mutex](unsigned int, ULong64_t &)
+            {
+                std::lock_guard<std::mutex> lg(bar_mutex);
+                progress.push_back('#');
+                std::cout << "\\r[" << std::left << std::setw(100) << progress << "]" << std::flush;
+            };
+            count->OnPartialResultSlot(total_entries / 100, bar_print);
+        """)
 
         # making it sure for data
         # will set them equal to 1.0f
@@ -178,5 +195,6 @@ for key in samples_dict:
         os.makedirs(args.output, exist_ok=True)
         output_filename = f"{args.output}/{sample['name']}"
         df.Snapshot("Events", output_filename, variables_out)
+        print("\n")
 
 print("DONE")
