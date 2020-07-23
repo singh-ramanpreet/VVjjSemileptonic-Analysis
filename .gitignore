@@ -1,15 +1,15 @@
 # data files
 *.root
 
+# tar files
+*.tar*
+
 # python
 *.ipynb_checkpoints*
 *.pyc
 
 # setup folder
 setup_env/
-
-# awkward files
-*.awkd
 
 # all sub dirs
 plotting/*/
