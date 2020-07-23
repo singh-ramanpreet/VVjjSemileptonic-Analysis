@@ -16,6 +16,8 @@
     "nPdfWeight": "nPdfWeight",
     "pdfWeight": "pdfWeight",
 
+    "isAntiIso": "isAntiIso",
+
     "lept1_pt": "lep1_pt",
     "lept1_lepPtUp": "lep1_pt_scaleUp",
     "lept1_lepPtDown": "lep1_pt_scaleDn",

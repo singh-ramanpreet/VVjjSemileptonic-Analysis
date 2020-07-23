@@ -35,7 +35,7 @@ python3 -u prepare_dataset.py \
 
 if [[ ${1} == "condor" ]]; then
     ls -al
-    xrdcp -rf ${output} root://cmseos.fnal.gov//store/user/rsingh/
+    xrdcp -rpf ${output} root://cmseos.fnal.gov//store/user/rsingh/wv_vbs_ntuples/$(dirname ${output})/
     rm -rvf ${output}
     cd ../../
     ls -al
