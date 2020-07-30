@@ -21,17 +21,17 @@ python3 -u prepare_dataset.py \
 --year ${year} \
 --output ${output} \
 --mva-name zv \
---mva-xml zv_BDTG2/weights/VBS_BDT.weights.xml \
---mva-var-list zv_BDTG2/variable_list.txt \
+--mva-xml trainings/zv_weights.xml \
+--mva-var-list trainings/zv_variable_list.txt \
 --mva-name zjj \
---mva-xml zjj_BDTG2/weights/VBS_BDT.weights.xml \
---mva-var-list zjj_BDTG2/variable_list.txt \
+--mva-xml trainings/zjj_weights.xml \
+--mva-var-list trainings/zjj_variable_list.txt \
 --mva-name wv \
---mva-xml wv_BDTG6/weights/VBS_BDT.weights.xml \
---mva-var-list wv_BDTG6/variable_list.txt \
+--mva-xml trainings/wv_weights.xml \
+--mva-var-list trainings/wv_variable_list.txt \
 --mva-name wjj \
---mva-xml wjj_BDTG6/weights/VBS_BDT.weights.xml \
---mva-var-list wjj_BDTG6/variable_list.txt
+--mva-xml trainings/wjj_weights.xml \
+--mva-var-list trainings/wjj_variable_list.txt
 
 if [[ ${1} == "condor" ]]; then
     ls -al
