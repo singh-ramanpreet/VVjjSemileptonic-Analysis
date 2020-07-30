@@ -2,6 +2,11 @@
     "run": "run",
     "evt": "evt",
 
+    "trigger_1Mu": "trigger_1Mu",
+    "trigger_2Mu": "trigger_2Mu",
+    "trigger_1El": "trigger_1El",
+    "trigger_2El": "trigger_2El",
+
     "gen_weight": "genWeight",
 
     "pu_weight": "puWeight",
@@ -43,8 +48,6 @@
     "lept_channel": "lept1_m > 0.105 ? 0: 1",
 
     "pf_met_corr": "MET",
-    "pf_met_corr_jesUp": "MET_scaleUp",
-    "pf_met_corr_jesDown": "MET_scaleDn",
 
     "pf_met_corr_phi": "MET_phi",
 
@@ -72,8 +75,6 @@
     "vbf_jj_m_jesDown": "vbf_m_scaleDn",
 
     "fatjet_m": "bos_PuppiAK8_m_sd0_corr",
-    "fatjet_m_jesUp": "bos_PuppiAK8_m_sd0_corr_scaleUp",
-    "fatjet_m_jesDown": "bos_PuppiAK8_m_sd0_corr_scaleDn",
 
     "fatjet_pt": "bos_PuppiAK8_pt",
     "fatjet_pt_jesUp": "bos_PuppiAK8_pt_scaleUp",
