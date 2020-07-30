@@ -160,7 +160,7 @@ if not skip_Top:
         h_mc.Add(h_Top)
 
 if not skip_WJets:
-    h_WJets = hist_file.Get(f"{hists_subdirectory}/WJets_HT_{variable}")
+    h_WJets = hist_file.Get(f"{hists_subdirectory}/WJets_LO_{variable}")
     h_WJets.SetFillColor(ROOT.TColor.GetColor(222, 90, 106))
     h_WJets.SetLineColor(ROOT.TColor.GetColor(222, 90, 106))
     h_WJets.SetFillStyle(1001)

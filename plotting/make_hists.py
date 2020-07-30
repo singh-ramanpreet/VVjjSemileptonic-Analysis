@@ -26,7 +26,7 @@ stopwatch.Start()
 ROOT.ROOT.EnableImplicitMT(args.threads)
 nThreads = ROOT.ROOT.GetImplicitMTPoolSize()
 print(f"Using {nThreads} Threads")
-df = ROOT.RDataFrame("Events", f"root://cmseos.fnal.gov//store/user/singhr/{args.in_dir}/*.root")
+df = ROOT.RDataFrame("Events", f"root://cmseos.fnal.gov//store/user/singhr/wv_vbs_ntuples/{args.in_dir}/*.root")
 count = df.Count()
 total_entries = count.GetValue()
 
@@ -46,7 +46,7 @@ ROOT.gInterpreter.ProcessLine("""
 """)
 
 
-samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", "WJets_HT", "DYJets_LO"]
+samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", "WJets_LO", "DYJets_LO"]
 
 df_samples = {}
 for sample_ in samples_name:
@@ -105,7 +105,7 @@ selections["z_common_m"] = selections["z_mu_ch"].replace("LEPT1_PT_CUT", "35").r
                             + " && " + selections["vbf_jets"] \
                             + " && nBTagJet_loose == 0"
 
-selections["z_common_e"] = selections["z_el_ch"].replace("LEPT1_PT_CUT", "40").replace("LEPT2_PT_CUT", "20") \
+selections["z_common_e"] = selections["z_el_ch"].replace("LEPT1_PT_CUT", "35").replace("LEPT2_PT_CUT", "20") \
                             + " && " + selections["vbf_jets"] \
                             + " && nBTagJet_loose == 0"
 
@@ -131,15 +131,17 @@ for i in ("m", "e", "l"):
 ##############
 ##############
 ### WJJ
-selections["w_common_m"] = selections["w_mu_ch"].replace("LEPT1_PT_CUT", "35").replace("MET_CUT", "40") \
+selections["w_common_m"] = selections["w_mu_ch"].replace("LEPT1_PT_CUT", "35").replace("MET_CUT", "30") \
                             + " && " + selections["vbf_jets"] \
+                            + " && isAntiIso == 0" \
                             + " && boson_centrality > 0.0" \
                             + " && fabs(zeppenfeld_w_Deta) < 1.0" \
                             + " && fabs(zeppenfeld_v_Deta) < 1.0" \
                             + " && nBTagJet_loose == 0" 
 
-selections["w_common_e"] = selections["w_el_ch"].replace("LEPT1_PT_CUT", "40").replace("MET_CUT", "40") \
+selections["w_common_e"] = selections["w_el_ch"].replace("LEPT1_PT_CUT", "35").replace("MET_CUT", "30") \
                             + " && " + selections["vbf_jets"] \
+                            + " && isAntiIso == 0" \
                             + " && boson_centrality > 0.0" \
                             + " && fabs(zeppenfeld_w_Deta) < 1.0" \
                             + " && fabs(zeppenfeld_v_Deta) < 1.0" \
@@ -164,7 +166,7 @@ for i in ("m", "e", "l"):
 ##############
 
 #weight_w = "xs_weight * gen_weight * pu_weight * btag0_weight * lept1_trig_eff_weight * lept1_id_eff_weight"
-weight_w = "xs_weight * gen_weight * pu_weight"
+weight_w = "xs_weight * gen_weight"
 
 if "2017" in args.in_dir:
     weight_w = "L1PFWeight * " + weight_w
@@ -173,8 +175,10 @@ if "2017" in args.in_dir:
 weight_z =  weight_w
 
 ##############
+# jes sys
+# make keys
 
-jes_var_Z_replace = [
+jes_vars = [
     "vbf_jj_m",
     "vbf_j1_pt",
     "vbf_j2_pt",
@@ -182,34 +186,32 @@ jes_var_Z_replace = [
     "dijet_pt",
     "dijet_j1_pt",
     "dijet_j2_pt",
-    "fatjet_m",
     "fatjet_pt"
 ]
 
-jes_var_W_replace = ["pf_met_corr"] + jes_var_Z_replace
+#jes_vars_W = ["pf_met_corr"] + jes_vars
+jes_vars_W = jes_vars
+jes_vars_Z = jes_vars
+
 
 for jes_sys in ("jesUp", "jesDown"):
     
-    for region in ("sr_zjj_l", "sr_zv_l"):
+    for region in ("sr_wjj_l", "sr_wv_l", "sr_zjj_l", "sr_zv_l"):
         
         temp_string = selections_regions[region]
         
-        for jes_var in jes_var_Z_replace:
-            
+        jes_var_replace = []
+        if ("wjj" in region) or ("wv" in region):
+            jes_var_replace = jes_vars_W
+
+        if ("zjj" in region) or ("zv" in region):
+            jes_var_replace = jes_vars_Z
+
+        for jes_var in jes_var_replace:
             temp_string = temp_string.replace(jes_var, f"{jes_var}_{jes_sys}")
     
         selections_regions[f"{region}_{jes_sys}"] =  temp_string
 
-
-    for region in ("sr_wjj_l", "sr_wv_l"):
-        
-        temp_string = selections_regions[region]
-        
-        for jes_var in jes_var_W_replace:
-            
-            temp_string = temp_string.replace(jes_var, f"{jes_var}_{jes_sys}")
-    
-        selections_regions[f"{region}_{jes_sys}"] =  temp_string
 ##############
 # pdf qcd sys
 # make keys
@@ -285,16 +287,34 @@ hists_models_1D = [
     (1, -1.0, 1.0, "mva_score_zv", "mva_score_zv_1bin")
 ]
 
-hists_models_1D_SYS = [
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_wjj", "mva_score_wjj_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_zjj", "mva_score_zjj_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_wv", "mva_score_wv_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_zv", "mva_score_zv_var1"),
-    (40, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj"),
-    (40, -1.0, 1.0, "mva_score_zjj", "mva_score_zjj"),
-    (40, -1.0, 1.0, "mva_score_wv", "mva_score_wv"),
-    (40, -1.0, 1.0, "mva_score_zv", "mva_score_zv")
+hists_models_1D_SYS = []
+hists_SYS_list = [
+    "dijet_pt",
+    "fatjet_pt",
+    "vbf_j1_pt",
+    "vbf_j2_pt",
+    "dijet_j1_pt",
+    "dijet_j2_pt",
+    "mva_score_wjj", "mva_score_wjj_var1",
+    "mva_score_zjj", "mva_score_zjj_var1",
+    "mva_score_wv", "mva_score_wv_var1",
+    "mva_score_zv", "mva_score_zv_var1",
 ]
+for i in hists_models_1D:
+    if i[4] in hists_SYS_list:
+        hists_models_1D_SYS.append(i)
+
+# for qcd and pdf systematic, keep it low
+hists_models_1D_SYS_1 = []
+hists_SYS_list_1 = [
+    "mva_score_wjj_var1",
+    "mva_score_zjj_var1",
+    "mva_score_wv_var1",
+    "mva_score_zv_var1",
+]
+for i in hists_models_1D:
+    if i[4] in hists_SYS_list_1:
+        hists_models_1D_SYS_1.append(i)
 
 
 histograms_dict = {}
@@ -321,9 +341,9 @@ for region in args.regions:
         if "jes" in region:
             hists_models = hists_models_1D_SYS
         elif "pdf" in region:
-            hists_models = hists_models_1D_SYS
+            hists_models = hists_models_1D_SYS_1
         elif "qcd" in region:
-            hists_models = hists_models_1D_SYS
+            hists_models = hists_models_1D_SYS_1
         else:
             hists_models = hists_models_1D
 
@@ -369,6 +389,8 @@ def merge_overflow_bin(hist):
 progress_counter = df.Histo1D(("progress", "progress", 1, 0, 1), "evt")
 progress_counter.GetValue()
 print("\nLoop Completed")
+
+ROOT.ROOT.DisableImplicitMT()
 
 
 out = ROOT.TFile(args.output, "recreate")

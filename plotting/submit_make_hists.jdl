@@ -20,9 +20,9 @@ stream_output = True
 # uncomment below or input from cmd line
 #in_dir = 2016_Jun30
 
-arguments = condor $(region) $(in_dir) 0 $(hist_file).root
+arguments = condor $(region) $(in_dir) 4 $(hist_file).root
 
-hist_file = hists_$(in_dir)_$(region)
+hist_file = hists_$(outTag)_$(region)
 
 # uncomment below or input from cmd line
 #channel = wv
