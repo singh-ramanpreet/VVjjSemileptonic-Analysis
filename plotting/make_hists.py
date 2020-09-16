@@ -45,13 +45,37 @@ ROOT.gInterpreter.ProcessLine("""
     count->OnPartialResultSlot(total_entries / 100, bar_print);
 """)
 
-
-samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", "WJets_LO", "DYJets_LO"]
+WJets_type = "WJets_HT"
+DYJets_type = "DYJets_LO"
+samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", WJets_type, DYJets_type]
 
 df_samples = {}
 for sample_ in samples_name:
     df_samples[sample_] = df.Filter(f"sample_tag == \"{sample_}\"")
 
+# split W + Jets
+w_resolved_split = {
+    "r1": "vbf_jj_Deta < 5 && vbf_j1_pt < 75",
+    "r2": "vbf_jj_Deta >= 5 && vbf_j1_pt < 75",
+    "r3": "vbf_jj_Deta < 4 && vbf_j1_pt >= 75 && vbf_j1_pt <= 150",
+    "r4": "vbf_jj_Deta >= 4 && vbf_j1_pt >= 75 && vbf_j1_pt <= 150",
+    "r5": "vbf_j1_pt > 150"
+}
+
+w_boosted_split = {
+    "b1": "vbf_jj_Deta < 5",
+    "b2": "vbf_jj_Deta >= 5"
+}
+
+if "wjj" in args.regions[0]:
+    w_split = w_resolved_split
+
+if "wv" in args.regions[0]:
+    w_split = w_boosted_split
+
+for i, j in w_split.items():
+    samples_name.append(f"{WJets_type}_{i}")
+    df_samples[f"{WJets_type}_{i}"] = df.Filter(f"sample_tag == \"{WJets_type}\" && {j}")
 
 selections = {}
 selections["el_ch"] = "lept_channel == 1 && fabs(lept1_eta) < 2.5 && !(fabs(lept1_eta) > 1.4442 && fabs(lept1_eta) < 1.566)"
@@ -157,12 +181,18 @@ for i in ("m", "e", "l"):
 
     selections_regions[f"cr_top_wjj_{i}"] = selections_regions[f"sr_wjj_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
 
+    for k, j in w_resolved_split.items():
+        selections_regions[f"cr_vjets_{k}_wjj_{i}"] = selections_regions[f"cr_vjets_wjj_{i}"] + " && " + j
+
     ### WV
     selections_regions[f"sr_wv_{i}"] = selections[f"w_common_{i}"] + " && " + selections["boosted_jets"]
 
     selections_regions[f"cr_vjets_wv_{i}"] = selections[f"w_common_{i}"] + " && " + selections["boosted_jets_sb"]
 
     selections_regions[f"cr_top_wv_{i}"] = selections_regions[f"sr_wv_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+
+    for k, j in w_boosted_split.items():
+        selections_regions[f"cr_vjets_{k}_wv_{i}"] = selections_regions[f"cr_vjets_wv_{i}"] + " && " + j
 ##############
 
 #weight_w = "xs_weight * gen_weight * pu_weight * btag0_weight * lept1_trig_eff_weight * lept1_id_eff_weight"

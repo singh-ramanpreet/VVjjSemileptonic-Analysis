@@ -17,11 +17,13 @@ parser.add_argument("-y", "--year", type=str, default="2016")
 parser.add_argument("-s", "--sub-dir", dest="sub_dir", type=str, default="/")
 parser.add_argument("-m", "--mva-type", dest="mva_type", type=str, default="wjj")
 parser.add_argument("-B", "--boson", type=str, default="W")
+parser.add_argument("--wjet-opt", type=int, default=0)
+
 
 args = parser.parse_args()
 
 if args.blind:
-    blind_data = [("mva_score", -1.0, 1.0)]
+    blind_data = [("mva_score", -1.0, 1.0), ("vbf_jj_Deta", 0.0, 10.0)]
 else:
     blind_data = []
 
@@ -137,9 +139,9 @@ h_mc = ROOT.THStack("h_mc", f";{title_x};{title_y}")
 
 if not skip_VBS_QCD:
     h_VBS_QCD = hist_file.Get(f"{hists_subdirectory}/VBS_QCD_{variable}")
-    h_VBS_QCD.SetFillColor(ROOT.TColor.GetColor(248, 206, 104))
-    h_VBS_QCD.SetLineColor(ROOT.TColor.GetColor(248, 206, 104))
-    h_VBS_QCD.SetFillStyle(1001)
+    h_VBS_QCD.__getattribute__("SetFillColor")(ROOT.TColor.GetColor(248, 206, 104))
+    h_VBS_QCD.__getattribute__("SetLineColor")(ROOT.TColor.GetColor(248, 206, 104))
+    h_VBS_QCD.__getattribute__("SetFillStyle")(1001)
     if h_VBS_QCD.GetEntries() != 0.0:
         error = ctypes.c_double(0.0)
         bin_last = h_VBS_QCD.GetNbinsX()
@@ -149,9 +151,9 @@ if not skip_VBS_QCD:
 
 if not skip_Top:
     h_Top = hist_file.Get(f"{hists_subdirectory}/Top_{variable}")
-    h_Top.SetFillColor(ROOT.TColor.GetColor(155, 152, 204))
-    h_Top.SetLineColor(ROOT.TColor.GetColor(155, 152, 204))
-    h_Top.SetFillStyle(1001)
+    h_Top.__getattribute__("SetFillColor")(ROOT.TColor.GetColor(155, 152, 204))
+    h_Top.__getattribute__("SetLineColor")(ROOT.TColor.GetColor(155, 152, 204))
+    h_Top.__getattribute__("SetFillStyle")(1001)
     if h_Top.GetEntries() != 0.0:
         error = ctypes.c_double(0.0)
         bin_last = h_Top.GetNbinsX()
@@ -160,16 +162,101 @@ if not skip_Top:
         h_mc.Add(h_Top)
 
 if not skip_WJets:
-    h_WJets = hist_file.Get(f"{hists_subdirectory}/WJets_LO_{variable}")
-    h_WJets.SetFillColor(ROOT.TColor.GetColor(222, 90, 106))
-    h_WJets.SetLineColor(ROOT.TColor.GetColor(222, 90, 106))
-    h_WJets.SetFillStyle(1001)
-    if h_WJets.GetEntries() != 0.0:
-        error = ctypes.c_double(0.0)
-        bin_last = h_WJets.GetNbinsX()
-        integral = h_WJets.IntegralAndError(0, bin_last, error)
-        legend.AddEntry(h_WJets, f"W + Jets ({integral:.2f}, {error.value:.2f})", "f")
-        h_mc.Add(h_WJets)
+    WJets_option = args.wjet_opt
+
+    if WJets_option == 0:
+
+        h_WJets = hist_file.Get(f"{hists_subdirectory}/WJets_HT_{variable}")
+        h_WJets.SetFillColor(ROOT.TColor.GetColor(222, 90, 106))
+        h_WJets.SetLineColor(ROOT.TColor.GetColor(222, 90, 106))
+        h_WJets.SetFillStyle(1001)
+        if h_WJets.GetEntries() != 0.0:
+            error = ctypes.c_double(0.0)
+            bin_last = h_WJets.GetNbinsX()
+            integral = h_WJets.IntegralAndError(0, bin_last, error)
+            legend.AddEntry(h_WJets, f"W + Jets ({integral:.2f}, {error.value:.2f})", "f")
+            h_mc.Add(h_WJets)
+
+    if WJets_option == 1:
+
+        h_WJets_b1 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_b1_{variable}")
+        h_WJets_b1.SetFillColor(ROOT.TColor.GetColor(222, 90, 106))
+        h_WJets_b1.SetLineColor(ROOT.TColor.GetColor(222, 90, 106))
+        h_WJets_b1.SetFillStyle(1001)
+        if h_WJets_b1.GetEntries() != 0.0:
+            error = ctypes.c_double(0.0)
+            bin_last = h_WJets_b1.GetNbinsX()
+            integral = h_WJets_b1.IntegralAndError(0, bin_last, error)
+            legend.AddEntry(h_WJets_b1, f"W + Jets b1 ({integral:.2f}, {error.value:.2f})", "f")
+            h_mc.Add(h_WJets_b1)
+
+        h_WJets_b2 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_b2_{variable}")
+        h_WJets_b2.SetFillColor(ROOT.TColor.GetColor(222 - 40, 90 - 20, 106 - 20))
+        h_WJets_b2.SetLineColor(ROOT.TColor.GetColor(222 - 40, 90 - 20, 106 - 20))
+        h_WJets_b2.SetFillStyle(1001)
+        if h_WJets_b2.GetEntries() != 0.0:
+            error = ctypes.c_double(0.0)
+            bin_last = h_WJets_b2.GetNbinsX()
+            integral = h_WJets_b2.IntegralAndError(0, bin_last, error)
+            legend.AddEntry(h_WJets_b2, f"W + Jets b1 ({integral:.2f}, {error.value:.2f})", "f")
+            h_mc.Add(h_WJets_b2)
+
+    if WJets_option == 2:
+
+        h_WJets_r1 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_r1_{variable}")
+        h_WJets_r1.SetFillColor(ROOT.TColor.GetColor(222, 90, 106))
+        h_WJets_r1.SetLineColor(ROOT.TColor.GetColor(222, 90, 106))
+        h_WJets_r1.SetFillStyle(1001)
+        if h_WJets_r1.GetEntries() != 0.0:
+            error = ctypes.c_double(0.0)
+            bin_last = h_WJets_r1.GetNbinsX()
+            integral = h_WJets_r1.IntegralAndError(0, bin_last, error)
+            legend.AddEntry(h_WJets_r1, f"W + Jets r1 ({integral:.2f}, {error.value:.2f})", "f")
+            h_mc.Add(h_WJets_r1)
+
+        h_WJets_r2 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_r2_{variable}")
+        h_WJets_r2.SetFillColor(ROOT.TColor.GetColor(222 - 40, 90 - 20, 106 - 20))
+        h_WJets_r2.SetLineColor(ROOT.TColor.GetColor(222 - 40, 90 - 20, 106 - 20))
+        h_WJets_r2.SetFillStyle(1001)
+        if h_WJets_r2.GetEntries() != 0.0:
+            error = ctypes.c_double(0.0)
+            bin_last = h_WJets_r2.GetNbinsX()
+            integral = h_WJets_r2.IntegralAndError(0, bin_last, error)
+            legend.AddEntry(h_WJets_r2, f"W + Jets r2 ({integral:.2f}, {error.value:.2f})", "f")
+            h_mc.Add(h_WJets_r2)
+
+        h_WJets_r3 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_r3_{variable}")
+        h_WJets_r3.SetFillColor(ROOT.TColor.GetColor(222 - 60, 90 - 40, 106 - 40))
+        h_WJets_r3.SetLineColor(ROOT.TColor.GetColor(222 - 60, 90 - 40, 106 - 40))
+        h_WJets_r3.SetFillStyle(1001)
+        if h_WJets_r3.GetEntries() != 0.0:
+            error = ctypes.c_double(0.0)
+            bin_last = h_WJets_r3.GetNbinsX()
+            integral = h_WJets_r3.IntegralAndError(0, bin_last, error)
+            legend.AddEntry(h_WJets_r3, f"W + Jets r3 ({integral:.2f}, {error.value:.2f})", "f")
+            h_mc.Add(h_WJets_r3)
+
+        h_WJets_r4 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_r4_{variable}")
+        h_WJets_r4.SetFillColor(ROOT.TColor.GetColor(238, 135, 0))
+        h_WJets_r4.SetLineColor(ROOT.TColor.GetColor(238, 135, 0))
+        h_WJets_r4.SetFillStyle(1001)
+        if h_WJets_r4.GetEntries() != 0.0:
+            error = ctypes.c_double(0.0)
+            bin_last = h_WJets_r4.GetNbinsX()
+            integral = h_WJets_r4.IntegralAndError(0, bin_last, error)
+            legend.AddEntry(h_WJets_r4, f"W + Jets r4 ({integral:.2f}, {error.value:.2f})", "f")
+            h_mc.Add(h_WJets_r4)
+
+        h_WJets_r5 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_r5_{variable}")
+        h_WJets_r5.SetFillColor(ROOT.TColor.GetColor(212, 120, 0))
+        h_WJets_r5.SetLineColor(ROOT.TColor.GetColor(212, 120, 0))
+        h_WJets_r5.SetFillStyle(1001)
+        if h_WJets_r5.GetEntries() != 0.0:
+            error = ctypes.c_double(0.0)
+            bin_last = h_WJets_r5.GetNbinsX()
+            integral = h_WJets_r5.IntegralAndError(0, bin_last, error)
+            legend.AddEntry(h_WJets_r5, f"W + Jets r5 ({integral:.2f}, {error.value:.2f})", "f")
+            h_mc.Add(h_WJets_r5)
 
 if not skip_DYJets:
     h_DYJets = hist_file.Get(f"{hists_subdirectory}/DYJets_LO_{variable}")
@@ -212,7 +299,7 @@ if upper_pad_min_y != "auto":
 h_mc_sum = h_mc.GetStack().Last().Clone("mc_sum")
 
 h_mc_sum_copy_for_errors = h_mc_sum.Clone("mc_sum_errors")
-h_mc_sum_copy_for_errors.SetFillStyle(3003)
+h_mc_sum_copy_for_errors.SetFillStyle(3005)
 h_mc_sum_copy_for_errors.SetMarkerStyle(0)
 h_mc_sum_copy_for_errors.SetFillColor(1)
 
@@ -391,7 +478,7 @@ signal_scale_up = 10
 canvas_log_y = False
 exec(plot_mc_data)
 
-scale_y_axis = 10
+scale_y_axis = 50
 upper_pad_min_y = 0.1
 signal_scale_up = 1
 canvas_log_y = True
@@ -404,7 +491,7 @@ signal_scale_up = 10
 canvas_log_y = False
 exec(plot_mc_data)
 
-scale_y_axis = 10
+scale_y_axis = 50
 upper_pad_min_y = 0.1
 signal_scale_up = 1
 canvas_log_y = True
@@ -649,7 +736,6 @@ exec(plot_mc_data)
 exec(set_variable_defaults)
 variable = "vbf_jj_Deta"
 title_x = "|#Delta#eta_{jj}|"
-skip_data = True
 signal_scale_up = 10
 canvas_log_y = False
 exec(plot_mc_data)
