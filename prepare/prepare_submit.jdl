@@ -20,7 +20,7 @@ stream_error  = True
 stream_output = True
 
 year = 2018
-output_dir = mva_Jul20/2018
+output_dir = mva_Jul20/2018_26Aug2020
 
 arguments = condor $(year) $(output_dir) $(sample_name) $(sample_i)
 
@@ -32,4 +32,5 @@ queue 9 in VBS_EWK
 queue 9 in VBS_QCD
 queue 9 in Top
 queue 4 in WJets_LO
+queue 9 in WJets_HT
 queue 4 in DYJets_LO

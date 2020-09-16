@@ -2,11 +2,11 @@
 
 mkdir -p trainings
 
-wv_ver="wv_BDTG72"
+wv_ver="wv_BDTG81"
 xrdcp root://cmseos.fnal.gov//store/user/rsingh/wv_vbs_ntuples/training_out/${wv_ver}/weights/VBS_BDT.weights.xml ./trainings/wv_weights.xml
 xrdcp root://cmseos.fnal.gov//store/user/rsingh/wv_vbs_ntuples/training_out/${wv_ver}/variable_list.txt ./trainings/wv_variable_list.txt
 
-wjj_ver="wjj_BDTG73"
+wjj_ver="wjj_BDTG81"
 xrdcp root://cmseos.fnal.gov//store/user/rsingh/wv_vbs_ntuples/training_out/${wjj_ver}/weights/VBS_BDT.weights.xml ./trainings/wjj_weights.xml
 xrdcp root://cmseos.fnal.gov//store/user/rsingh/wv_vbs_ntuples/training_out/${wjj_ver}/variable_list.txt ./trainings/wjj_variable_list.txt
 
