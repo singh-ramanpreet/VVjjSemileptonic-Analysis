@@ -18,14 +18,22 @@ stream_error  = True
 stream_output = True
 
 # uncomment below or input from cmd line
+#base_dir = root://cmseos.fnal.gov//store/user/singhr
+
+# uncomment below or input from cmd line
 #in_dir = 2016_Jun30
 
-arguments = condor $(region) $(in_dir) 4 $(hist_file).root
-
-hist_file = hists_$(outTag)_$(region)
+# uncomment below or input from cmd line
+#outTag = 2016_Jun30
 
 # uncomment below or input from cmd line
 #channel = wv
+
+
+arguments = condor $(region) $(base_dir) $(in_dir) 4 $(hist_file).root
+
+hist_file = hists_$(outTag)_$(region)
+
 queue 1 region from (
 sr_$(channel)_l
 sr_$(channel)_m
@@ -43,3 +51,44 @@ cr_top_$(channel)_l
 cr_top_$(channel)_m
 cr_top_$(channel)_e
 )
+
+do_extra_wv = ("$(channel)" == "wv")
+
+if $INT(do_extra_wv)
+  extra_queue_wv = cr_vjets_b1_$(channel)_l, \
+                   cr_vjets_b1_$(channel)_m, \
+                   cr_vjets_b1_$(channel)_e, \
+                   cr_vjets_b2_$(channel)_l, \
+                   cr_vjets_b2_$(channel)_m, \
+                   cr_vjets_b2_$(channel)_e
+else
+  extra_queue_wv = $()
+endif
+
+queue 1 region in $(extra_queue_wv)
+
+
+do_extra_wjj = ("$(channel)" == "wjj")
+
+if $INT(do_extra_wjj)
+  extra_queue_wjj = cr_vjets_r1_$(channel)_l, \
+                    cr_vjets_r1_$(channel)_m, \
+                    cr_vjets_r1_$(channel)_e, \
+                    cr_vjets_r2_$(channel)_l, \
+                    cr_vjets_r2_$(channel)_m, \
+                    cr_vjets_r2_$(channel)_e, \
+                    cr_vjets_r3_$(channel)_l, \
+                    cr_vjets_r3_$(channel)_m, \
+                    cr_vjets_r3_$(channel)_e, \
+                    cr_vjets_r4_$(channel)_l, \
+                    cr_vjets_r4_$(channel)_m, \
+                    cr_vjets_r4_$(channel)_e, \
+                    cr_vjets_r5_$(channel)_l, \
+                    cr_vjets_r5_$(channel)_m, \
+                    cr_vjets_r5_$(channel)_e
+else
+  extra_queue_wjj = $()
+endif
+
+queue 1 region in $(extra_queue_wjj)
+

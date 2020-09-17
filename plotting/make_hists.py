@@ -6,6 +6,10 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
+parser.add_argument("--base-dir", dest="base_dir", type=str,
+                    default="root://cmseos.fnal.gov//store/user/singhr/wv_vbs_ntuples/",
+                    help="base directory pre-fix, default=%(default)s")
+
 parser.add_argument("--in-dir", dest="in_dir", type=str, default="2018_May11",
                     help="prepared root files dir relative to /store/user/singhr/, default=%(default)s")
 
@@ -26,7 +30,7 @@ stopwatch.Start()
 ROOT.ROOT.EnableImplicitMT(args.threads)
 nThreads = ROOT.ROOT.GetImplicitMTPoolSize()
 print(f"Using {nThreads} Threads")
-df = ROOT.RDataFrame("Events", f"root://cmseos.fnal.gov//store/user/singhr/wv_vbs_ntuples/{args.in_dir}/*.root")
+df = ROOT.RDataFrame("Events", f"{args.base_dir}/{args.in_dir}/*.root")
 count = df.Count()
 total_entries = count.GetValue()
 
