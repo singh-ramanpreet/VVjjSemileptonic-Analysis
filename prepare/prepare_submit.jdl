@@ -10,9 +10,9 @@ transfer_input  = True
 transfer_output = True
 transfer_input_files = run_prepare.sh, setup.tar.gz
 
-log_dir = $(output_dir)_jobs
+log_dir = condor_logs
 
-log_filename  = $(log_dir)/$(sample_name)_$(sample_i)_$(Cluster)_$(Process)
+log_filename  = $(log_dir)/$Fn(output_dir)_$(sample_name)_$(sample_i)_$(Cluster)_$(Process)
 log           = $(log_filename).log
 output        = $(log_filename).out
 error         = $(log_filename).err
