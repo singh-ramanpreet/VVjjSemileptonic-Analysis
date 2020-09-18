@@ -19,10 +19,20 @@ error         = $(log_filename).err
 stream_error  = True
 stream_output = True
 
-year = 2018
-output_dir = mva_Jul20/2018_26Aug2020
+# uncomment below or input from cmd
+#year = 2018
 
-arguments = condor $(year) $(output_dir) $(sample_name) $(sample_i)
+# uncomment below or input from cmd
+#output_dir = XXXmva_Jul20/2018_26Aug2020
+
+# uncomment below or input from cmd
+#eos_path = root://cmseos.fnal.gov//store/user/rsingh/wv_vbs_ntuples
+
+arguments = condor $(year) $(output_dir) $(sample_name) $(sample_i) $(eos_path)
+
+if defined without_mva
+   arguments = condor $(year) $(output_dir) $(sample_name) $(sample_i) $(eos_path) --without-mva
+endif
 
 sample_name = $(Item)
 sample_i = $(Step)
