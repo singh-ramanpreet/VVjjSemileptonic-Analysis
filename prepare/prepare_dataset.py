@@ -111,8 +111,13 @@ for key in samples_dict:
 
         root_file = location + sample["name"]
         xs = sample["xs"]
-        nMC = sample["nMC"]
-        nMCneg = sample["nMCneg"]
+        nMC = 0
+        nMCneg = 0
+        kf = 1.0
+
+        if "nMC" in sample.keys(): nMC = sample["nMC"]
+        if "nMCneg" in sample.keys(): nMCneg = sample["nMCneg"]
+        if "kf" in sample.keys(): kf = sample["kf"]
 
         if nMC == 0:
             file_ = ROOT.TFile.Open(root_file)
@@ -121,7 +126,7 @@ for key in samples_dict:
             nMC = total_events_hist.GetBinContent(2)
             print(nMC, nMCneg)
 
-        xs_weight = (lumi * xs) / (nMC - (2 * nMCneg))
+        xs_weight = (lumi * xs * kf) / (nMC - (2 * nMCneg))
 
         print("=========================================")
         print("loading ... ", key, sample["name"])

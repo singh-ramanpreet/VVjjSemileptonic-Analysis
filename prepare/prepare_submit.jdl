@@ -40,7 +40,6 @@ sample_i = $(Step)
 queue 1 in data_obs
 queue 9 in VBS_EWK
 queue 9 in VBS_QCD
-queue 9 in Top
-queue 4 in WJets_LO
-queue 9 in WJets_HT
-queue 4 in DYJets_LO
+queue 12 in Top
+queue 8 in DYJets_HT
+queue 8 in WJets_HT

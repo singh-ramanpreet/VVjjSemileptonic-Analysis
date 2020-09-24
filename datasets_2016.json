@@ -1,83 +1,101 @@
 {    
     "data_obs": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_Jun30/2016/",
+        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
         "lumi": 1.0,
         "filelist": [
-            {"name": "Data_noDup.root", "xs": 1.0, "nMC": 1.0, "nMCneg": 0}
+            {"name": "Data_noDup.root", "xs": 1.0, "nMC": 1.0}
         ]
     },
     
     "VBS_EWK": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/WVJJTree_Jun30/2016/",
+        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.02982, "nMC": 0, "nMCneg": 0},
-            {"name": "WminusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root", "xs": 0.03259, "nMC": 0, "nMCneg": 0}, 
-            {"name": "WminusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"     , "xs": 0.1    , "nMC": 0, "nMCneg": 0},
-            {"name": "WplusTo2JWminusToLNuJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 0.9107 , "nMC": 0, "nMCneg": 0},
-            {"name": "WplusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"       , "xs": 0.05401, "nMC": 0, "nMCneg": 0},
-            {"name": "WplusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 0.9114 , "nMC": 0, "nMCneg": 0},
-            {"name": "WplusToLNuWplusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"  , "xs": 0.08793, "nMC": 0, "nMCneg": 0},
-            {"name": "WplusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.1825 , "nMC": 0, "nMCneg": 0},
-            {"name": "ZTo2LZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"           , "xs": 0.01589, "nMC": 0, "nMCneg": 0}
+            {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.02982},
+            {"name": "WminusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root", "xs": 0.03259}, 
+            {"name": "WminusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"     , "xs": 0.1    },
+            {"name": "WplusTo2JWminusToLNuJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 0.9107 },
+            {"name": "WplusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"       , "xs": 0.05401},
+            {"name": "WplusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 0.9114 },
+            {"name": "WplusToLNuWplusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"  , "xs": 0.08793},
+            {"name": "WplusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.1825 },
+            {"name": "ZTo2LZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"           , "xs": 0.01589}
         ]
     },
 
     "VBS_QCD": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/WVJJTree_Jun30/2016/",
+        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 , "nMC": 0, "nMCneg": 0},
-            {"name": "WminusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root", "xs": 0.03203, "nMC": 0, "nMCneg": 0},
-            {"name": "WminusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"     , "xs": 1.166  , "nMC": 0, "nMCneg": 0},
-            {"name": "WplusTo2JWminusToLNuJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 5.568  , "nMC": 0, "nMCneg": 0},
-            {"name": "WplusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"       , "xs": 0.575  , "nMC": 0, "nMCneg": 0},
-            {"name": "WplusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 5.546  , "nMC": 0, "nMCneg": 0},
-            {"name": "WplusToLNuWplusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"  , "xs": 0.07584, "nMC": 0, "nMCneg": 0},
-            {"name": "WplusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 1.938  , "nMC": 0, "nMCneg": 0},
-            {"name": "ZTo2LZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"           , "xs": 0.3449 , "nMC": 0, "nMCneg": 0}
+            {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 },
+            {"name": "WminusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root", "xs": 0.03203},
+            {"name": "WminusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"     , "xs": 1.166  },
+            {"name": "WplusTo2JWminusToLNuJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 5.568  },
+            {"name": "WplusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"       , "xs": 0.575  },
+            {"name": "WplusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 5.546  },
+            {"name": "WplusToLNuWplusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"  , "xs": 0.07584},
+            {"name": "WplusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 1.938  },
+            {"name": "ZTo2LZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"           , "xs": 0.3449 }
         ]
     },
 
     "DYJets_LO": {
-        "location": "/eos/user/s/singhr/wv_vbs_ntuples/WVJJTree_Apr9/2016/noDuplicate/",
+        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 1012.296845, "nMC": 0, "nMCneg": 0},
-            {"name": "DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 334.717838 , "nMC": 0, "nMCneg": 0},
-            {"name": "DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 102.4628   , "nMC": 0, "nMCneg": 0},
-            {"name": "DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 54.48136   , "nMC": 0, "nMCneg": 0}
+            {"name": "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 1012.296845},
+            {"name": "DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 334.717838 },
+            {"name": "DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 102.4628   },
+            {"name": "DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 54.48136   }
         ]
     },
 
     "Top": {
-        "location": "/eos/user/s/singhr/wv_vbs_ntuples/WVJJTree_Apr9/2016/noDuplicate/",
+        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV_powheg_TuneCUETP8M1.root", "xs": 19.5741, "nMC": 0, "nMCneg": 0},
-            {"name": "ST_tW_top_5f_NoFullyHadronicDecays_13TeV_powheg_TuneCUETP8M1.root"    , "xs": 19.5741, "nMC": 0, "nMCneg": 0},
-            {"name": "Summer16_ST_s_channel_4f_leptonDecays.root"                           , "xs": 11.36  , "nMC": 0, "nMCneg": 0},
-            {"name": "Summer16_ST_t_channel_antitop_4f_inclusiveDecays_TuneCUETP8M2T4.root" , "xs": 80.95  , "nMC": 0, "nMCneg": 0},
-            {"name": "Summer16_ST_t_channel_top_4f_inclusiveDecays_TuneCUETP8M2T4.root"     , "xs": 136.02 , "nMC": 0, "nMCneg": 0},
-            {"name": "TTToSemilepton_powheg.root"                                           , "xs": 364.3  , "nMC": 0, "nMCneg": 0},
-            {"name": "TTWJetsToLNu.root"                                                    , "xs": 0.2043 , "nMC": 0, "nMCneg": 0},
-            {"name": "TTWJetsToQQ.root"                                                     , "xs": 0.4062 , "nMC": 0, "nMCneg": 0},
-            {"name": "TTZToLLNuNu_M-10.root"                                                , "xs": 0.2529 , "nMC": 0, "nMCneg": 0},
-            {"name": "TTZToQQ.root"                                                         , "xs": 0.5297 , "nMC": 0, "nMCneg": 0}
+            {"name": "ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV_PSweights-powheg-pythia8.root"         , "xs": 38.06 },
+            {"name": "ST_tW_antitop_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8.root"       , "xs": 34.97 },
+            {"name": "ST_tW_top_5f_NoFullyHadronicDecays_13TeV_PSweights-powheg-pythia8.root"             , "xs": 38.09 },
+            {"name": "ST_tW_top_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8.root"           , "xs": 34.91 },
+            {"name": "ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8.root", "xs": 67.91 },
+            {"name": "ST_t-channel_top_4f_InclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8.root"    , "xs": 113.3 },
+            {"name": "ST_s-channel_4f_leptonDecays_13TeV_PSweights-amcatnlo-pythia8.root"                 , "xs": 3.365 },
+            {"name": "ST_s-channel_4f_hadronicDecays_TuneCP5_PSweights_13TeV-amcatnlo-pythia8.root"       , "xs": 11.24 },
+            {"name": "ST_s-channel_4f_InclusiveDecays_13TeV-amcatnlo-pythia8.root"                        , "xs": 10.12 },
+            {"name": "TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8.root"                           , "xs": 377.96},
+            {"name": "TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8.root"                       , "xs": 365.34},
+            {"name": "TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8.root"                              , "xs": 88.29 }
         ]
     },
     
     "WJets_HT": {
-        "location": "/eos/user/s/singhr/wv_vbs_ntuples/WVJJTree_Apr9/2016/noDuplicate/",
+        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WJetsToLNu_HT_100To200_13TeV.root"  , "xs": 1627.45  , "nMC": 0, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_200To400_13TeV.root"  , "xs": 435.24   , "nMC": 0, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_400To600_13TeV.root"  , "xs": 59.18    , "nMC": 0, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_600To800_13TeV.root"  , "xs": 14.58    , "nMC": 0, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_800To1200_13TeV.root" , "xs": 6.655    , "nMC": 0, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_1200To2500_13TeV.root", "xs": 1.60809  , "nMC": 0, "nMCneg": 0},
-            {"name": "WJetsToLNu_HT_2500ToInf_13TeV.root" , "xs": 0.0389136, "nMC": 0, "nMCneg": 0}
+            {"name": "WJetsToLNu_HT-70To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"   , "xs": 1353.0 , "kf": 1.21},
+            {"name": "WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 1346.0 , "kf": 1.21},
+            {"name": "WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 360.1  , "kf": 1.21},
+            {"name": "WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 48.8   , "kf": 1.21},
+            {"name": "WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 12.07  , "kf": 1.21},
+            {"name": "WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root" , "xs": 5.497  , "kf": 1.21},
+            {"name": "WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 1.329  , "kf": 1.21},
+            {"name": "WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root" , "xs": 0.03209, "kf": 1.21}
+        ]
+    },
+
+    "DYJets_HT": {
+        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
+        "lumi": 35867.06,
+        "filelist": [
+            {"name": "DYJetsToLL_M-50_HT-70to100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"   , "xs": 169.9   , "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 147.4   , "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 41.04   , "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 5.674   , "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-600to800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 1.358   , "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root" , "xs": 0.6229  , "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 0.1512  , "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-2500toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root" , "xs": 0.003659, "kf": 1.23}
         ]
     }
 }

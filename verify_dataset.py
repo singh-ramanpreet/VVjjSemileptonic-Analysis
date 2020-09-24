@@ -32,9 +32,16 @@ for key in samples_dict:
 
         root_file = location + sample["name"]
         xs = sample["xs"]
-        nMC = sample["nMC"]
-        nMCneg = sample["nMCneg"]
-        print(key, sample["name"], xs, nMC, nMCneg)
+
+        nMC = 0
+        nMCneg = 0
+        kf = 1.0
+
+        if "nMC" in sample.keys(): nMC = sample["nMC"]
+        if "nMCneg" in sample.keys(): nMCneg = sample["nMCneg"]
+        if "kf" in sample.keys(): kf = sample["kf"]
+
+        print(key, sample["name"], xs)
         ls = subprocess.Popen(["rootls", root_file])
         ls.wait()
     print("====================================================================")
