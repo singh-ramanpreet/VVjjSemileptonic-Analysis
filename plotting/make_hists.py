@@ -7,7 +7,7 @@ import argparse
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--base-dir", dest="base_dir", type=str,
-                    default="root://cmseos.fnal.gov//store/user/singhr/wv_vbs_ntuples/",
+                    default="root://cmseos.fnal.gov//store/user/singhr/wv_vbs_ntuples",
                     help="base directory pre-fix, default=%(default)s")
 
 parser.add_argument("--in-dir", dest="in_dir", type=str, default="2018_May11",
@@ -50,7 +50,7 @@ ROOT.gInterpreter.ProcessLine("""
 """)
 
 WJets_type = "WJets_HT"
-DYJets_type = "DYJets_LO"
+DYJets_type = "DYJets_HT"
 samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", WJets_type, DYJets_type]
 
 df_samples = {}
@@ -207,7 +207,7 @@ if "2017" in args.in_dir:
     weight_w = "L1PFWeight * " + weight_w
 
 #weight_z =  weight_w + " * lept2_trig_eff_weight * lept2_id_eff_weight"
-weight_z =  weight_w
+weight_z =  "xs_weight * gen_weight * pu_weight * lept1_id_eff_weight * lept2_id_eff_weight"
 
 ##############
 # jes sys
@@ -224,6 +224,21 @@ jes_vars = [
     "fatjet_pt"
 ]
 
+
+# list of regions to make systematic hists
+sys_region_list = [
+    "sr_wjj_l", "sr_wv_l", "sr_zjj_l", "sr_zv_l",
+    "sr_wjj_e", "sr_wv_e", "sr_zjj_e", "sr_zv_e",
+    "sr_wjj_m", "sr_wv_m", "sr_zjj_m", "sr_zv_m",
+    "cr_vjets_wjj_l", "cr_vjets_wv_l", "cr_vjets_zjj_l", "cr_vjets_zv_l",
+    "cr_vjets_wjj_e", "cr_vjets_wv_e", "cr_vjets_zjj_e", "cr_vjets_zv_e",
+    "cr_vjets_wjj_m", "cr_vjets_wv_m", "cr_vjets_zjj_m", "cr_vjets_zv_m",
+    "cr_top_wjj_l", "cr_top_wv_l", "cr_top_zjj_l", "cr_top_zv_l",
+    "cr_top_wjj_e", "cr_top_wv_e", "cr_top_zjj_e", "cr_top_zv_e",
+    "cr_top_wjj_m", "cr_top_wv_m", "cr_top_zjj_m", "cr_top_zv_m",
+]
+
+
 #jes_vars_W = ["pf_met_corr"] + jes_vars
 jes_vars_W = jes_vars
 jes_vars_Z = jes_vars
@@ -231,7 +246,7 @@ jes_vars_Z = jes_vars
 
 for jes_sys in ("jesUp", "jesDown"):
     
-    for region in ("sr_wjj_l", "sr_wv_l", "sr_zjj_l", "sr_zv_l"):
+    for region in sys_region_list:
         
         temp_string = selections_regions[region]
         
@@ -253,7 +268,7 @@ for jes_sys in ("jesUp", "jesDown"):
 
 for pdf_qcd_sys in ("pdfUp", "pdfDown", "qcdUp", "qcdDown"):
 
-    for region in ("sr_zjj_l", "sr_zv_l", "sr_wjj_l", "sr_wv_l"):
+    for region in sys_region_list:
 
         selections_regions[f"{region}_{pdf_qcd_sys}"] =  selections_regions[region]
 
@@ -336,8 +351,10 @@ hists_SYS_list = [
     "mva_score_zv", "mva_score_zv_var1",
 ]
 for i in hists_models_1D:
-    if i[4] in hists_SYS_list:
-        hists_models_1D_SYS.append(i)
+    # uncomment/comment out below to limit sys histograms
+    hists_models_1D_SYS.append(i)
+    #if i[4] in hists_SYS_list:
+    #    hists_models_1D_SYS.append(i)
 
 # for qcd and pdf systematic, keep it low
 hists_models_1D_SYS_1 = []
