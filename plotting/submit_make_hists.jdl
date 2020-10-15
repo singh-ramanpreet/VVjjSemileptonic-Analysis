@@ -47,9 +47,21 @@ sr_$(channel)_l_jesDown
 cr_vjets_$(channel)_l
 cr_vjets_$(channel)_m
 cr_vjets_$(channel)_e
+cr_vjets_$(channel)_l_jesUp
+cr_vjets_$(channel)_m_jesUp
+cr_vjets_$(channel)_e_jesUp
+cr_vjets_$(channel)_l_jesDown
+cr_vjets_$(channel)_m_jesDown
+cr_vjets_$(channel)_e_jesDown
 cr_top_$(channel)_l
 cr_top_$(channel)_m
 cr_top_$(channel)_e
+cr_top_$(channel)_l_jesUp
+cr_top_$(channel)_m_jesUp
+cr_top_$(channel)_e_jesUp
+cr_top_$(channel)_l_jesDown
+cr_top_$(channel)_m_jesDown
+cr_top_$(channel)_e_jesDown
 )
 
 do_extra_wv = ("$(channel)" == "wv")
