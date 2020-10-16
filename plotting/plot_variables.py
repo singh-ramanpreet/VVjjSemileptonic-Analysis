@@ -17,6 +17,7 @@ parser.add_argument("-y", "--year", type=str, default="2016")
 parser.add_argument("-s", "--sub-dir", dest="sub_dir", type=str, default="/")
 parser.add_argument("-m", "--mva-type", dest="mva_type", type=str, default="wjj")
 parser.add_argument("-B", "--boson", type=str, default="W")
+parser.add_argument("--vars", action="append", default=[])
 parser.add_argument("--sys", action="append", default=[])
 parser.add_argument("--norm-top", dest="norm_top", type=float, default=0.0)
 parser.add_argument("--norm-vjet", dest="norm_vjet", type=float, default=0.0)
@@ -114,6 +115,11 @@ legend.SetTextFont(42)
 #legend.SetTextSize(0.04)
 legend.SetNColumns(leg_columns)
 
+h_mc_sum = hist_file.Get(f"{hists_subdirectory}/Total_Bkg_{variable}")
+post_fit = True
+if type(h_mc_sum) == ROOT.TObject:
+    post_fit = False
+
 h_data = hist_file.Get(f"{hists_subdirectory}/data_obs_{variable}")
 if type(h_data) == ROOT.TObject:
     # no data histogram, get some other to get the binning
@@ -134,7 +140,10 @@ if len(blind_data) != 0:
                 h_data.SetBinContent(i, 0.0)
 
 if h_data.GetEntries() != 0.0:
-    legend.AddEntry(h_data, f"Data ({h_data.Integral():.2f})", "pe")
+    if post_fit:
+        legend.AddEntry(h_data, f"Asimov Data ({h_data.Integral():.2f})", "pe")
+    else:
+        legend.AddEntry(h_data, f"Data ({h_data.Integral():.2f})", "pe")
 
 bw = h_data.GetBinWidth(1)
 
@@ -199,6 +208,8 @@ if not skip_Top:
         for sys in args.sys:
             htemp_Up = hist_file.Get(f"{hists_subdirectory}_{sys}Up/Top_{variable}")
             htemp_Down = hist_file.Get(f"{hists_subdirectory}_{sys}Down/Top_{variable}")
+            if type(htemp_Up) == ROOT.TObject: continue
+
             sysUp = add_errors(sysUp, abs(h_Top_sysUp.GetBinContent(i) - htemp_Up.GetBinContent(i)))
             sysDown = add_errors(sysDown, abs(h_Top_sysDown.GetBinContent(i) - htemp_Down.GetBinContent(i)))
         h_Top_sysUp.SetBinContent(i, h_Top.GetBinContent(i) + sysUp)
@@ -389,21 +400,20 @@ h_mc.SetMaximum(maxY * scale_y_axis)
 if upper_pad_min_y != "auto":
     h_mc.SetMinimum(upper_pad_min_y)
 
-h_mc_sum = h_mc.GetStack().Last().Clone("mc_sum")
-h_mc_sumUp = h_mc_sysUp.GetStack().Last().Clone("mc_sumUp")
-h_mc_sumDown = h_mc_sysUp.GetStack().Last().Clone("mc_sumDown")
-
-#h_mc_sum_copy_for_errors = h_mc_sum.Clone("mc_sum_errors")
-#h_mc_sum_copy_for_errors.SetFillStyle(3145)
-#h_mc_sum_copy_for_errors.SetMarkerStyle(0)
-#h_mc_sum_copy_for_errors.SetFillColor(1)
+if not post_fit:
+    h_mc_sum = h_mc.GetStack().Last().Clone("mc_sum")
+    h_mc_sumUp = h_mc_sysUp.GetStack().Last().Clone("mc_sumUp")
+    h_mc_sumDown = h_mc_sysUp.GetStack().Last().Clone("mc_sumDown")
 
 g_mc_errors = ROOT.TGraphAsymmErrors(h_mc_sum.Clone("mc_sum_errors"))
 g_mc_errors.SetFillStyle(3145)
 g_mc_errors.SetMarkerStyle(0)
 g_mc_errors.SetFillColor(1)
 g_mc_errors.SetLineColor(1)
-legend.AddEntry(g_mc_errors, "Stat + Sys Unc.", "f")
+if post_fit:
+    legend.AddEntry(g_mc_errors, "PostFit Unc.", "f")
+else:
+    legend.AddEntry(g_mc_errors, "Stat + Sys Unc.", "f")
 
 g_mc_errors_ratio = g_mc_errors.Clone("mc_errors_ratio")
 g_mc_errors_ratio.SetFillStyle(1001)
@@ -412,8 +422,12 @@ g_mc_errors_ratio.SetFillColor(ROOT.kGray)
 
 for ibin in range(h_mc_sum.GetNbinsX()):
     #print(ibin + 1, h_mc_sum.GetBinError(ibin + 1), g_mc_errors.GetErrorYhigh(ibin), g_mc_errors.GetErrorYlow(ibin))
-    d_ey_Up = abs(h_mc_sumUp.GetBinContent(ibin + 1) - h_mc_sum.GetBinContent(ibin + 1))
-    d_ey_Down = abs(h_mc_sumDown.GetBinContent(ibin + 1) - h_mc_sum.GetBinContent(ibin + 1))
+    if post_fit:
+        d_ey_Up = 0.0
+        d_ey_Down = 0.0
+    else:
+        d_ey_Up = abs(h_mc_sumUp.GetBinContent(ibin + 1) - h_mc_sum.GetBinContent(ibin + 1))
+        d_ey_Down = abs(h_mc_sumDown.GetBinContent(ibin + 1) - h_mc_sum.GetBinContent(ibin + 1))
     #print(d_ey_Up, d_ey_Down)
 
     ey_Up = add_errors(g_mc_errors.GetErrorYhigh(ibin), d_ey_Up)
@@ -445,7 +459,6 @@ if not draw_with_ratio:
     h_data.Draw("x0 e1 same")
     if not skip_VBS_EWK:
         h_VBS_EWK.Draw("hist same")
-    #h_mc_sum_copy_for_errors.Draw("e2 same")
     g_mc_errors.Draw("2")
 
     legend.Draw()
@@ -471,7 +484,12 @@ if not draw_with_ratio:
 
 if draw_with_ratio:
 
-    ratio = ROOT.TRatioPlot(h_data_total, h_mc_sum)
+    if h_data_total.Integral() == 0.0:
+        # this for blinded plots
+        ratio = ROOT.TRatioPlot(h_mc_sum, h_mc_sum)
+        lower_graph_title_y = ""
+    else:
+        ratio = ROOT.TRatioPlot(h_data_total, h_mc_sum)
 
     ratio.SetGraphDrawOpt(lower_graph_draw_opt)
 
@@ -509,13 +527,17 @@ if draw_with_ratio:
     # draw again, hack
     ratio.GetLowerRefGraph().Draw(f"same {lower_graph_draw_opt}")
 
+    if h_data_total.Integral() == 0.0:
+        ratio.GetLowerRefGraph().SetMarkerSize(0.0)
+        for i in range(ratio.GetLowerRefGraph().GetN()):
+            ratio.GetLowerRefGraph().SetPointError(i, 0, 0, 0, 0)
+
     upper_pad = ratio.GetUpperPad()
     upper_pad.cd()
 
     h_mc_sum.Reset()
     h_data_total.Reset()
     h_mc.Draw("ah hist")
-    #h_mc_sum_copy_for_errors.Draw("e2 same")
     g_mc_errors.Draw("2")
     if not skip_VBS_EWK:
         h_data.Draw("x0 e1 same")
@@ -546,11 +568,6 @@ if draw_with_ratio:
         )
     
 canvas.Draw()
-#if hists_subdirectory != "/":
-#    extra_tag = hists_subdirectory.replace("/", "_")
-#else:
-#    extra_tag = ""
-
 extra_tag = ""
 
 if canvas_log_y:
@@ -559,7 +576,6 @@ else:
     extra_tag += ""
 
 plot_filename = f"{plots_dir}/{hists_subdirectory}/{variable}{extra_tag}"
-#canvas.SaveAs(f"{plot_filename}.png")
 canvas.SaveAs(f"{plot_filename}.pdf")
 os.popen(f"convert -density 150 -antialias {plot_filename}.pdf -trim {plot_filename}.png 2> /dev/null")
 """
@@ -580,11 +596,6 @@ os.popen(f"convert -density 150 -antialias {plot_filename}.pdf -trim {plot_filen
 #canvas.Draw()
 #canvas.SaveAs(f"{plots_dir}/total_entries.pdf")
 #canvas.SaveAs(f"{plots_dir}/total_entries.png")
-
-#exec(set_variable_defaults)
-#hist_file = ROOT.TFile.Open(hist_filename)
-#selection_code = hist_file.Get("_e/selection_code")
-#print(selection_code.GetTitle(), file=open(f"{plots_dir}/selection_code.txt", "w"))
 
 
 #exec(set_variable_defaults)
@@ -620,26 +631,26 @@ variable = f"mva_score_{args.mva_type}"
 title_x = f"MVA Score {args.mva_type}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 scale_y_axis = 50
 upper_pad_min_y = 0.1
 signal_scale_up = 1
 canvas_log_y = True
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = f"mva_score_{args.mva_type}_var1"
 title_x = f"MVA Score {args.mva_type}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 scale_y_axis = 50
 upper_pad_min_y = 0.1
 signal_scale_up = 1
 canvas_log_y = True
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -648,7 +659,7 @@ title_x = "p^{T}_{lept1}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -656,7 +667,7 @@ variable = "lept1_eta"
 title_x = "#eta_{lept1}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -664,7 +675,7 @@ variable = "lept1_phi"
 title_x = "#phi_{lept1}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -673,7 +684,7 @@ title_x = "p^{T}_{lept2}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -681,7 +692,7 @@ variable = "lept2_eta"
 title_x = "#eta_{lept2}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -689,7 +700,7 @@ variable = "lept2_phi"
 title_x = "#phi_{lept2}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -698,7 +709,7 @@ title_x = "PF MET"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -706,7 +717,7 @@ variable = "pf_met_corr_phi"
 title_x = "#phi_{PF MET}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = "fatjet_m"
@@ -714,7 +725,7 @@ title_x = "m_{V}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -725,7 +736,7 @@ units = "GeV"
 #ndivisions_x = 505
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -733,7 +744,7 @@ variable = "fatjet_eta"
 title_x = "#eta_{V}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -741,7 +752,7 @@ variable = "fatjet_phi"
 title_x = "#phi_{V}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -749,7 +760,7 @@ variable = "fatjet_tau21"
 title_x = "#tau_{21} (V)"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = "dijet_m"
@@ -757,7 +768,7 @@ title_x = "m_{JJ}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -766,7 +777,7 @@ title_x = "p^{T}_{JJ}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -774,7 +785,7 @@ variable = "dijet_eta"
 title_x = "#eta_{JJ}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -783,7 +794,7 @@ title_x = "p^{T}_{J1}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -792,7 +803,7 @@ title_x = "p^{T}_{J2}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -800,7 +811,7 @@ variable = "dijet_j1_eta"
 title_x = "#eta_{J1}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -808,7 +819,7 @@ variable = "dijet_j2_eta"
 title_x = "#eta_{J2}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -817,7 +828,7 @@ title_x = "p^{T}_{W}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -825,7 +836,7 @@ variable = "v_eta"
 title_x = "#eta_{W}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = "v_m"
@@ -833,7 +844,7 @@ title_x = "m^{T}_{W}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = "v_mt"
@@ -841,7 +852,7 @@ title_x = "m^{T}_{W}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -850,7 +861,7 @@ title_x = "p^{T}_{j1}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -859,7 +870,7 @@ title_x = "p^{T}_{j2}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -867,7 +878,7 @@ variable = "vbf_j1_eta"
 title_x = "#eta_{j1}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -875,7 +886,7 @@ variable = "vbf_j2_eta"
 title_x = "#eta_{j2}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -883,7 +894,7 @@ variable = "vbf_jj_Deta"
 title_x = "|#Delta#eta_{jj}|"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -891,7 +902,7 @@ variable = "vbf_j1_phi"
 title_x = "#phi_{j1}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -899,7 +910,7 @@ variable = "vbf_j2_phi"
 title_x = "#phi_{j2}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -908,7 +919,7 @@ title_x = "m_{jj}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -916,7 +927,7 @@ variable = "boson_centrality"
 title_x = "Boson Centrality"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -924,7 +935,7 @@ variable = "zeppenfeld_w_Deta"
 title_x = "Zeppenfeld* W"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -932,7 +943,7 @@ variable = "zeppenfeld_v_Deta"
 title_x = "Zeppenfeld* V"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -941,7 +952,7 @@ title_x = "m_{WV}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -950,7 +961,7 @@ title_x = "p^{T}_{WV}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -958,7 +969,7 @@ variable = "vv_eta"
 title_x = "#eta_{WV}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -966,4 +977,4 @@ variable = "vv_phi"
 title_x = "#phi_{WV}"
 signal_scale_up = 10
 canvas_log_y = False
-exec(plot_mc_data)
+if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
