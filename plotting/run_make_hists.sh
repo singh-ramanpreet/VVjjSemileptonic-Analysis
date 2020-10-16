@@ -9,7 +9,7 @@ if [[ ${1} == "condor" ]]; then
     cd plotting
 fi
 
-region=${2}
+region=${2//_plus_/ --regions }
 base_dir=${3}
 in_dir=${4}
 threads=${5}

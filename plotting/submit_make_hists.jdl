@@ -30,7 +30,7 @@ stream_output = True
 #channel = wv
 
 
-arguments = condor $(region) $(base_dir) $(in_dir) 4 $(hist_file).root
+arguments = condor $(region) $(base_dir) $(in_dir) 0 $(hist_file).root
 
 hist_file = hists_$(outTag)_$(region)
 
@@ -53,6 +53,12 @@ cr_vjets_$(channel)_e_jesUp
 cr_vjets_$(channel)_l_jesDown
 cr_vjets_$(channel)_m_jesDown
 cr_vjets_$(channel)_e_jesDown
+cr_vjets_$(channel)_l_qcdUp
+cr_vjets_$(channel)_m_qcdUp
+cr_vjets_$(channel)_e_qcdUp
+cr_vjets_$(channel)_l_qcdDown
+cr_vjets_$(channel)_m_qcdDown
+cr_vjets_$(channel)_e_qcdDown
 cr_top_$(channel)_l
 cr_top_$(channel)_m
 cr_top_$(channel)_e

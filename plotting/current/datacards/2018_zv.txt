@@ -1,0 +1,33 @@
+imax * number of bins
+jmax * number of processes minus 1
+kmax * number of nuisance parameters
+----------------------------------------------------------------------------------------------------------------------------------
+shapes *          sig_reg     ../2018_14Oct2020_zv.root    sr_l/$PROCESS_mva_score_zv_var1    sr_l_$SYSTEMATIC/$PROCESS_mva_score_zv_var1
+shapes *          vjet_reg    ../2018_14Oct2020_zv.root    cr_vjets_l/$PROCESS_mva_score_zv_1bin
+----------------------------------------------------------------------------------------------------------------------------------
+bin            sig_reg    vjet_reg
+observation      -1          -1   
+----------------------------------------------------------------------------------------------------------------------------------
+bin                                 sig_reg    sig_reg      sig_reg     vjet_reg    vjet_reg     vjet_reg    
+process                             VBS_EWK    DYJets_HT     VBS_QCD    VBS_EWK     DYJets_HT     VBS_QCD
+process                              0          1            2           0           1            2      
+rate                                -1         -1           -1          -1          -1           -1     
+----------------------------------------------------------------------------------------------------------------------------------
+CMS_eff_b_mistag_2018    lnN        0.98       0.98         0.98        0.98        .98          0.98   
+CMS_eff_e_2018           lnN        1.01       1.01         1.01        1.01        .01          1.01   
+CMS_eff_m_2018           lnN        1.01       1.01         1.01        1.01        .01          1.01   
+CMS_norm_PU_2018         lnN        1.04       1.04         1.04        1.04        .04          1.04   
+CMS_norm_met_2018        lnN        1.02       1.02         1.02        1.02        .02          1.02   
+lumi_13TeV_2018          lnN        1.025      1.025        1.025       1.025       .025         1.025  
+norm_Vjets1_2018         lnN        -          -            -           -           -            -      
+jes                      shape1     1.0        1.0          1.0         -           -            -      
+pdf                      shape1     1.0        -            1.0         -           -            -      
+qcd                      shape1     1.0        -            1.0         -           -            -  
+
+nuisance    edit    rename    *    sig_reg    jes    jes_2018_zv
+nuisance    edit    rename    *    sig_reg    pdf    pdf_2018_zv
+nuisance    edit    rename    *    sig_reg    qcd    qcd_2018_zv
+
+sig_reg    autoMCStats    1    0    1
+
+CMS_2018_zv_wjetnorm    rateParam    *    DYJets_HT    1    [0.7,3] 

@@ -53,9 +53,44 @@ WJets_type = "WJets_HT"
 DYJets_type = "DYJets_HT"
 samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", WJets_type, DYJets_type]
 
+
+# define weight columns
+#######################
+weight_w = "xs_weight * gen_weight"
+if "2017" in args.in_dir:
+    weight_w = "L1PFWeight * " + weight_w
+weight_z =  "xs_weight * gen_weight * pu_weight * lept1_id_eff_weight * lept2_id_eff_weight"
+
+if any(x in i for x in ["zv", "zjj"] for i in args.regions):
+    total_weight = weight_z
+else:
+    total_weight = weight_w
+print("Weight >>> ", total_weight)
+
+list_of_weight_col = {
+    "total_weight": total_weight,
+}
+
+if any("qcd" in i for i in args.regions):
+    for i in range(45):
+        list_of_weight_col[f"total_weight_qcd_{i}"] = f"{total_weight} * scaleWeight[{i}]"
+
+if any("pdf" in i for i in args.regions):
+    for i in range(104):
+        list_of_weight_col[f"total_weight_pdf_{i}"] = f"{total_weight} * pdfWeight[{i}]"
+
+# start with main df
+df_with_weight_cols = [df]
+for col_name in list_of_weight_col:
+    df_with_weight_cols.append(df_with_weight_cols[-1].Define(col_name, list_of_weight_col[col_name]))
+
+#######################
+
+# separate out dataframes by sample tag
 df_samples = {}
 for sample_ in samples_name:
-    df_samples[sample_] = df.Filter(f"sample_tag == \"{sample_}\"")
+    df_samples[sample_] = df_with_weight_cols[-1].Filter(f"sample_tag == \"{sample_}\"")
+
 
 # split W + Jets
 w_resolved_split = {
@@ -200,16 +235,6 @@ for i in ("m", "e", "l"):
         selections_regions[f"cr_vjets_{k}_wv_{i}"] = selections_regions[f"cr_vjets_wv_{i}"] + " && " + j
 ##############
 
-#weight_w = "xs_weight * gen_weight * pu_weight * btag0_weight * lept1_trig_eff_weight * lept1_id_eff_weight"
-weight_w = "xs_weight * gen_weight"
-
-if "2017" in args.in_dir:
-    weight_w = "L1PFWeight * " + weight_w
-
-#weight_z =  weight_w + " * lept2_trig_eff_weight * lept2_id_eff_weight"
-weight_z =  "xs_weight * gen_weight * pu_weight * lept1_id_eff_weight * lept2_id_eff_weight"
-
-##############
 # jes sys
 # make keys
 
@@ -337,26 +362,22 @@ hists_models_1D = [
     (1, -1.0, 1.0, "mva_score_zv", "mva_score_zv_1bin")
 ]
 
+# for jes systematic, if needs to keep it low
 hists_models_1D_SYS = []
 hists_SYS_list = [
-    "dijet_pt",
-    "fatjet_pt",
-    "vbf_j1_pt",
-    "vbf_j2_pt",
-    "dijet_j1_pt",
-    "dijet_j2_pt",
-    "mva_score_wjj", "mva_score_wjj_var1",
-    "mva_score_zjj", "mva_score_zjj_var1",
-    "mva_score_wv", "mva_score_wv_var1",
-    "mva_score_zv", "mva_score_zv_var1",
+    #"mva_score_wjj_var1",
+    #"mva_score_zjj_var1",
+    #"mva_score_wv_var1",
+    #"mva_score_zv_var1",
 ]
 for i in hists_models_1D:
-    # uncomment/comment out below to limit sys histograms
-    hists_models_1D_SYS.append(i)
-    #if i[4] in hists_SYS_list:
-    #    hists_models_1D_SYS.append(i)
+    if len(hists_SYS_list) != 0:
+        if i[4] in hists_SYS_list:
+            hists_models_1D_SYS.append(i)
+    else:
+        hists_models_1D_SYS.append(i)
 
-# for qcd and pdf systematic, keep it low
+# for pdf systematic, if needs to keep it low
 hists_models_1D_SYS_1 = []
 hists_SYS_list_1 = [
     "mva_score_wjj_var1",
@@ -365,8 +386,26 @@ hists_SYS_list_1 = [
     "mva_score_zv_var1",
 ]
 for i in hists_models_1D:
-    if i[4] in hists_SYS_list_1:
+    if len(hists_SYS_list_1) != 0:
+        if i[4] in hists_SYS_list_1:
+            hists_models_1D_SYS_1.append(i)
+    else:
         hists_models_1D_SYS_1.append(i)
+
+# for qcd systematic, if needs to keep it low
+hists_models_1D_SYS_2 = []
+hists_SYS_list_2 = [
+    #"mva_score_wjj_var1",
+    #"mva_score_zjj_var1",
+    #"mva_score_wv_var1",
+    #"mva_score_zv_var1",
+]
+for i in hists_models_1D:
+    if len(hists_SYS_list_2) != 0:
+        if i[4] in hists_SYS_list_2:
+            hists_models_1D_SYS_2.append(i)
+    else:
+        hists_models_1D_SYS_2.append(i)
 
 
 histograms_dict = {}
@@ -383,19 +422,13 @@ for region in args.regions:
         df_samples_regions[sample_ + region] = df_samples[sample_].Filter(selections_regions[region])
         print(sample_, region)
 
-        if ("zv" in region) or ("zjj" in region):
-            weight = weight_z
-        else:
-            weight = weight_w
-        print("Weight >>> ", weight)
-
 
         if "jes" in region:
             hists_models = hists_models_1D_SYS
         elif "pdf" in region:
             hists_models = hists_models_1D_SYS_1
         elif "qcd" in region:
-            hists_models = hists_models_1D_SYS_1
+            hists_models = hists_models_1D_SYS_2
         else:
             hists_models = hists_models_1D
 
@@ -407,29 +440,37 @@ for region in args.regions:
                 hist_model = ROOT.RDF.TH1DModel(f"{hist_name}", f"{hist_name}", len(h_[0]) - 1, h_[0])
             else:
                 hist_model = ROOT.RDF.TH1DModel(f"{hist_name}", f"{hist_name}", h_[0], h_[1], h_[2])
+
             histograms_dict[region][hist_name] = \
-                    df_samples_regions[sample_ + region].Define("total_weight", weight).Histo1D(hist_model, h_[3], "total_weight")
+                    df_samples_regions[sample_ + region].Histo1D(hist_model, h_[3], "total_weight")
 
-            if ("pdf" in region) or ("qcd" in region):
-                if ("VBS_EWK" in sample_) or ("VBS_QCD" in sample_):
-                    if ("2016" in args.in_dir) or ("2017" in args.in_dir) or ("2018" in args.in_dir):
+            nPDF = 0
+            if ("pdf" in region):
+                if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD"]):
+                    if any(x in args.in_dir for x in ["2016", "2017", "2018"]):
                         nPDF = 103
-                        for i in range(nPDF):
-                            weight_pdf = weight + f" * pdfWeight[{i}]"
-                            histograms_dict[region][hist_name + f"_pdf_{i}"] = \
-                                df_samples_regions[sample_ + region].Define("total_weight", weight_pdf).Histo1D(hist_model, h_[3], "total_weight")
 
+                for i in range(nPDF):
+                    histograms_dict[region][hist_name + f"_pdf_{i}"] = \
+                        df_samples_regions[sample_ + region].Histo1D(hist_model, h_[3], f"total_weight_pdf_{i}")
+
+            qcd_weight_order = []
+            if ("qcd" in region):
+                if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD"]):
                     if ("2016" in args.in_dir):
-                        for i, j in enumerate([20, 0, 5, 15, 25, 35, 40]):
-                            weight_qcd = weight + f" * scaleWeight[{j}]"
-                            histograms_dict[region][hist_name + f"_qcd_{i}"] = \
-                                df_samples_regions[sample_ + region].Define("total_weight", weight_qcd).Histo1D(hist_model, h_[3], "total_weight")
+                        qcd_weight_order = [20, 0, 5, 15, 25, 35, 40]
 
-                    if ("2017" in args.in_dir) or ("2018" in args.in_dir):
-                        for i, j in enumerate([4, 0, 1, 3, 5, 7, 8]):
-                            weight_qcd = weight + f" * scaleWeight[{j}]"
-                            histograms_dict[region][hist_name + f"_qcd_{i}"] = \
-                                df_samples_regions[sample_ + region].Define("total_weight", weight_qcd).Histo1D(hist_model, h_[3], "total_weight")
+                    if any(x in args.in_dir for x in ["2017", "2018"]):
+                        qcd_weight_order = [4, 0, 1, 3, 5, 7, 8]
+
+                # same code, separate for just-in-case
+                elif any(x in hist_name for x in ["DYJets", "WJets"]):
+                    if any(x in args.in_dir for x in ["2017", "2018"]):
+                        qcd_weight_order = [4, 0, 1, 3, 5, 7, 8]
+
+                for i, j in enumerate(qcd_weight_order):
+                    histograms_dict[region][hist_name + f"_qcd_{i}"] = \
+                        df_samples_regions[sample_ + region].Histo1D(hist_model, h_[3], f"total_weight_qcd_{j}")
 
 
 def merge_overflow_bin(hist):
@@ -475,7 +516,7 @@ for region in histograms_dict:
         if "_qcd_" in hist_name: continue
 
         if ("pdf" in region):
-            if ("VBS_EWK" in hist_name) or ("VBS_QCD" in hist_name):
+            if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD"]):
                 if ("2016" in args.in_dir) or ("2017" in args.in_dir) or ("2018" in args.in_dir):
                     nbins = histograms_dict_v[region][hist_name].GetNbinsX()
                     for bin_ in range(nbins):
@@ -507,7 +548,7 @@ for region in histograms_dict:
                 histograms_dict_v[region][hist_name].Write()
 
         elif ("qcd" in region):
-            if ("VBS_EWK" in hist_name) or ("VBS_QCD" in hist_name):
+            if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD", "DYJets", "WJets"]):
                 if ("2016" in args.in_dir) or ("2017" in args.in_dir) or ("2018" in args.in_dir):
                     nbins = histograms_dict_v[region][hist_name].GetNbinsX()
                     for bin_ in range(nbins):
