@@ -1,6 +1,6 @@
 {    
     "data_obs": {
-        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 1.0,
         "filelist": [
             {"name": "Data_noDup.root", "xs": 1.0, "nMC": 1.0}
@@ -8,7 +8,7 @@
     },
     
     "VBS_EWK": {
-        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.02982},
@@ -24,7 +24,7 @@
     },
 
     "VBS_QCD": {
-        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 },
@@ -40,7 +40,7 @@
     },
 
     "DYJets_LO": {
-        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 1012.296845},
@@ -51,7 +51,7 @@
     },
 
     "Top": {
-        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV_PSweights-powheg-pythia8.root"         , "xs": 38.06 },
@@ -70,7 +70,7 @@
     },
     
     "WJets_HT": {
-        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "WJetsToLNu_HT-70To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"   , "xs": 1353.0 , "kf": 1.21},
@@ -85,7 +85,7 @@
     },
 
     "DYJets_HT": {
-        "location": "root://eoscms.cern.ch//store/user/jlawhorn/WVJJTree_Sept2020/2016/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 35867.06,
         "filelist": [
             {"name": "DYJetsToLL_M-50_HT-70to100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"   , "xs": 169.9   , "kf": 1.23},

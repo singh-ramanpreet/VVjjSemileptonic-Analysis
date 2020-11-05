@@ -139,6 +139,12 @@ for key in samples_dict:
         count = df.Count()
         total_entries = count.GetValue()
 
+        # keep all branches in input tree
+        column_list = list(df.GetColumnNames())
+        column_dict = OrderedDict(zip(column_list, column_list))
+        column_dict.update(variables_map)
+        variables_map = column_dict.copy()
+
         # progress bar
         ROOT.gInterpreter.ProcessLine("""
             auto count = (ROOT::RDF::RResultPtr<ULong64_t> *)TPython::Eval("count");
@@ -157,7 +163,7 @@ for key in samples_dict:
         # making it sure for data
         # will set them equal to 1.0f
         weights_map_DATA = [
-            "btag0_weight",
+             "btag0_weight",
              "gen_weight",
              "pu_weight",
              "pu_weight_PUUp",
