@@ -115,7 +115,7 @@ if "wv" in args.regions[0]:
 if ("wjj" in args.regions[0]) or ("wv" in args.regions[0]):
     for i, j in w_split.items():
         samples_name.append(f"{WJets_type}_{i}")
-        df_samples[f"{WJets_type}_{i}"] = df.Filter(f"sample_tag == \"{WJets_type}\" && {j}")
+        df_samples[f"{WJets_type}_{i}"] = df_with_weight_cols[-1].Filter(f"sample_tag == \"{WJets_type}\" && {j}")
 
 selections = {}
 selections["el_ch"] = "lept_channel == 1 && fabs(lept1_eta) < 2.5 && !(fabs(lept1_eta) > 1.4442 && fabs(lept1_eta) < 1.566)"
