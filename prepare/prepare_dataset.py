@@ -25,7 +25,10 @@ parser.add_argument("--year", type=str, default="2016",
                     help="dataset year, default=%(default)s")
 
 parser.add_argument("--variables", type=str, default="../variables_map.json",
-                    help="json file: variables central and systematic map, default=%(default)s")
+                    help="json file: additional variables map, default=%(default)s")
+
+parser.add_argument("--systematics", type=str, default="../systematics_map.json",
+                    help="json file: systematic map per channel, default=%(default)s")
 
 parser.add_argument("--mva-name", dest="mva_name", action="append",
                     help="name of mva: wjj, wv, zjj, zv, default=%(default)s")
@@ -44,6 +47,10 @@ args = parser.parse_args()
 # variables map
 variables_map = OrderedDict(json.load(open(args.variables, "r")))
 pprint(variables_map, width=120)
+
+# systematics map
+systematics_map = OrderedDict(json.load(open(args.systematics, "r")))
+pprint(systematics_map, width=120)
 
 # make TMVA readers in ROOT c++ namespace
 if args.mva_name != None:
@@ -69,19 +76,17 @@ if args.mva_name != None:
 
         # central
         evaluate_mva_var_list[mva_name]["central"] = f"std::vector<Double_t>{{{','.join(mva_variables)}}}"
-        # jesUp, jesDown
-        systematics = ("jesUp", "jesDown")
-        for systematic in systematics:
+        # systematics
+        systematics = tuple(systematics_map[mva_name].keys())
+        for sys in systematics:
             var_list_ = []
             for var in mva_variables:
-                if var == "v_m" and (mva_name == "zjj" or mva_name == "zv"):
-                    var_list_.append(var)
-                elif var + "_" + systematic in variables_map:
-                    var_list_.append(var + "_" + systematic)
+                if var in systematics_map[mva_name][sys]:
+                    var_list_.append(var + sys)
                 else:
                     var_list_.append(var)
 
-            evaluate_mva_var_list[mva_name][systematic] = f"std::vector<Double_t>{{{','.join(var_list_)}}}"
+            evaluate_mva_var_list[mva_name][sys] = f"std::vector<Double_t>{{{','.join(var_list_)}}}"
 
         print("=========================================")
         print(f"MVA {mva_name} will be evaluated with: ")
@@ -162,18 +167,7 @@ for key in samples_dict:
 
         # making it sure for data
         # will set them equal to 1.0f
-        weights_map_DATA = [
-             "btag0_weight",
-             "gen_weight",
-             "pu_weight",
-             "pu_weight_PUUp",
-             "pu_weight_PUDown",
-             "lept1_trig_eff_weight",
-             "lept2_trig_eff_weight",
-             "lept1_id_eff_weight",
-             "lept2_id_eff_weight",
-             "L1PFWeight",
-        ]
+        weights_map_DATA = []
 
         for new_name, var_name in variables_map.items():
             variables_out.push_back(new_name)
@@ -186,12 +180,12 @@ for key in samples_dict:
 
         if args.mva_name != None:
             for mva_ in args.mva_name:
-                for sys in ("central", "jesUp", "jesDown"):
+                for sys in ["central"] + list(systematics_map[mva_].keys()):
                     mva_value = f"mva_reader_{mva_}.EvaluateMVA({evaluate_mva_var_list[mva_][sys]}, \"BDT\")"
                     if sys == "central":
                         mva_out_name = f"mva_score_{mva_}"
                     else:
-                        mva_out_name = f"mva_score_{mva_}_{sys}"
+                        mva_out_name = f"mva_score_{mva_}{sys}"
                     print(f"MVA {mva_} {sys} value is stored in: {mva_out_name}, calculated using {mva_value.split('.')[0]}")
 
                     df = df.Define(mva_out_name, mva_value)

@@ -1,6 +1,6 @@
 {    
     "data_obs": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/test/2018/",
         "lumi": 1.0,
         "filelist": [
             {"name": "Data_noDup.root", "xs": 1.0, "nMC": 1.0}
@@ -8,7 +8,7 @@
     },
     
     "VBS_EWK": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/test/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.02982},
@@ -24,7 +24,7 @@
     },
 
     "VBS_QCD": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/test/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 },
@@ -40,7 +40,7 @@
     },
 
     "Top": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/test/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8.root",                    "xs": 365.34},
@@ -56,7 +56,7 @@
     },
 
     "WJets_HT": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/test/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "WJetsToLNu_HT-70To100_TuneCP5_13TeV-madgraphMLM-pythia8.root"   , "xs": 1292.0  },
@@ -71,7 +71,7 @@
     },
 
     "DYJets_HT": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/test/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "DYJetsToLL_M-50_HT-70to100_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8.root"   ,  "xs": 167.33 },
@@ -88,7 +88,7 @@
     },
 
     "WJets_LO": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/test/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8.root", "xs": 9578.0},
@@ -99,7 +99,7 @@
     },
 
     "DYJets_LO": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/test/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8.root", "xs": 876.9},
@@ -110,7 +110,7 @@
     },
 
     "DYJets_NLO": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2018/",
+        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/rsingh/test/2018/",
         "lumi": 59740.0,
         "filelist": [
             {"name": "DYJetsToLL_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8.root", "xs": 4758.516},
