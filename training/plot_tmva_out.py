@@ -96,7 +96,8 @@ legend.Draw()
 canvas.Draw()
 os.makedirs(f"{plots_dir}", exist_ok=True)
 canvas.SaveAs(f"{plots_dir}/{c}.pdf")
-canvas.SaveAs(f"{plots_dir}/{c}.png")
+os.popen(f"convert -density 150 -antialias {plots_dir}/{c}.pdf -trim {plots_dir}/{c}.png 2> /dev/null")
+#canvas.SaveAs(f"{plots_dir}/{c}.png")
 """
 
 for c in configs:
@@ -130,7 +131,9 @@ canvas.SetLogy(0)
 canvas.SetGrid()
 canvas.Draw()
 os.makedirs(f"{plots_dir}", exist_ok=True)
-canvas.SaveAs(f"{plots_dir}/{'_'.join(c for c in configs)}_roc.pdf")
-canvas.SaveAs(f"{plots_dir}/{'_'.join(c for c in configs)}_roc.png")
+outfilename=f"{plots_dir}/{'_'.join(c for c in configs)}_roc"
+canvas.SaveAs(f"{outfilename}.pdf")
+os.popen(f"convert -density 150 -antialias {outfilename}.pdf -trim {outfilename}.png 2> /dev/null")
+#canvas.SaveAs(f"{plots_dir}/{'_'.join(c for c in configs)}_roc.png")
 """
 exec(draw_roc)
