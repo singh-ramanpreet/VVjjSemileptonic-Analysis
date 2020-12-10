@@ -34,11 +34,15 @@ if h_nom != None:
 
 if h_Up != None:
     h_Up.SetStats(0)
+    h_Up.SetBins(h_nom.GetNbinsX(), h_nom.GetXaxis().GetXmin(), h_nom.GetXaxis().GetXmax())
+    h_Up.SetTitle(f"{h_nom.GetTitle()};{h_nom.GetXaxis().GetTitle()}")
     h_Up.SetLineColor(ROOT.kGreen)
     legend.AddEntry(h_Up, "Up", "l")
 
 if h_Down != None:
     h_Down.SetStats(0)
+    h_Down.SetBins(h_nom.GetNbinsX(), h_nom.GetXaxis().GetXmin(), h_nom.GetXaxis().GetXmax())
+    h_Down.SetTitle(f"{h_nom.GetTitle()};{h_nom.GetXaxis().GetTitle()}")
     h_Down.SetLineColor(ROOT.kRed)
     legend.AddEntry(h_Down, "Down", "l")
 
@@ -72,7 +76,10 @@ canvas.Draw()
 if args.output == "":
     out_dir = f"{args.histfile.replace('.root', '')}/{args.directory}"
     os.makedirs(out_dir, exist_ok=True)
-    canvas.SaveAs(f"{out_dir}/{args.variable}_{args.systematic}.pdf")
+    plot_filename = f"{out_dir}/{args.variable}_{args.systematic}"
+    canvas.SaveAs(f"{plot_filename}.pdf")
+    os.popen(f"convert -density 150 -antialias {plot_filename}.pdf -trim {plot_filename}.png 2> /dev/null")
 
 else:
-    canvas.SaveAs(args.output)
+    canvas.SaveAs(args.output + ".pdf")
+    os.popen(f"convert -density 150 -antialias {args.output}.pdf -trim {args.output}.png 2> /dev/null")
