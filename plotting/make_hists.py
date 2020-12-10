@@ -4,6 +4,8 @@ import ROOT
 import numpy as np
 import sys
 import argparse
+import json
+from collections import OrderedDict
 
 parser = argparse.ArgumentParser()
 
@@ -13,6 +15,9 @@ parser.add_argument("--base-dir", dest="base_dir", type=str,
 
 parser.add_argument("--in-dir", dest="in_dir", type=str, default="2018_May11",
                     help="prepared root files dir relative to /store/user/singhr/, default=%(default)s")
+
+parser.add_argument("--systematics", dest="systematics", type=str, default="../systematics_map.json",
+                    help="systematics map of variables, default=%(default)s")
 
 parser.add_argument("--year", dest="year", type=int, default=2018,
                     help="dataset year, default=%(default)s")
@@ -36,6 +41,8 @@ for _ch in diboson_channels:
         print("multiple regions should be same diboson channel zv, zjj ...")
         print("Exiting ...")
         sys.exit()
+    else:
+        diboson_ch = _ch
 
 
 stopwatch = ROOT.TStopwatch()
@@ -70,9 +77,10 @@ samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", WJets_type, DYJets_type
 
 # define weight columns
 #######################
-weight_w = "sample_tag == \"data_obs\" ? 1.0 : xs_weight * genWeight * puWeight"
+weight_w = "sample_tag == \"data_obs\" ? 1.0 : xs_weight * genWeight * puWeight * lep1_idEffWeight * lep1_trigEffWeight"
 
-weight_z =  "sample_tag == \"data_obs\" ? 1.0 : xs_weight * genWeight * puWeight"# * lep1_id_eff_weight * lep2_id_eff_weight"
+weight_z =  "sample_tag == \"data_obs\" ? 1.0 : xs_weight * genWeight * puWeight * lep1_idEffWeight * lep1_trigEffWeight" \
+                "* lep2_idEffWeight * lep2_trigEffWeight"
 
 #L1 Prefire Weight
 if (args.year == 2016) or (args.year == 2017):
@@ -87,6 +95,13 @@ print("Weight >>> ", total_weight)
 
 list_of_weight_col = {
     "total_weight": total_weight,
+    "total_weight_puUp": total_weight.replace("puWeight", "puWeight_Up"),
+    "total_weight_puDown": total_weight.replace("puWeight", "puWeight_Down"),
+    "total_weight_L1PFUp": total_weight.replace("puWeight", "L1PFWeight_Up"),
+    "total_weight_L1PFDown": total_weight.replace("puWeight", "L1PFWeight_Down"),
+    "total_weight_btag": total_weight + " * btagWeight_loose",
+    "total_weight_btagUp": total_weight + " * btagWeight_loose_Up",
+    "total_weight_btagDown": total_weight + " * btagWeight_loose_Down",
 }
 
 if any("qcd" in i for i in args.regions):
@@ -184,12 +199,14 @@ selections["boosted_jets_sb"] = "bos_PuppiAK8_pt > 200" \
 
 ##############
 ### ZJJ
-selections["z_common_m"] = selections["z_mu_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "15") \
-                            + " && " + selections["vbf_jets"] #\
+selections["z_common_m"] = selections["z_mu_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "20") \
+                            + " && " + selections["vbf_jets"] \
+                            + " && isAntiIso == 0" #\
                             #+ " && nBTagJet_loose == 0"
 
-selections["z_common_e"] = selections["z_el_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "15") \
-                            + " && " + selections["vbf_jets"] #\
+selections["z_common_e"] = selections["z_el_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "20") \
+                            + " && " + selections["vbf_jets"] \
+                            + " && isAntiIso == 0" #\
                             #+ " && nBTagJet_loose == 0"
 
 selections["z_common_l"] = "((" + selections["z_common_m"] + ") || (" + selections["z_common_e"] + "))"
@@ -199,6 +216,10 @@ selections_regions = {}
 for i in ("m", "e", "l"):
     selections_regions[f"sr_zjj_{i}"] = selections[f"z_common_{i}"] + " && " + selections["resolved_jets"]
 
+    selections_regions[f"sr1_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose == 0"
+
+    selections_regions[f"sr2_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose > 0"
+
     selections_regions[f"cr_vjets_zjj_{i}"] = selections[f"z_common_{i}"] + " && " + selections["resolved_jets_sb"]
 
     selections_regions[f"cr_top_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"].replace("nBtag_loose == 0", "nBtag_loose > 0")
@@ -206,6 +227,10 @@ for i in ("m", "e", "l"):
 
     ### ZV
     selections_regions[f"sr_zv_{i}"] = selections[f"z_common_{i}"] + " && " + selections["boosted_jets"]
+
+    selections_regions[f"sr1_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose == 0"
+
+    selections_regions[f"sr2_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose > 0"
 
     selections_regions[f"cr_vjets_zv_{i}"] = selections[f"z_common_{i}"] + " && " + selections["boosted_jets_sb"]
 
@@ -254,26 +279,17 @@ for i in ("m", "e", "l"):
         selections_regions[f"cr_vjets_{k}_wv_{i}"] = selections_regions[f"cr_vjets_wv_{i}"] + " && " + j
 ##############
 
-# jes sys
+# jes sys, lep pt scale
 # make keys
-
-jes_vars = [
-    "vbf_jj_m",
-    "vbf1_AK4_pt",
-    "vbf_j2_pt",
-    "dijet_m",
-    "dijet_pt",
-    "dijet_j1_pt",
-    "dijet_j2_pt",
-    "fatjet_pt"
-]
-
+systematics_map = OrderedDict(json.load(open(args.systematics, "r")))
+systematics = tuple(systematics_map[diboson_ch].keys())
+#print(systematics_map)
 
 # list of regions to make systematic hists
 sys_region_list = [
-    "sr_wjj_l", "sr_wv_l", "sr_zjj_l", "sr_zv_l",
-    "sr_wjj_e", "sr_wv_e", "sr_zjj_e", "sr_zv_e",
-    "sr_wjj_m", "sr_wv_m", "sr_zjj_m", "sr_zv_m",
+    "sr_wjj_l", "sr_wv_l", "sr_zjj_l", "sr_zv_l", "sr1_zjj_l", "sr1_zv_l", "sr2_zjj_l", "sr2_zv_l",
+    "sr_wjj_e", "sr_wv_e", "sr_zjj_e", "sr_zv_e", "sr1_zjj_e", "sr1_zv_e", "sr2_zjj_e", "sr2_zv_e",
+    "sr_wjj_m", "sr_wv_m", "sr_zjj_m", "sr_zv_m", "sr1_zjj_m", "sr1_zv_m", "sr2_zjj_m", "sr2_zv_m",
     "cr_vjets_wjj_l", "cr_vjets_wv_l", "cr_vjets_zjj_l", "cr_vjets_zv_l",
     "cr_vjets_wjj_e", "cr_vjets_wv_e", "cr_vjets_zjj_e", "cr_vjets_zv_e",
     "cr_vjets_wjj_m", "cr_vjets_wv_m", "cr_vjets_zjj_m", "cr_vjets_zv_m",
@@ -283,37 +299,35 @@ sys_region_list = [
 ]
 
 
-jes_vars_W = jes_vars
-jes_vars_Z = jes_vars
-
-
-for jes_sys in ("jesUp", "jesDown"):
-    
+for sys in systematics:
     for region in sys_region_list:
-        
         temp_string = selections_regions[region]
-        
-        jes_var_replace = []
-        if ("wjj" in region) or ("wv" in region):
-            jes_var_replace = jes_vars_W
-
-        if ("zjj" in region) or ("zv" in region):
-            jes_var_replace = jes_vars_Z
-
-        for jes_var in jes_var_replace:
-            temp_string = temp_string.replace(jes_var, f"{jes_var}_{jes_sys}")
-    
-        selections_regions[f"{region}_{jes_sys}"] =  temp_string
+        sys_var_replace = systematics_map[diboson_ch][sys]
+        for sys_var in sys_var_replace:
+            temp_string = temp_string.replace(sys_var, f"{sys_var}{sys}")
+        selections_regions[f"{region}{sys}"] =  temp_string
 
 ##############
 # pdf qcd sys
 # make keys
-
+event_weight_sys = (
+    "puUp", "puDown",
+    "btagUp", "btagDown",
+    "L1PFUp", "L1PFDown",
+    "jetPUIDUp", "jetPUIDDown"
+)
 for pdf_qcd_sys in ("pdfUp", "pdfDown", "qcdUp", "qcdDown"):
-
     for region in sys_region_list:
-
         selections_regions[f"{region}_{pdf_qcd_sys}"] =  selections_regions[region]
+
+##############
+
+##############
+# event weight systematics
+# make keys
+for wgt_sys in event_weight_sys:
+    for region in sys_region_list:
+        selections_regions[f"{region}_{wgt_sys}"] =  selections_regions[region]
 
 ##############
 
@@ -444,6 +458,8 @@ for region in args.regions:
 
         if "jes" in region:
             hists_models = hists_models_1D_SYS
+        if "scale" in region:
+            hists_models = hists_models_1D_SYS
         elif "pdf" in region:
             hists_models = hists_models_1D_SYS_1
         elif "qcd" in region:
@@ -451,6 +467,26 @@ for region in args.regions:
         else:
             hists_models = hists_models_1D
 
+        # select event for specific region
+        # if different than default
+        if "sr1_z" in region:
+            event_weight = "total_weight_btag"
+        elif "sr2_z" in region:
+            event_weight = "total_weight_btag"
+        elif "puUp" in region:
+            event_weight = "total_weight_puUp"
+        elif "puDown" in region:
+            event_weight = "total_weight_puDown"
+        elif "L1PFUp" in region:
+            event_weight = "total_weight_L1PFUp"
+        elif "L1PFDown" in region:
+            event_weight = "total_weight_L1PFDown"
+        elif "btagUp" in region:
+            event_weight = "total_weight_btagUp"
+        elif "btagDown" in region:
+            event_weight = "total_weight_btagDown"
+        else:
+            event_weight = "total_weight"
 
         for h_ in hists_models:
 
@@ -461,7 +497,7 @@ for region in args.regions:
                 hist_model = ROOT.RDF.TH1DModel(f"{hist_name}", f"{hist_name}", h_[0], h_[1], h_[2])
 
             histograms_dict[region][hist_name] = \
-                    df_samples_regions[sample_ + region].Histo1D(hist_model, h_[3], "total_weight")
+                    df_samples_regions[sample_ + region].Histo1D(hist_model, h_[3], event_weight)
 
             nPDF = 0
             if ("pdf" in region):
