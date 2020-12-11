@@ -77,10 +77,12 @@ samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", WJets_type, DYJets_type
 
 # define weight columns
 #######################
-weight_w = "sample_tag == \"data_obs\" ? 1.0 : xs_weight * genWeight * puWeight * lep1_idEffWeight * lep1_trigEffWeight"
+weight_w = "sample_tag == \"data_obs\" ? 1.0 : xs_weight * genWeight * puWeight * lep1_idEffWeight * lep1_trigEffWeight" #\
+                #" * vbf1_AK4_puidSF_tight * vbf2_AK4_puidSF_tight"
 
 weight_z =  "sample_tag == \"data_obs\" ? 1.0 : xs_weight * genWeight * puWeight * lep1_idEffWeight * lep1_trigEffWeight" \
-                "* lep2_idEffWeight * lep2_trigEffWeight"
+                " * lep2_idEffWeight * lep2_trigEffWeight" #\
+                #" * vbf1_AK4_puidSF_tight * vbf2_AK4_puidSF_tight"
 
 #L1 Prefire Weight
 if (args.year == 2016) or (args.year == 2017):
@@ -97,8 +99,10 @@ list_of_weight_col = {
     "total_weight": total_weight,
     "total_weight_puUp": total_weight.replace("puWeight", "puWeight_Up"),
     "total_weight_puDown": total_weight.replace("puWeight", "puWeight_Down"),
-    "total_weight_L1PFUp": total_weight.replace("puWeight", "L1PFWeight_Up"),
-    "total_weight_L1PFDown": total_weight.replace("puWeight", "L1PFWeight_Down"),
+    "total_weight_L1PFUp": total_weight.replace("L1PFWeight", "L1PFWeight_Up"),
+    "total_weight_L1PFDown": total_weight.replace("L1PFWeight", "L1PFWeight_Down"),
+    "total_weight_jetPUIDUp": total_weight.replace("puidSF_tight", "puidSF_tight_Up"),
+    "total_weight_jetPUIDDown": total_weight.replace("puidSF_tight", "puidSF_tight_Down"),
     "total_weight_btag": total_weight + " * btagWeight_loose",
     "total_weight_btagUp": total_weight + " * btagWeight_loose_Up",
     "total_weight_btagDown": total_weight + " * btagWeight_loose_Down",
@@ -173,7 +177,9 @@ selections["w_el_ch"] = selections["w_ch"] + " && " + selections["el_ch"]
 selections["vbf_jets"] = "vbf_m > 500" \
                          " && vbf1_AK4_pt > 50" \
                          " && vbf2_AK4_pt > 50" \
-                         " && vbf_deta > 2.5"
+                         " && vbf_deta > 2.5" #\
+                         #" && vbf1_AK4_puid_tight == 1 " \
+                         #" && vbf2_AK4_puid_tight == 1 " \
 
 selections["resolved_jets"] = "bos_AK4AK4_pt > 0" \
                                 " && bos_j1_AK4_pt > 30" \
@@ -263,7 +269,7 @@ for i in ("m", "e", "l"):
 
     selections_regions[f"cr_vjets_wjj_{i}"] = selections[f"w_common_{i}"] + " && " + selections["resolved_jets_sb"]
 
-    selections_regions[f"cr_top_wjj_{i}"] = selections_regions[f"sr_wjj_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+    selections_regions[f"cr_top_wjj_{i}"] = selections_regions[f"sr_wjj_{i}"].replace("nBtag_loose == 0", "nBtag_loose > 0")
 
     for k, j in w_resolved_split.items():
         selections_regions[f"cr_vjets_{k}_wjj_{i}"] = selections_regions[f"cr_vjets_wjj_{i}"] + " && " + j
@@ -273,7 +279,7 @@ for i in ("m", "e", "l"):
 
     selections_regions[f"cr_vjets_wv_{i}"] = selections[f"w_common_{i}"] + " && " + selections["boosted_jets_sb"]
 
-    selections_regions[f"cr_top_wv_{i}"] = selections_regions[f"sr_wv_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+    selections_regions[f"cr_top_wv_{i}"] = selections_regions[f"sr_wv_{i}"].replace("nBtag_loose == 0", "nBtag_loose > 0")
 
     for k, j in w_boosted_split.items():
         selections_regions[f"cr_vjets_{k}_wv_{i}"] = selections_regions[f"cr_vjets_wv_{i}"] + " && " + j
@@ -306,6 +312,7 @@ for sys in systematics:
         for sys_var in sys_var_replace:
             temp_string = temp_string.replace(sys_var, f"{sys_var}{sys}")
         selections_regions[f"{region}{sys}"] =  temp_string
+
 
 ##############
 # pdf qcd sys
@@ -470,9 +477,9 @@ for region in args.regions:
         # select event for specific region
         # if different than default
         if "sr1_z" in region:
-            event_weight = "total_weight_btag"
+            event_weight = "total_weight" #fixme
         elif "sr2_z" in region:
-            event_weight = "total_weight_btag"
+            event_weight = "total_weight" #fixme
         elif "puUp" in region:
             event_weight = "total_weight_puUp"
         elif "puDown" in region:
@@ -485,6 +492,10 @@ for region in args.regions:
             event_weight = "total_weight_btagUp"
         elif "btagDown" in region:
             event_weight = "total_weight_btagDown"
+        elif "jetPUIDUp" in region:
+            event_weight = "total_weight_jetPUIDUp"
+        elif "jetPUIDDown" in region:
+            event_weight = "total_weight_jetPUIDDown"
         else:
             event_weight = "total_weight"
 

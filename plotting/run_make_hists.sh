@@ -1,6 +1,6 @@
 #!/bin/bash
 export PYTHONUNBUFFERED=true
-# ./run_make_hists.sh {local, condor} <region> <base-dir> <in-dir> <threads> <hist out name>
+# ./run_make_hists.sh {local, condor} <region> <year> <base-dir> <in-dir> <threads> <hist out name>
 
 if [[ ${1} == "condor" ]]; then
     tar -xzf setup.tar.gz
@@ -10,14 +10,16 @@ if [[ ${1} == "condor" ]]; then
 fi
 
 region=${2//./ --regions }
-base_dir=${3}
-in_dir=${4}
-threads=${5}
-output=${6}
+year=${3}
+base_dir=${4}
+in_dir=${5}
+threads=${6}
+output=${7}
 
 ./make_hists.py \
     --base-dir ${base_dir} \
     --in-dir ${in_dir} \
+    --year ${year} \
     --regions ${region} \
     --output ${output} \
     --threads ${threads}
