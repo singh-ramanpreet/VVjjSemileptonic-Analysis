@@ -12,7 +12,7 @@ transfer_input_files = run_prepare.sh, setup.tar.gz
 
 log_dir = condor_logs
 
-log_filename  = $(log_dir)/$Fn(output_dir)_$(sample_name)_$(sample_i)_$(Cluster)_$(Process)
+log_filename  = $(log_dir)/$Fn(output_dir)_$Fn(sample_name)
 log           = $(log_filename).log
 output        = $(log_filename).out
 error         = $(log_filename).err
@@ -28,18 +28,10 @@ stream_output = True
 # uncomment below or input from cmd
 #eos_path = root://cmseos.fnal.gov//store/user/rsingh/wv_vbs_ntuples
 
-arguments = condor $(year) $(output_dir) $(sample_name) $(sample_i) $(eos_path)
+arguments = condor $(year) $(output_dir) $(sample_name) $(eos_path)
 
 if defined without_mva
-   arguments = condor $(year) $(output_dir) $(sample_name) $(sample_i) $(eos_path) --without-mva
+   arguments = condor $(year) $(output_dir) $(sample_name) $(eos_path) --without-mva
 endif
 
-sample_name = $(Item)
-sample_i = $(Step)
-
-queue 1 in data_obs
-queue 9 in VBS_EWK
-queue 9 in VBS_QCD
-queue 12 in Top
-queue 8 in DYJets_HT
-queue 8 in WJets_HT
+queue sample_name from sample_list/$(year).txt

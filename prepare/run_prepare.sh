@@ -1,5 +1,5 @@
 #!/bin/bash
-# ./run_prepare.sh {local, condor} <year> <output-folder> <sample-tag-string> <sample number> <eos-location> [--without-mva]
+# ./run_prepare.sh {local, condor} <year> <output-folder> <sample-name> <eos-location> [--without-mva]
 
 if [[ ${1} == "condor" ]]; then
     tar -xzf setup.tar.gz
@@ -10,10 +10,9 @@ fi
 
 year=${2}
 output=${3}
-sampleTag=${4}
-sampleNumber=${5}
-eosPath=${6}
-isWithoutMVA=${7:-No}
+sampleName=${4}
+eosPath=${5}
+isWithoutMVA=${6:-No}
 
 
 if [[ "${isWithoutMVA}" == "No" ]]; then
@@ -22,8 +21,7 @@ if [[ "${isWithoutMVA}" == "No" ]]; then
 
     python3 -u prepare_dataset.py \
         --datasets ../datasets_${year}.json \
-        --sample-tag ${sampleTag} \
-        --sample-number ${sampleNumber} \
+        --sample-name ${sampleName} \
         --year ${year} \
         --output ${output} \
         --mva-name zv \
@@ -45,8 +43,7 @@ else
 
     python3 -u prepare_dataset.py \
         --datasets ../datasets_${year}.json \
-        --sample-tag ${sampleTag} \
-        --sample-number ${sampleNumber} \
+        --sample-name ${sampleName} \
         --year ${year} \
         --output ${output}
 
