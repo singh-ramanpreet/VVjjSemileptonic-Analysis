@@ -829,31 +829,45 @@ os.popen(f"convert -density 150 -antialias {plot_filename}.pdf -trim {plot_filen
 #exec(plot_mc_data)
 #
 #
+
+if (len(args.vars) == 0):
+    exec(set_variable_defaults)
+    f = ROOT.TFile.Open(hist_filename)
+    d = f.Get(hists_subdirectory)
+    l = d.GetListOfKeys()
+    h_names = []
+    for i in l:
+        name_ = i.GetName()
+        if "data_obs_" in name_:
+            h_names.append(name_.strip("data_obs_"))
+
+    args.vars = h_names
+
 exec(set_variable_defaults)
 variable = f"mva_score_{args.mva_type}"
 title_x = f"MVA Score {args.mva_type}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 scale_y_axis = 50
 upper_pad_min_y = 0.1
 signal_scale_up = 1
 canvas_log_y = True
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = f"mva_score_{args.mva_type}_var1"
 title_x = f"MVA Score {args.mva_type}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 scale_y_axis = 50
 upper_pad_min_y = 0.1
 signal_scale_up = 1
 canvas_log_y = True
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -862,7 +876,7 @@ title_x = "p^{T}_{lep1}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -870,7 +884,7 @@ variable = "lep1_eta"
 title_x = "#eta_{lep1}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -878,7 +892,7 @@ variable = "lep1_phi"
 title_x = "#phi_{lep1}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -887,7 +901,7 @@ title_x = "p^{T}_{lep2}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -895,7 +909,7 @@ variable = "lep2_eta"
 title_x = "#eta_{lep2}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -903,7 +917,7 @@ variable = "lep2_phi"
 title_x = "#phi_{lep2}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -912,7 +926,7 @@ title_x = "MET"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -920,7 +934,7 @@ variable = "MET_phi"
 title_x = "#phi_{MET}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = "fatjet_m"
@@ -928,7 +942,7 @@ title_x = "m_{V}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -939,7 +953,7 @@ units = "GeV"
 #ndivisions_x = 505
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -947,7 +961,7 @@ variable = "fatjet_eta"
 title_x = "#eta_{V}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -955,7 +969,7 @@ variable = "fatjet_phi"
 title_x = "#phi_{V}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -963,7 +977,7 @@ variable = "fatjet_tau21"
 title_x = "#tau_{21} (V)"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = "dijet_m"
@@ -971,7 +985,7 @@ title_x = "m_{JJ}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -980,7 +994,7 @@ title_x = "p^{T}_{JJ}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -988,7 +1002,7 @@ variable = "dijet_eta"
 title_x = "#eta_{JJ}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -997,7 +1011,7 @@ title_x = "p^{T}_{J1}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1006,7 +1020,7 @@ title_x = "p^{T}_{J2}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1014,7 +1028,7 @@ variable = "dijet_j1_eta"
 title_x = "#eta_{J1}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1022,7 +1036,7 @@ variable = "dijet_j2_eta"
 title_x = "#eta_{J2}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1031,7 +1045,7 @@ title_x = "p^{T}_{Z}" if args.boson == "Z" else "p^{T}_{W}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1039,7 +1053,7 @@ variable = "v_lep_eta"
 title_x = "#eta_{Z}" if args.boson == "Z" else "#eta_{W}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = "v_lep_m"
@@ -1047,7 +1061,7 @@ title_x = "m_{Z}" if args.boson == "Z" else "m_{W}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = "v_lep_mt"
@@ -1055,7 +1069,7 @@ title_x = "m^{T}_{Z}" if args.boson == "Z" else "m^{T}_{W}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1064,7 +1078,7 @@ title_x = "p^{T}_{j1}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1073,7 +1087,7 @@ title_x = "p^{T}_{j2}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1081,7 +1095,7 @@ variable = "vbf_j1_eta"
 title_x = "#eta_{j1}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1089,7 +1103,7 @@ variable = "vbf_j2_eta"
 title_x = "#eta_{j2}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1097,7 +1111,7 @@ variable = "vbf_jj_Deta"
 title_x = "|#Delta#eta_{jj}|"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1105,7 +1119,7 @@ variable = "vbf_j1_phi"
 title_x = "#phi_{j1}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1113,7 +1127,7 @@ variable = "vbf_j2_phi"
 title_x = "#phi_{j2}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1122,7 +1136,7 @@ title_x = "m_{jj}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1130,7 +1144,7 @@ variable = "boson_centrality"
 title_x = "Boson Centrality"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1138,7 +1152,7 @@ variable = "zeppenfeld_lep_deta"
 title_x = "Zeppenfeld* Z" if args.boson == "Z" else "Zeppenfeld* W"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1146,7 +1160,7 @@ variable = "zeppenfeld_had_deta"
 title_x = "Zeppenfeld* V"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1155,7 +1169,7 @@ title_x = "m_{ZV}" if args.boson == "Z" else "m_{WV}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1164,7 +1178,7 @@ title_x = "p^{T}_{ZV}" if args.boson == "Z" else "p^{T}_{WV}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1172,7 +1186,7 @@ variable = "vv_eta"
 title_x = "#eta_{ZV}" if args.boson == "Z" else "#eta_{WV}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -1180,4 +1194,4 @@ variable = "vv_phi"
 title_x = "#phi_{ZV}" if args.boson == "Z" else "#phi_{WV}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
