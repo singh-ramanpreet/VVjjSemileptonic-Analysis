@@ -2,8 +2,8 @@ imax * number of bins
 jmax * number of processes minus 1
 kmax * number of nuisance parameters
 ----------------------------------------------------------------------------------------------------------------------------------
-shapes *          sig_reg     ../2016_2020_Dec_15_zjj.root sr2_l/$PROCESS_mva_score_zjj_var1 sr2_l_$SYSTEMATIC/$PROCESS_mva_score_zjj_var1
-shapes *          vjet_reg    ../2016_2020_Dec_15_zjj.root cr_vjets_l/$PROCESS_mva_score_zjj_1bin
+shapes *    sig_reg     ../2016_2020_Dec_15_zjj.root sr_l/$PROCESS_mva_score_zjj_var1 sr_l_$SYSTEMATIC/$PROCESS_mva_score_zjj_var1
+shapes *    vjet_reg    ../2016_2020_Dec_15_zjj.root cr_vjets_l/$PROCESS_mva_score_zjj_1bin
 ----------------------------------------------------------------------------------------------------------------------------------
 bin          sig_reg  vjet_reg
 observation    -1        -1   

@@ -17,4 +17,5 @@ do
     
     plotImpacts.py -i impacts_datacard_${i}.json -o impacts_datacard_${i};
 
+    convert -density 150 -antialias impacts_datacard_${i}.pdf -trim impacts_datacard_${i}.png &> /dev/null
 done

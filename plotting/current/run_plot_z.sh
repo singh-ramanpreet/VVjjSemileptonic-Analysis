@@ -22,9 +22,6 @@ then
   #../plot_variables.py --sys "jesTotal" --sys "qcd" -f ${histfile} -y ${year} -s sr_m -b -m ${z_cat} -B Z --dyjet-opt ${dyopt}
   #../plot_variables.py --sys "jesTotal" --sys "qcd" -f ${histfile} -y ${year} -s sr_l -b -m ${z_cat} -B Z --dyjet-opt ${dyopt}
 else
- ../plot_variables.py --sys "jesTotal" --sys "qcd" -f ${histfile} -y ${year} -s sr1_l_postfit -m ${z_cat} -B Z --dyjet-opt ${dyopt} \
-    --vars ${postfit_var}
- ../plot_variables.py --sys "jesTotal" --sys "qcd" -f ${histfile} -y ${year} -s sr2_l_postfit -m ${z_cat} -B Z --dyjet-opt ${dyopt} \
-    --vars ${postfit_var}
+ ../plot_variables.py -f ${histfile} -y ${year} -s sr1_l_postfit -m ${z_cat} -B Z --dyjet-opt ${dyopt}
+ ../plot_variables.py -f ${histfile} -y ${year} -s sr2_l_postfit -m ${z_cat} -B Z --dyjet-opt ${dyopt}
 fi
-
