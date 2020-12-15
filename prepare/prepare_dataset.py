@@ -112,21 +112,18 @@ for key in samples_dict:
         if sample["name"] in sample_name:
             xs = sample["xs"]
             nMC = 0
-            nMCneg = 0
             kf = 1.0
 
             if "nMC" in sample.keys(): nMC = sample["nMC"]
-            if "nMCneg" in sample.keys(): nMCneg = sample["nMCneg"]
             if "kf" in sample.keys(): kf = sample["kf"]
 
             if nMC == 0:
                 file_ = ROOT.TFile.Open(root_file)
                 total_events_hist = file_.Get("TotalEvents")
-                nMCneg = total_events_hist.GetBinContent(1)
                 nMC = total_events_hist.GetBinContent(2)
-                print(nMC, nMCneg)
+                print(nMC)
 
-            xs_weight = (lumi * xs * kf) / (nMC - (2 * nMCneg))
+            xs_weight = (lumi * xs * kf) / (nMC)
 
             print("=========================================")
             print("loading ... ", key, sample["name"])
