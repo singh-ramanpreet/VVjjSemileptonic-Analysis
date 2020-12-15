@@ -344,48 +344,48 @@ ROOT.TH1.SetDefaultSumw2()
 hists_models_1D = [
     (40, 0, 800, "lep1_pt", "lep1_pt"),
     (20, 0, 400, "lep2_pt", "lep2_pt"),
-    (26, -2.6, 2.6, "lep1_eta", "lep1_eta"),
-    (26, -2.6, 2.6, "lep2_eta", "lep2_eta"),
-    (34, -3.4, 3.4, "lep1_phi", "lep1_phi"),
-    (34, -3.4, 3.4, "lep2_phi", "lep2_phi"),
-    (80, 0, 800, "MET", "MET"),
-    (34, -3.4, 3.4, "MET_phi", "MET_phi"),
+    (16, -2.6, 2.6, "lep1_eta", "lep1_eta"),
+    (16, -2.6, 2.6, "lep2_eta", "lep2_eta"),
+    (20, -3.4, 3.4, "lep1_phi", "lep1_phi"),
+    (20, -3.4, 3.4, "lep2_phi", "lep2_phi"),
+    (80, 0, 400, "MET", "MET"),
+    (20, -3.4, 3.4, "MET_phi", "MET_phi"),
     # ak8 jet
     (24, 30.0, 160.0, "bos_PuppiAK8_m_sd0_corr", "fatjet_m"),
-    (80, 200.0, 2000.0, "bos_PuppiAK8_pt", "fatjet_pt"),
-    (26, -2.6, 2.6, "bos_PuppiAK8_eta", "fatjet_eta"),
-    (34, -3.4, 3.4, "bos_PuppiAK8_phi", "fatjet_phi"),
+    (80, 200.0, 1000.0, "bos_PuppiAK8_pt", "fatjet_pt"),
+    (16, -2.6, 2.6, "bos_PuppiAK8_eta", "fatjet_eta"),
+    (20, -3.4, 3.4, "bos_PuppiAK8_phi", "fatjet_phi"),
     (40, 0.0, 1.0, "bos_PuppiAK8_tau2tau1", "fatjet_tau21"),
     # ak4ak4 jet
     (24, 30.0, 160.0, "bos_AK4AK4_m", "dijet_m"),
-    (80, 0.0, 800.0, "bos_AK4AK4_pt", "dijet_pt"),
+    (50, 0.0, 500.0, "bos_AK4AK4_pt", "dijet_pt"),
     (25, -5.0, 5.0, "bos_AK4AK4_eta", "dijet_eta"),
-    (60, 0.0, 600.0, "bos_j1_AK4_pt", "dijet_j1_pt"),
-    (60, 0.0, 600.0, "bos_j2_AK4_pt", "dijet_j2_pt"),
+    (40, 0.0, 400.0, "bos_j1_AK4_pt", "dijet_j1_pt"),
+    (30, 0.0, 300.0, "bos_j2_AK4_pt", "dijet_j2_pt"),
     (20, -2.5, 2.5, "bos_j1_AK4_eta", "dijet_j1_eta"),
     (20, -2.5, 2.5, "bos_j2_AK4_eta", "dijet_j2_eta"),
     # W
     (50, 0.0, 1000.0, "dilep_pt", "v_lep_pt"),
-    (40, -4.0, 4.0, "dilep_eta", "v_lep_eta"),
+    (20, -4.0, 4.0, "dilep_eta", "v_lep_eta"),
     (20, 65, 105.0, "dilep_m", "v_lep_m"),
-    (20, 0.0, 400.0, "dilep_mt", "v_lep_mt"),
+    (20, 50.0, 450.0, "dilep_mt", "v_lep_mt"),
     # vbf jets
-    (50, 0.0, 1000.0, "vbf1_AK4_pt", "vbf_j1_pt"),
-    (30, 0.0, 600.0, "vbf2_AK4_pt", "vbf_j2_pt"),
-    (51, -5.1, 5.1, "vbf1_AK4_eta", "vbf_j1_eta"),
-    (51, -5.1, 5.1, "vbf2_AK4_eta", "vbf_j2_eta"),
+    (35, 0.0, 700.0, "vbf1_AK4_pt", "vbf_j1_pt"),
+    (20, 0.0, 400.0, "vbf2_AK4_pt", "vbf_j2_pt"),
+    (26, -5.2, 5.2, "vbf1_AK4_eta", "vbf_j1_eta"),
+    (26, -5.2, 5.2, "vbf2_AK4_eta", "vbf_j2_eta"),
     (16, 2.0, 10.0, "vbf_deta", "vbf_jj_Deta"),
-    (34, -3.4, 3.4, "vbf1_AK4_phi", "vbf_j1_phi"),
-    (34, -3.4, 3.4, "vbf2_AK4_phi", "vbf_j2_phi"),
+    (20, -3.4, 3.4, "vbf1_AK4_phi", "vbf_j1_phi"),
+    (20, -3.4, 3.4, "vbf2_AK4_phi", "vbf_j2_phi"),
     (40, 500.0, 2500.0, "vbf_m", "vbf_jj_m"),
     #
     (30, 0.0, 6.0, "bosCent", "boson_centrality"),
     (20, -1.0, 1.0, "zeppLep_deta", "zeppenfeld_lep_deta"),
     (20, -1.0, 1.0, "zeppHad_deta", "zeppenfeld_had_deta"),
     # W V system
-    (50, 0, 2500, "dibos_m", "vv_m"),
-    (50, 0, 2500, "dibos_mt", "vv_mt"),
-    (60, 0.0, 600.0, "dibos_pt", "vv_pt"),
+    (30, 0, 2100, "dibos_m", "vv_m"),
+    (30, 0, 2100, "dibos_mt", "vv_mt"),
+    (25, 0.0, 500.0, "dibos_pt", "vv_pt"),
     (20, -5.0, 5.0, "dibos_eta", "vv_eta"),
     (34, -3.4, 3.4, "dibos_phi", "vv_phi"),
     (40, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj"),
@@ -477,9 +477,9 @@ for region in args.regions:
         # select event for specific region
         # if different than default
         if "sr1_z" in region:
-            event_weight = "total_weight" #fixme
+            event_weight = "total_weight_btag"
         elif "sr2_z" in region:
-            event_weight = "total_weight" #fixme
+            event_weight = "total_weight_btag"
         elif "puUp" in region:
             event_weight = "total_weight_puUp"
         elif "puDown" in region:
