@@ -839,9 +839,14 @@ if (len(args.vars) == 0):
     for i in l:
         name_ = i.GetName()
         if "data_obs_" in name_:
-            h_names.append(name_.strip("data_obs_"))
+            h_names.append(name_.replace("data_obs_", ""))
 
     args.vars = h_names
+
+print(f"hist file {hist_filename}, subdir {hists_subdirectory}, year {args.year}")
+print(f"========================================================================")
+print(args.vars)
+print(f"========================================================================")
 
 exec(set_variable_defaults)
 variable = f"mva_score_{args.mva_type}"
@@ -1166,6 +1171,15 @@ if any(variable == i for i in args.vars): exec(plot_mc_data)
 exec(set_variable_defaults)
 variable = "vv_m"
 title_x = "m_{ZV}" if args.boson == "Z" else "m_{WV}"
+units = "GeV"
+signal_scale_up = 10
+canvas_log_y = False
+if any(variable == i for i in args.vars): exec(plot_mc_data)
+
+
+exec(set_variable_defaults)
+variable = "vv_mt"
+title_x = "m^{T}_{ZV}" if args.boson == "Z" else "m^{T}_{WV}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
