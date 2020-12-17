@@ -31,8 +31,15 @@ parser.add_argument("--weights", dest="weights", type=str,
 parser.add_argument("--out-dir", dest="out_dir", type=str, default="BDTG",
                     help="output directory for tmva, default=%(default)s")
 
+parser.add_argument("--grid-search", dest="grid_search", type=int, default=0,
+                    help="do grid search on hyper parameters for tmva, default=%(default)s")
+parser.add_argument("--grid-search-nTrees", dest="grid_nTrees", action="append", default=[], help="default=%(default)s")
+parser.add_argument("--grid-search-minNode", dest="grid_minNode", action="append", default=[], help="default=%(default)s")
+parser.add_argument("--grid-search-shrinkage", dest="grid_shrinkage", action="append", default=[], help="default=%(default)s")
+parser.add_argument("--grid-search-baggFrac", dest="grid_baggFrac", action="append", default=[], help="default=%(default)s")
+
 parser.add_argument("--BDT-NTrees", dest="BDT_NTrees", type=str, default="100", help="BDT-Config, default=%(default)s")
-parser.add_argument("--BDT-MinNodeSize", dest="BDT_MinNodeSize", type=str, default="10%", help="BDT-Config, default=%(default)s")
+parser.add_argument("--BDT-MinNodeSize", dest="BDT_MinNodeSize", type=str, default="10", help="BDT-Config, default=%(default)s")
 parser.add_argument("--BDT-MaxDepth", dest="BDT_MaxDepth", type=str, default="3", help="BDT-Config, default=%(default)s")
 parser.add_argument("--BDT-nCuts", dest="BDT_nCuts", type=str, default="100", help="BDT-Config, default=%(default)s")
 parser.add_argument("--BDT-Shrinkage", dest="BDT_Shrinkage", type=str, default="0.05", help="BDT-Config, default=%(default)s")
@@ -167,7 +174,7 @@ factory.BookMethod(
     ":".join([
         "!H", "!V",
         f"NTrees={args.BDT_NTrees}",
-        f"MinNodeSize={args.BDT_MinNodeSize}",
+        f"MinNodeSize={args.BDT_MinNodeSize}%",
         f"MaxDepth={args.BDT_MaxDepth}",
         f"nCuts={args.BDT_nCuts}",
         f"BoostType=Grad",
@@ -177,6 +184,22 @@ factory.BookMethod(
         f"NegWeightTreatment=IgnoreNegWeightsInTraining"
     ])
 )
+
+if args.grid_search != 0:
+    for nTrees in args.grid_nTrees:
+        for minNode in args.grid_minNode:
+            for shrinkage in args.grid_shrinkage:
+                for baggFrac in args.grid_baggFrac:
+                    factory.BookMethod(
+                        dataloader,"BDT",
+                        f"BDT_nTrees_{nTrees}_minNode_{minNode}_shrinkage_{shrinkage}_baggFrac_{baggFrac}",
+                        ":".join(["!H", "!V",
+                                  f"NTrees={nTrees}",f"MinNodeSize={minNode}%",
+                                  f"MaxDepth=3",f"nCuts=100",f"BoostType=Grad",
+                                  f"Shrinkage={shrinkage}",f"UseBaggedBoost",
+                                  f"BaggedSampleFraction={baggFrac}",
+                                  f"NegWeightTreatment=IgnoreNegWeightsInTraining"])
+                    )
 
 factory.TrainAllMethods()
 factory.TestAllMethods()
