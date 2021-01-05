@@ -9,7 +9,7 @@
 *.pyc
 
 # setup folder
-setup_env/
+setup/
 
 # all sub dirs
 plotting/*/
