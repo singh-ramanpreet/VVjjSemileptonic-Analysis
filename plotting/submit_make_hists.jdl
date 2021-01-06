@@ -8,7 +8,7 @@ executable    = run_make_hists.sh
 
 transfer_input  = True
 transfer_output = True
-transfer_input_files = run_make_hists.sh, setup.tar.gz
+transfer_input_files = run_make_hists.sh, $(tar_file)
 transfer_output_files = $(hist_file).root
 
 log           = /dev/null
@@ -17,23 +17,33 @@ error         = /dev/null
 stream_error  = True
 stream_output = True
 
-# uncomment below or input from cmd line
-#base_dir = root://cmseos.fnal.gov//store/user/singhr
+# options if not defined set to default
 
-# uncomment below or input from cmd line
-#in_dir = 2016_Jun30
+if !defined tar_file
+  tar_file = setup.tar.gz
+endif
 
-# uncomment below or input from cmd line
-#outTag = 2016_Jun30
+if !defined base_dir
+  base_dir = root://cmseos.fnal.gov//store/user/singhr
+endif
 
-# uncomment below or input from cmd line
-#channel = wv
+if !defined in_dir
+  in_dir = 2016_Jun30
+endif
 
-# uncomment below or input from cmd line
-#year = 2018
+if !defined outTag
+  outTag = 2016_Jun30
+endif
 
+if !defined channel
+  channel = wv
+endif
 
-arguments = condor $(region) $(year) $(base_dir) $(in_dir) 8 $(hist_file).root
+if !defined year
+  year = 2018
+endif
+
+arguments = $(tar_file) $(region) $(year) $(base_dir) $(in_dir) 8 $(hist_file).root
 
 hist_file = hists_$(outTag)_$(region)
 
