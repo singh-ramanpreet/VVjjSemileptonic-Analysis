@@ -172,6 +172,8 @@ if not skip_VBS_QCD:
         for sys in args.sys:
             htemp_Up = hist_file.Get(f"{hists_subdirectory}_{sys}Up/VBS_QCD_{variable}")
             htemp_Down = hist_file.Get(f"{hists_subdirectory}_{sys}Down/VBS_QCD_{variable}")
+            if type(htemp_Up) == ROOT.TObject: continue
+
             sysUp = add_errors(sysUp, abs(h_VBS_QCD_sysUp.GetBinContent(i) - htemp_Up.GetBinContent(i)))
             sysDown = add_errors(sysDown, abs(h_VBS_QCD_sysDown.GetBinContent(i) - htemp_Down.GetBinContent(i)))
         h_VBS_QCD_sysUp.SetBinContent(i, h_VBS_QCD.GetBinContent(i) + sysUp)
@@ -181,7 +183,6 @@ if not skip_VBS_QCD:
         error = ctypes.c_double(0.0)
         bin_last = h_VBS_QCD.GetNbinsX()
         integral = h_VBS_QCD.IntegralAndError(0, bin_last, error)
-        #legend.AddEntry(h_VBS_QCD, f"VBS QCD ({integral:.2f}, {error.value:.2f})", "f")
         legend.AddEntry(h_VBS_QCD, f"VBS QCD ({integral:.2f})", "f")
         h_mc.Add(h_VBS_QCD)
         h_mc_sysUp.Add(h_VBS_QCD_sysUp)
@@ -234,6 +235,29 @@ if not skip_WJets:
         h_WJets.SetFillColor(ROOT.TColor.GetColor(222, 90, 106))
         h_WJets.SetLineColor(ROOT.TColor.GetColor(222, 90, 106))
         h_WJets.SetFillStyle(1001)
+
+        h_WJets_sysUp = h_WJets.Clone("WJets_sysUp")
+        h_WJets_sysDown = h_WJets.Clone("WJets_sysDown")
+        h_WJets_NormUp = h_WJets.Clone("WJets_NormUp")
+        h_WJets_NormUp.Scale(float(1 + args.norm_vjet))
+        h_WJets_NormDown = h_WJets.Clone("WJets_NormDown")
+        h_WJets_NormDown.Scale(float(1 - args.norm_vjet))
+
+        for i in range(h_WJets.GetNbinsX()):
+            sysUp = 0.0
+            sysDown = 0.0
+            sysUp = add_errors(sysUp, abs(h_WJets.GetBinContent(i) - h_WJets_NormUp.GetBinContent(i)))
+            sysDown = add_errors(sysDown, abs(h_WJets.GetBinContent(i) - h_WJets_NormDown.GetBinContent(i)))
+            for sys in args.sys:
+                htemp_Up = hist_file.Get(f"{hists_subdirectory}_{sys}Up/WJets_HT_{variable}")
+                htemp_Down = hist_file.Get(f"{hists_subdirectory}_{sys}Down/WJets_HT_{variable}")
+                if type(htemp_Up) == ROOT.TObject: continue
+
+                sysUp = add_errors(sysUp, abs(h_WJets_sysUp.GetBinContent(i) - htemp_Up.GetBinContent(i)))
+                sysDown = add_errors(sysDown, abs(h_WJets_sysDown.GetBinContent(i) - htemp_Down.GetBinContent(i)))
+            h_WJets_sysUp.SetBinContent(i, h_WJets.GetBinContent(i) + sysUp)
+            h_WJets_sysDown.SetBinContent(i, h_WJets.GetBinContent(i) - sysDown)
+
         if h_WJets.GetEntries() != 0.0:
             error = ctypes.c_double(0.0)
             bin_last = h_WJets.GetNbinsX()
@@ -241,6 +265,8 @@ if not skip_WJets:
             #legend.AddEntry(h_WJets, f"W + Jets ({integral:.2f}, {error.value:.2f})", "f")
             legend.AddEntry(h_WJets, f"W + Jets ({integral:.2f})", "f")
             h_mc.Add(h_WJets)
+            h_mc_sysUp.Add(h_WJets_sysUp)
+            h_mc_sysDown.Add(h_WJets_sysDown)
 
     if WJets_option == 1:
 
@@ -248,6 +274,29 @@ if not skip_WJets:
         h_WJets_b1.SetFillColor(ROOT.TColor.GetColor(222, 90, 106))
         h_WJets_b1.SetLineColor(ROOT.TColor.GetColor(222, 90, 106))
         h_WJets_b1.SetFillStyle(1001)
+
+        h_WJets_b1_sysUp = h_WJets_b1.Clone("WJets_b1_sysUp")
+        h_WJets_b1_sysDown = h_WJets_b1.Clone("WJets_b1_sysDown")
+        h_WJets_b1_NormUp = h_WJets_b1.Clone("WJets_b1_NormUp")
+        h_WJets_b1_NormUp.Scale(float(1 + args.norm_vjet))
+        h_WJets_b1_NormDown = h_WJets_b1.Clone("WJets_b1_NormDown")
+        h_WJets_b1_NormDown.Scale(float(1 - args.norm_vjet))
+
+        for i in range(h_WJets_b1.GetNbinsX()):
+            sysUp = 0.0
+            sysDown = 0.0
+            sysUp = add_errors(sysUp, abs(h_WJets_b1.GetBinContent(i) - h_WJets_b1_NormUp.GetBinContent(i)))
+            sysDown = add_errors(sysDown, abs(h_WJets_b1.GetBinContent(i) - h_WJets_b1_NormDown.GetBinContent(i)))
+            for sys in args.sys:
+                htemp_Up = hist_file.Get(f"{hists_subdirectory}_{sys}Up/WJets_HT_b1_{variable}")
+                htemp_Down = hist_file.Get(f"{hists_subdirectory}_{sys}Down/WJets_HT_b1_{variable}")
+                if type(htemp_Up) == ROOT.TObject: continue
+
+                sysUp = add_errors(sysUp, abs(h_WJets_b1_sysUp.GetBinContent(i) - htemp_Up.GetBinContent(i)))
+                sysDown = add_errors(sysDown, abs(h_WJets_b1_sysDown.GetBinContent(i) - htemp_Down.GetBinContent(i)))
+            h_WJets_b1_sysUp.SetBinContent(i, h_WJets_b1.GetBinContent(i) + sysUp)
+            h_WJets_b1_sysDown.SetBinContent(i, h_WJets_b1.GetBinContent(i) - sysDown)
+
         if h_WJets_b1.GetEntries() != 0.0:
             error = ctypes.c_double(0.0)
             bin_last = h_WJets_b1.GetNbinsX()
@@ -255,11 +304,37 @@ if not skip_WJets:
             #legend.AddEntry(h_WJets_b1, f"W + Jets b1 ({integral:.2f}, {error.value:.2f})", "f")
             legend.AddEntry(h_WJets_b1, f"W + Jets b1 ({integral:.2f})", "f")
             h_mc.Add(h_WJets_b1)
+            h_mc_sysUp.Add(h_WJets_b1_sysUp)
+            h_mc_sysDown.Add(h_WJets_b1_sysDown)
+
 
         h_WJets_b2 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_b2_{variable}")
         h_WJets_b2.SetFillColor(ROOT.TColor.GetColor(222 - 40, 90 - 20, 106 - 20))
         h_WJets_b2.SetLineColor(ROOT.TColor.GetColor(222 - 40, 90 - 20, 106 - 20))
         h_WJets_b2.SetFillStyle(1001)
+
+        h_WJets_b2_sysUp = h_WJets_b2.Clone("WJets_b2_sysUp")
+        h_WJets_b2_sysDown = h_WJets_b2.Clone("WJets_b2_sysDown")
+        h_WJets_b2_NormUp = h_WJets_b2.Clone("WJets_b2_NormUp")
+        h_WJets_b2_NormUp.Scale(float(1 + args.norm_vjet))
+        h_WJets_b2_NormDown = h_WJets_b2.Clone("WJets_b2_NormDown")
+        h_WJets_b2_NormDown.Scale(float(1 - args.norm_vjet))
+
+        for i in range(h_WJets_b2.GetNbinsX()):
+            sysUp = 0.0
+            sysDown = 0.0
+            sysUp = add_errors(sysUp, abs(h_WJets_b2.GetBinContent(i) - h_WJets_b2_NormUp.GetBinContent(i)))
+            sysDown = add_errors(sysDown, abs(h_WJets_b2.GetBinContent(i) - h_WJets_b2_NormDown.GetBinContent(i)))
+            for sys in args.sys:
+                htemp_Up = hist_file.Get(f"{hists_subdirectory}_{sys}Up/WJets_HT_b2_{variable}")
+                htemp_Down = hist_file.Get(f"{hists_subdirectory}_{sys}Down/WJets_HT_b2_{variable}")
+                if type(htemp_Up) == ROOT.TObject: continue
+
+                sysUp = add_errors(sysUp, abs(h_WJets_b2_sysUp.GetBinContent(i) - htemp_Up.GetBinContent(i)))
+                sysDown = add_errors(sysDown, abs(h_WJets_b2_sysDown.GetBinContent(i) - htemp_Down.GetBinContent(i)))
+            h_WJets_b2_sysUp.SetBinContent(i, h_WJets_b2.GetBinContent(i) + sysUp)
+            h_WJets_b2_sysDown.SetBinContent(i, h_WJets_b2.GetBinContent(i) - sysDown)
+
         if h_WJets_b2.GetEntries() != 0.0:
             error = ctypes.c_double(0.0)
             bin_last = h_WJets_b2.GetNbinsX()
@@ -267,6 +342,8 @@ if not skip_WJets:
             #legend.AddEntry(h_WJets_b2, f"W + Jets b2 ({integral:.2f}, {error.value:.2f})", "f")
             legend.AddEntry(h_WJets_b2, f"W + Jets b2 ({integral:.2f})", "f")
             h_mc.Add(h_WJets_b2)
+            h_mc_sysUp.Add(h_WJets_b2_sysUp)
+            h_mc_sysDown.Add(h_WJets_b2_sysDown)
 
     if WJets_option == 2:
 
@@ -274,6 +351,29 @@ if not skip_WJets:
         h_WJets_r1.SetFillColor(ROOT.TColor.GetColor(222, 90, 106))
         h_WJets_r1.SetLineColor(ROOT.TColor.GetColor(222, 90, 106))
         h_WJets_r1.SetFillStyle(1001)
+
+        h_WJets_r1_sysUp = h_WJets_r1.Clone("WJets_r1_sysUp")
+        h_WJets_r1_sysDown = h_WJets_r1.Clone("WJets_r1_sysDown")
+        h_WJets_r1_NormUp = h_WJets_r1.Clone("WJets_r1_NormUp")
+        h_WJets_r1_NormUp.Scale(float(1 + args.norm_vjet))
+        h_WJets_r1_NormDown = h_WJets_r1.Clone("WJets_r1_NormDown")
+        h_WJets_r1_NormDown.Scale(float(1 - args.norm_vjet))
+
+        for i in range(h_WJets_r1.GetNbinsX()):
+            sysUp = 0.0
+            sysDown = 0.0
+            sysUp = add_errors(sysUp, abs(h_WJets_r1.GetBinContent(i) - h_WJets_r1_NormUp.GetBinContent(i)))
+            sysDown = add_errors(sysDown, abs(h_WJets_r1.GetBinContent(i) - h_WJets_r1_NormDown.GetBinContent(i)))
+            for sys in args.sys:
+                htemp_Up = hist_file.Get(f"{hists_subdirectory}_{sys}Up/WJets_HT_r1_{variable}")
+                htemp_Down = hist_file.Get(f"{hists_subdirectory}_{sys}Down/WJets_HT_r1_{variable}")
+                if type(htemp_Up) == ROOT.TObject: continue
+
+                sysUp = add_errors(sysUp, abs(h_WJets_r1_sysUp.GetBinContent(i) - htemp_Up.GetBinContent(i)))
+                sysDown = add_errors(sysDown, abs(h_WJets_r1_sysDown.GetBinContent(i) - htemp_Down.GetBinContent(i)))
+            h_WJets_r1_sysUp.SetBinContent(i, h_WJets_r1.GetBinContent(i) + sysUp)
+            h_WJets_r1_sysDown.SetBinContent(i, h_WJets_r1.GetBinContent(i) - sysDown)
+
         if h_WJets_r1.GetEntries() != 0.0:
             error = ctypes.c_double(0.0)
             bin_last = h_WJets_r1.GetNbinsX()
@@ -281,11 +381,36 @@ if not skip_WJets:
             #legend.AddEntry(h_WJets_r1, f"W + Jets r1 ({integral:.2f}, {error.value:.2f})", "f")
             legend.AddEntry(h_WJets_r1, f"W + Jets r1 ({integral:.2f})", "f")
             h_mc.Add(h_WJets_r1)
+            h_mc_sysUp.Add(h_WJets_r1_sysUp)
+            h_mc_sysDown.Add(h_WJets_r1_sysDown)
 
         h_WJets_r2 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_r2_{variable}")
         h_WJets_r2.SetFillColor(ROOT.TColor.GetColor(222 - 40, 90 - 20, 106 - 20))
         h_WJets_r2.SetLineColor(ROOT.TColor.GetColor(222 - 40, 90 - 20, 106 - 20))
         h_WJets_r2.SetFillStyle(1001)
+
+        h_WJets_r2_sysUp = h_WJets_r2.Clone("WJets_r2_sysUp")
+        h_WJets_r2_sysDown = h_WJets_r2.Clone("WJets_r2_sysDown")
+        h_WJets_r2_NormUp = h_WJets_r2.Clone("WJets_r2_NormUp")
+        h_WJets_r2_NormUp.Scale(float(1 + args.norm_vjet))
+        h_WJets_r2_NormDown = h_WJets_r2.Clone("WJets_r2_NormDown")
+        h_WJets_r2_NormDown.Scale(float(1 - args.norm_vjet))
+
+        for i in range(h_WJets_r2.GetNbinsX()):
+            sysUp = 0.0
+            sysDown = 0.0
+            sysUp = add_errors(sysUp, abs(h_WJets_r2.GetBinContent(i) - h_WJets_r2_NormUp.GetBinContent(i)))
+            sysDown = add_errors(sysDown, abs(h_WJets_r2.GetBinContent(i) - h_WJets_r2_NormDown.GetBinContent(i)))
+            for sys in args.sys:
+                htemp_Up = hist_file.Get(f"{hists_subdirectory}_{sys}Up/WJets_HT_r2_{variable}")
+                htemp_Down = hist_file.Get(f"{hists_subdirectory}_{sys}Down/WJets_HT_r2_{variable}")
+                if type(htemp_Up) == ROOT.TObject: continue
+
+                sysUp = add_errors(sysUp, abs(h_WJets_r2_sysUp.GetBinContent(i) - htemp_Up.GetBinContent(i)))
+                sysDown = add_errors(sysDown, abs(h_WJets_r2_sysDown.GetBinContent(i) - htemp_Down.GetBinContent(i)))
+            h_WJets_r2_sysUp.SetBinContent(i, h_WJets_r2.GetBinContent(i) + sysUp)
+            h_WJets_r2_sysDown.SetBinContent(i, h_WJets_r2.GetBinContent(i) - sysDown)
+
         if h_WJets_r2.GetEntries() != 0.0:
             error = ctypes.c_double(0.0)
             bin_last = h_WJets_r2.GetNbinsX()
@@ -293,11 +418,36 @@ if not skip_WJets:
             #legend.AddEntry(h_WJets_r2, f"W + Jets r2 ({integral:.2f}, {error.value:.2f})", "f")
             legend.AddEntry(h_WJets_r2, f"W + Jets r2 ({integral:.2f})", "f")
             h_mc.Add(h_WJets_r2)
+            h_mc_sysUp.Add(h_WJets_r2_sysUp)
+            h_mc_sysDown.Add(h_WJets_r2_sysDown)
 
         h_WJets_r3 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_r3_{variable}")
         h_WJets_r3.SetFillColor(ROOT.TColor.GetColor(222 - 60, 90 - 40, 106 - 40))
         h_WJets_r3.SetLineColor(ROOT.TColor.GetColor(222 - 60, 90 - 40, 106 - 40))
         h_WJets_r3.SetFillStyle(1001)
+
+        h_WJets_r3_sysUp = h_WJets_r3.Clone("WJets_r3_sysUp")
+        h_WJets_r3_sysDown = h_WJets_r3.Clone("WJets_r3_sysDown")
+        h_WJets_r3_NormUp = h_WJets_r3.Clone("WJets_r3_NormUp")
+        h_WJets_r3_NormUp.Scale(float(1 + args.norm_vjet))
+        h_WJets_r3_NormDown = h_WJets_r3.Clone("WJets_r3_NormDown")
+        h_WJets_r3_NormDown.Scale(float(1 - args.norm_vjet))
+
+        for i in range(h_WJets_r3.GetNbinsX()):
+            sysUp = 0.0
+            sysDown = 0.0
+            sysUp = add_errors(sysUp, abs(h_WJets_r3.GetBinContent(i) - h_WJets_r3_NormUp.GetBinContent(i)))
+            sysDown = add_errors(sysDown, abs(h_WJets_r3.GetBinContent(i) - h_WJets_r3_NormDown.GetBinContent(i)))
+            for sys in args.sys:
+                htemp_Up = hist_file.Get(f"{hists_subdirectory}_{sys}Up/WJets_HT_r3_{variable}")
+                htemp_Down = hist_file.Get(f"{hists_subdirectory}_{sys}Down/WJets_HT_r3_{variable}")
+                if type(htemp_Up) == ROOT.TObject: continue
+
+                sysUp = add_errors(sysUp, abs(h_WJets_r3_sysUp.GetBinContent(i) - htemp_Up.GetBinContent(i)))
+                sysDown = add_errors(sysDown, abs(h_WJets_r3_sysDown.GetBinContent(i) - htemp_Down.GetBinContent(i)))
+            h_WJets_r3_sysUp.SetBinContent(i, h_WJets_r3.GetBinContent(i) + sysUp)
+            h_WJets_r3_sysDown.SetBinContent(i, h_WJets_r3.GetBinContent(i) - sysDown)
+
         if h_WJets_r3.GetEntries() != 0.0:
             error = ctypes.c_double(0.0)
             bin_last = h_WJets_r3.GetNbinsX()
@@ -305,11 +455,36 @@ if not skip_WJets:
             #legend.AddEntry(h_WJets_r3, f"W + Jets r3 ({integral:.2f}, {error.value:.2f})", "f")
             legend.AddEntry(h_WJets_r3, f"W + Jets r3 ({integral:.2f})", "f")
             h_mc.Add(h_WJets_r3)
+            h_mc_sysUp.Add(h_WJets_r3_sysUp)
+            h_mc_sysDown.Add(h_WJets_r3_sysDown)
 
         h_WJets_r4 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_r4_{variable}")
         h_WJets_r4.SetFillColor(ROOT.TColor.GetColor(238, 135, 0))
         h_WJets_r4.SetLineColor(ROOT.TColor.GetColor(238, 135, 0))
         h_WJets_r4.SetFillStyle(1001)
+
+        h_WJets_r4_sysUp = h_WJets_r4.Clone("WJets_r4_sysUp")
+        h_WJets_r4_sysDown = h_WJets_r4.Clone("WJets_r4_sysDown")
+        h_WJets_r4_NormUp = h_WJets_r4.Clone("WJets_r4_NormUp")
+        h_WJets_r4_NormUp.Scale(float(1 + args.norm_vjet))
+        h_WJets_r4_NormDown = h_WJets_r4.Clone("WJets_r4_NormDown")
+        h_WJets_r4_NormDown.Scale(float(1 - args.norm_vjet))
+
+        for i in range(h_WJets_r4.GetNbinsX()):
+            sysUp = 0.0
+            sysDown = 0.0
+            sysUp = add_errors(sysUp, abs(h_WJets_r4.GetBinContent(i) - h_WJets_r4_NormUp.GetBinContent(i)))
+            sysDown = add_errors(sysDown, abs(h_WJets_r4.GetBinContent(i) - h_WJets_r4_NormDown.GetBinContent(i)))
+            for sys in args.sys:
+                htemp_Up = hist_file.Get(f"{hists_subdirectory}_{sys}Up/WJets_HT_r4_{variable}")
+                htemp_Down = hist_file.Get(f"{hists_subdirectory}_{sys}Down/WJets_HT_r4_{variable}")
+                if type(htemp_Up) == ROOT.TObject: continue
+
+                sysUp = add_errors(sysUp, abs(h_WJets_r4_sysUp.GetBinContent(i) - htemp_Up.GetBinContent(i)))
+                sysDown = add_errors(sysDown, abs(h_WJets_r4_sysDown.GetBinContent(i) - htemp_Down.GetBinContent(i)))
+            h_WJets_r4_sysUp.SetBinContent(i, h_WJets_r4.GetBinContent(i) + sysUp)
+            h_WJets_r4_sysDown.SetBinContent(i, h_WJets_r4.GetBinContent(i) - sysDown)
+
         if h_WJets_r4.GetEntries() != 0.0:
             error = ctypes.c_double(0.0)
             bin_last = h_WJets_r4.GetNbinsX()
@@ -317,11 +492,36 @@ if not skip_WJets:
             #legend.AddEntry(h_WJets_r4, f"W + Jets r4 ({integral:.2f}, {error.value:.2f})", "f")
             legend.AddEntry(h_WJets_r4, f"W + Jets r4 ({integral:.2f})", "f")
             h_mc.Add(h_WJets_r4)
+            h_mc_sysUp.Add(h_WJets_r4_sysUp)
+            h_mc_sysDown.Add(h_WJets_r4_sysDown)
 
         h_WJets_r5 = hist_file.Get(f"{hists_subdirectory}/WJets_HT_r5_{variable}")
         h_WJets_r5.SetFillColor(ROOT.TColor.GetColor(212, 120, 0))
         h_WJets_r5.SetLineColor(ROOT.TColor.GetColor(212, 120, 0))
         h_WJets_r5.SetFillStyle(1001)
+
+        h_WJets_r5_sysUp = h_WJets_r5.Clone("WJets_r5_sysUp")
+        h_WJets_r5_sysDown = h_WJets_r5.Clone("WJets_r5_sysDown")
+        h_WJets_r5_NormUp = h_WJets_r5.Clone("WJets_r5_NormUp")
+        h_WJets_r5_NormUp.Scale(float(1 + args.norm_vjet))
+        h_WJets_r5_NormDown = h_WJets_r5.Clone("WJets_r5_NormDown")
+        h_WJets_r5_NormDown.Scale(float(1 - args.norm_vjet))
+
+        for i in range(h_WJets_r5.GetNbinsX()):
+            sysUp = 0.0
+            sysDown = 0.0
+            sysUp = add_errors(sysUp, abs(h_WJets_r5.GetBinContent(i) - h_WJets_r5_NormUp.GetBinContent(i)))
+            sysDown = add_errors(sysDown, abs(h_WJets_r5.GetBinContent(i) - h_WJets_r5_NormDown.GetBinContent(i)))
+            for sys in args.sys:
+                htemp_Up = hist_file.Get(f"{hists_subdirectory}_{sys}Up/WJets_HT_r5_{variable}")
+                htemp_Down = hist_file.Get(f"{hists_subdirectory}_{sys}Down/WJets_HT_r5_{variable}")
+                if type(htemp_Up) == ROOT.TObject: continue
+
+                sysUp = add_errors(sysUp, abs(h_WJets_r5_sysUp.GetBinContent(i) - htemp_Up.GetBinContent(i)))
+                sysDown = add_errors(sysDown, abs(h_WJets_r5_sysDown.GetBinContent(i) - htemp_Down.GetBinContent(i)))
+            h_WJets_r5_sysUp.SetBinContent(i, h_WJets_r5.GetBinContent(i) + sysUp)
+            h_WJets_r5_sysDown.SetBinContent(i, h_WJets_r5.GetBinContent(i) - sysDown)
+
         if h_WJets_r5.GetEntries() != 0.0:
             error = ctypes.c_double(0.0)
             bin_last = h_WJets_r5.GetNbinsX()
@@ -329,6 +529,8 @@ if not skip_WJets:
             #legend.AddEntry(h_WJets_r5, f"W + Jets r5 ({integral:.2f}, {error.value:.2f})", "f")
             legend.AddEntry(h_WJets_r5, f"W + Jets r5 ({integral:.2f})", "f")
             h_mc.Add(h_WJets_r5)
+            h_mc_sysUp.Add(h_WJets_r5_sysUp)
+            h_mc_sysDown.Add(h_WJets_r5_sysDown)
 
 if not skip_DYJets:
 
@@ -358,6 +560,8 @@ if not skip_DYJets:
         for sys in args.sys:
             htemp_Up = hist_file.Get(f"{hists_subdirectory}_{sys}Up/{dyjets_tag}_{variable}")
             htemp_Down = hist_file.Get(f"{hists_subdirectory}_{sys}Down/{dyjets_tag}_{variable}")
+            if type(htemp_Up) == ROOT.TObject: continue
+
             sysUp = add_errors(sysUp, abs(h_DYJets_sysUp.GetBinContent(i) - htemp_Up.GetBinContent(i)))
             sysDown = add_errors(sysDown, abs(h_DYJets_sysDown.GetBinContent(i) - htemp_Down.GetBinContent(i)))
         h_DYJets_sysUp.SetBinContent(i, h_DYJets.GetBinContent(i) + sysUp)
@@ -384,7 +588,6 @@ if not skip_VBS_EWK:
     bin_last = h_VBS_EWK.GetNbinsX()
     integral = h_VBS_EWK.IntegralAndError(0, bin_last, error)
     if signal_scale_up != 1:
-        #legend.AddEntry(h_VBS_EWK, f"#splitline{{VBS EWK ({integral:.2f}, {error.value:.2f})}}{{x {signal_scale_up}}}", "l")
         legend.AddEntry(h_VBS_EWK, f"VBS EWK x{signal_scale_up} ({integral:.2f})", "l")
         h_VBS_EWK.Scale(signal_scale_up)
     else:
@@ -626,98 +829,117 @@ os.popen(f"convert -density 150 -antialias {plot_filename}.pdf -trim {plot_filen
 #exec(plot_mc_data)
 #
 #
+
+if (len(args.vars) == 0):
+    exec(set_variable_defaults)
+    f = ROOT.TFile.Open(hist_filename)
+    d = f.Get(hists_subdirectory)
+    l = d.GetListOfKeys()
+    h_names = []
+    for i in l:
+        name_ = i.GetName()
+        if "data_obs_" in name_:
+            h_names.append(name_.replace("data_obs_", ""))
+
+    args.vars = h_names
+
+print(f"hist file {hist_filename}, subdir {hists_subdirectory}, year {args.year}")
+print(f"========================================================================")
+print(args.vars)
+print(f"========================================================================")
+
 exec(set_variable_defaults)
 variable = f"mva_score_{args.mva_type}"
 title_x = f"MVA Score {args.mva_type}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 scale_y_axis = 50
 upper_pad_min_y = 0.1
 signal_scale_up = 1
 canvas_log_y = True
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = f"mva_score_{args.mva_type}_var1"
 title_x = f"MVA Score {args.mva_type}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 scale_y_axis = 50
 upper_pad_min_y = 0.1
 signal_scale_up = 1
 canvas_log_y = True
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "lept1_pt"
-title_x = "p^{T}_{lept1}"
+variable = "lep1_pt"
+title_x = "p^{T}_{lep1}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "lept1_eta"
-title_x = "#eta_{lept1}"
+variable = "lep1_eta"
+title_x = "#eta_{lep1}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "lept1_phi"
-title_x = "#phi_{lept1}"
+variable = "lep1_phi"
+title_x = "#phi_{lep1}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "lept2_pt"
-title_x = "p^{T}_{lept2}"
+variable = "lep2_pt"
+title_x = "p^{T}_{lep2}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "lept2_eta"
-title_x = "#eta_{lept2}"
+variable = "lep2_eta"
+title_x = "#eta_{lep2}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "lept2_phi"
-title_x = "#phi_{lept2}"
+variable = "lep2_phi"
+title_x = "#phi_{lep2}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "pf_met_corr"
-title_x = "PF MET"
+variable = "MET"
+title_x = "MET"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "pf_met_corr_phi"
-title_x = "#phi_{PF MET}"
+variable = "MET_phi"
+title_x = "#phi_{MET}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = "fatjet_m"
@@ -725,7 +947,7 @@ title_x = "m_{V}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -736,7 +958,7 @@ units = "GeV"
 #ndivisions_x = 505
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -744,7 +966,7 @@ variable = "fatjet_eta"
 title_x = "#eta_{V}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -752,7 +974,7 @@ variable = "fatjet_phi"
 title_x = "#phi_{V}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -760,7 +982,7 @@ variable = "fatjet_tau21"
 title_x = "#tau_{21} (V)"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = "dijet_m"
@@ -768,7 +990,7 @@ title_x = "m_{JJ}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -777,7 +999,7 @@ title_x = "p^{T}_{JJ}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -785,7 +1007,7 @@ variable = "dijet_eta"
 title_x = "#eta_{JJ}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -794,7 +1016,7 @@ title_x = "p^{T}_{J1}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -803,7 +1025,7 @@ title_x = "p^{T}_{J2}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -811,7 +1033,7 @@ variable = "dijet_j1_eta"
 title_x = "#eta_{J1}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -819,40 +1041,40 @@ variable = "dijet_j2_eta"
 title_x = "#eta_{J2}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "v_pt"
-title_x = "p^{T}_{W}"
+variable = "v_lep_pt"
+title_x = "p^{T}_{Z}" if args.boson == "Z" else "p^{T}_{W}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "v_eta"
-title_x = "#eta_{W}"
+variable = "v_lep_eta"
+title_x = "#eta_{Z}" if args.boson == "Z" else "#eta_{W}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
-variable = "v_m"
-title_x = "m^{T}_{W}"
+variable = "v_lep_m"
+title_x = "m_{Z}" if args.boson == "Z" else "m_{W}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
-variable = "v_mt"
-title_x = "m^{T}_{W}"
+variable = "v_lep_mt"
+title_x = "m^{T}_{Z}" if args.boson == "Z" else "m^{T}_{W}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -861,7 +1083,7 @@ title_x = "p^{T}_{j1}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -870,7 +1092,7 @@ title_x = "p^{T}_{j2}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -878,7 +1100,7 @@ variable = "vbf_j1_eta"
 title_x = "#eta_{j1}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -886,7 +1108,7 @@ variable = "vbf_j2_eta"
 title_x = "#eta_{j2}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -894,7 +1116,7 @@ variable = "vbf_jj_Deta"
 title_x = "|#Delta#eta_{jj}|"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -902,7 +1124,7 @@ variable = "vbf_j1_phi"
 title_x = "#phi_{j1}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -910,7 +1132,7 @@ variable = "vbf_j2_phi"
 title_x = "#phi_{j2}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -919,7 +1141,7 @@ title_x = "m_{jj}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
@@ -927,54 +1149,63 @@ variable = "boson_centrality"
 title_x = "Boson Centrality"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "zeppenfeld_w_Deta"
-title_x = "Zeppenfeld* W"
+variable = "zeppenfeld_lep_deta"
+title_x = "Zeppenfeld* Z" if args.boson == "Z" else "Zeppenfeld* W"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
-variable = "zeppenfeld_v_Deta"
+variable = "zeppenfeld_had_deta"
 title_x = "Zeppenfeld* V"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
 variable = "vv_m"
-title_x = "m_{WV}"
+title_x = "m_{ZV}" if args.boson == "Z" else "m_{WV}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
+
+
+exec(set_variable_defaults)
+variable = "vv_mt"
+title_x = "m^{T}_{ZV}" if args.boson == "Z" else "m^{T}_{WV}"
+units = "GeV"
+signal_scale_up = 10
+canvas_log_y = False
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
 variable = "vv_pt"
-title_x = "p^{T}_{WV}"
+title_x = "p^{T}_{ZV}" if args.boson == "Z" else "p^{T}_{WV}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
 variable = "vv_eta"
-title_x = "#eta_{WV}"
+title_x = "#eta_{ZV}" if args.boson == "Z" else "#eta_{WV}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
 variable = "vv_phi"
-title_x = "#phi_{WV}"
+title_x = "#phi_{ZV}" if args.boson == "Z" else "#phi_{WV}"
 signal_scale_up = 10
 canvas_log_y = False
-if (len(args.vars) == 0) or any(variable == i for i in args.vars): exec(plot_mc_data)
+if any(variable == i for i in args.vars): exec(plot_mc_data)

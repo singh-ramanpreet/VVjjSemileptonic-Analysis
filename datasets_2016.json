@@ -1,101 +1,84 @@
 {    
     "data_obs": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 1.0,
         "filelist": [
-            {"name": "Data_noDup.root", "xs": 1.0, "nMC": 1.0}
+            {"name": "Data_noDup", "xs": 1.0, "nMC": 1.0}
         ]
     },
     
     "VBS_EWK": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.02982},
-            {"name": "WminusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root", "xs": 0.03259}, 
-            {"name": "WminusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"     , "xs": 0.1    },
-            {"name": "WplusTo2JWminusToLNuJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 0.9107 },
-            {"name": "WplusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"       , "xs": 0.05401},
-            {"name": "WplusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 0.9114 },
-            {"name": "WplusToLNuWplusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"  , "xs": 0.08793},
-            {"name": "WplusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.1825 },
-            {"name": "ZTo2LZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"           , "xs": 0.01589}
+            {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"      , "xs": 0.02982, "nMC": 200000.0 },
+            {"name": "WminusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8", "xs": 0.03259, "nMC": 198300.0 }, 
+            {"name": "WminusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"     , "xs": 0.1    , "nMC": 200000.0 },
+            {"name": "WplusTo2JWminusToLNuJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8" , "xs": 0.9107 , "nMC": 1985200.0},
+            {"name": "WplusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"       , "xs": 0.05401, "nMC": 178000.0 },
+            {"name": "WplusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8" , "xs": 0.9114 , "nMC": 1998400.0},
+            {"name": "WplusToLNuWplusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"  , "xs": 0.08793, "nMC": 200000.0 },
+            {"name": "WplusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"      , "xs": 0.1825 , "nMC": 390100.0 },
+            {"name": "ZTo2LZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"           , "xs": 0.01589, "nMC": 100000.0 }
         ]
     },
 
     "VBS_QCD": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 0.3488 },
-            {"name": "WminusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root", "xs": 0.03203},
-            {"name": "WminusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"     , "xs": 1.166  },
-            {"name": "WplusTo2JWminusToLNuJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 5.568  },
-            {"name": "WplusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"       , "xs": 0.575  },
-            {"name": "WplusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root" , "xs": 5.546  },
-            {"name": "WplusToLNuWplusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"  , "xs": 0.07584},
-            {"name": "WplusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"      , "xs": 1.938  },
-            {"name": "ZTo2LZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8.root"           , "xs": 0.3449 }
-        ]
-    },
-
-    "DYJets_LO": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
-        "lumi": 35867.06,
-        "filelist": [
-            {"name": "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 1012.296845},
-            {"name": "DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 334.717838 },
-            {"name": "DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 102.4628   },
-            {"name": "DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 54.48136   }
+            {"name": "WminusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"      , "xs": 0.3488 , "nMC": 500000.0 },
+            {"name": "WminusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8", "xs": 0.03203, "nMC": 100000.0 },
+            {"name": "WminusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"     , "xs": 1.166  , "nMC": 997400.0 },
+            {"name": "WplusTo2JWminusToLNuJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8" , "xs": 5.568  , "nMC": 3823400.0},
+            {"name": "WplusTo2JZTo2LJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"       , "xs": 0.575  , "nMC": 500000.0 },
+            {"name": "WplusToLNuWminusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8" , "xs": 5.546  , "nMC": 4000000.0},
+            {"name": "WplusToLNuWplusTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"  , "xs": 0.07584, "nMC": 100000.0 },
+            {"name": "WplusToLNuZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"      , "xs": 1.938  , "nMC": 1971200.0},
+            {"name": "ZTo2LZTo2JJJ_QCD_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"           , "xs": 0.3449 , "nMC": 100000.0 }
         ]
     },
 
     "Top": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV_PSweights-powheg-pythia8.root"         , "xs": 38.06 },
-            {"name": "ST_tW_antitop_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8.root"       , "xs": 34.97 },
-            {"name": "ST_tW_top_5f_NoFullyHadronicDecays_13TeV_PSweights-powheg-pythia8.root"             , "xs": 38.09 },
-            {"name": "ST_tW_top_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8.root"           , "xs": 34.91 },
-            {"name": "ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8.root", "xs": 67.91 },
-            {"name": "ST_t-channel_top_4f_InclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8.root"    , "xs": 113.3 },
-            {"name": "ST_s-channel_4f_leptonDecays_13TeV_PSweights-amcatnlo-pythia8.root"                 , "xs": 3.365 },
-            {"name": "ST_s-channel_4f_hadronicDecays_TuneCP5_PSweights_13TeV-amcatnlo-pythia8.root"       , "xs": 11.24 },
-            {"name": "ST_s-channel_4f_InclusiveDecays_13TeV-amcatnlo-pythia8.root"                        , "xs": 10.12 },
-            {"name": "TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8.root"                           , "xs": 377.96},
-            {"name": "TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8.root"                       , "xs": 365.34},
-            {"name": "TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8.root"                              , "xs": 88.29 }
+            {"name": "ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV_PSweights-powheg-pythia8"         , "xs": 38.06 , "nMC": 2710849.25   },
+            {"name": "ST_tW_antitop_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8"       , "xs": 34.97 , "nMC": 174109584.0  },
+            {"name": "ST_tW_top_5f_NoFullyHadronicDecays_13TeV_PSweights-powheg-pythia8"             , "xs": 38.09 , "nMC": 3213335.0    },
+            {"name": "ST_tW_top_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8"           , "xs": 34.91 , "nMC": 173908704.0  },
+            {"name": "ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8", "xs": 67.91 , "nMC": 17771480.0   },
+            {"name": "ST_t-channel_top_4f_InclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8"    , "xs": 113.3 , "nMC": 31835782.0   },
+            {"name": "ST_s-channel_4f_leptonDecays_13TeV_PSweights-amcatnlo-pythia8"                 , "xs": 3.365 , "nMC": 33572360.0   },
+            {"name": "ST_s-channel_4f_hadronicDecays_TuneCP5_PSweights_13TeV-amcatnlo-pythia8"       , "xs": 11.24 , "nMC": 54761756.0   },
+            {"name": "ST_s-channel_4f_InclusiveDecays_13TeV-amcatnlo-pythia8"                        , "xs": 10.12 , "nMC": 29561764.0   },
+            {"name": "TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8"                           , "xs": 377.96, "nMC": 21432309760.0},
+            {"name": "TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8"                       , "xs": 365.34, "nMC": 32366942208.0},
+            {"name": "TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8"                              , "xs": 88.29 , "nMC": 4891619840.0 }
         ]
     },
     
     "WJets_HT": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WJetsToLNu_HT-70To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"   , "xs": 1353.0 , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 1346.0 , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 360.1  , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 48.8   , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 12.07  , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root" , "xs": 5.497  , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 1.329  , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root" , "xs": 0.03209, "kf": 1.21}
+            {"name": "WJetsToLNu_HT-70To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"   , "xs": 1353.0 , "nMC": 10020533.0, "kf": 1.21},
+            {"name": "WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 1346.0 , "nMC": 78043024.0, "kf": 1.21},
+            {"name": "WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 360.1  , "nMC": 38984320.0, "kf": 1.21},
+            {"name": "WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 48.8   , "nMC": 7687800.0 , "kf": 1.21},
+            {"name": "WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 12.07  , "nMC": 18687480.0, "kf": 1.21},
+            {"name": "WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8" , "xs": 5.497  , "nMC": 7830536.0 , "kf": 1.21},
+            {"name": "WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", "xs": 1.329  , "nMC": 6872441.0 , "kf": 1.21},
+            {"name": "WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8" , "xs": 0.03209, "nMC": 2637821.0 , "kf": 1.21}
         ]
     },
 
     "DYJets_HT": {
-        "location": "root://cmseos.fnal.gov//eos/uscms/store/user/klawhorn/WVJJTree_2020_Oct_29/2016/",
         "lumi": 35867.06,
         "filelist": [
-            {"name": "DYJetsToLL_M-50_HT-70to100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"   , "xs": 169.9   , "kf": 1.23},
-            {"name": "DYJetsToLL_M-50_HT-100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 147.4   , "kf": 1.23},
-            {"name": "DYJetsToLL_M-50_HT-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 41.04   , "kf": 1.23},
-            {"name": "DYJetsToLL_M-50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 5.674   , "kf": 1.23},
-            {"name": "DYJetsToLL_M-50_HT-600to800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"  , "xs": 1.358   , "kf": 1.23},
-            {"name": "DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root" , "xs": 0.6229  , "kf": 1.23},
-            {"name": "DYJetsToLL_M-50_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root", "xs": 0.1512  , "kf": 1.23},
-            {"name": "DYJetsToLL_M-50_HT-2500toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root" , "xs": 0.003659, "kf": 1.23}
+            {"name": "DYJetsToLL_M-50_HT-70to100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"   , "xs": 169.9   , "nMC": 9691660.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 147.4   , "nMC": 11017086.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 41.04   , "nMC": 9609137.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 5.674   , "nMC": 9725661.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-600to800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 1.358   , "nMC": 8292957.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8" , "xs": 0.6229  , "nMC": 2673066.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", "xs": 0.1512  , "nMC": 596079.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-2500toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8" , "xs": 0.003659, "nMC": 399492.0, "kf": 1.23}
         ]
     }
 }

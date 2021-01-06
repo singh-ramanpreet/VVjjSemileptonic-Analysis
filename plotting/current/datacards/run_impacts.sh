@@ -1,7 +1,9 @@
 #!/bin/sh
 
 #for i in "2018_wv" "2018_wjj" "2018_zv" "2018_zjj";
-for i in "2018_wv_splitted" "2018_wjj_splitted" "2018_wv" "2018_wjj";
+#for i in "2018_wv_splitted" "2018_wjj_splitted" "2018_wv" "2018_wjj";
+#for i in "run2_z";
+for i in "2016_zv" "2017_zv" "2018_zv" "2016_zjj" "2017_zjj" "2018_zjj";
 do
     text2workspace.py ${i}.txt
     
@@ -15,4 +17,5 @@ do
     
     plotImpacts.py -i impacts_datacard_${i}.json -o impacts_datacard_${i};
 
+    convert -density 150 -antialias impacts_datacard_${i}.pdf -trim impacts_datacard_${i}.png &> /dev/null
 done

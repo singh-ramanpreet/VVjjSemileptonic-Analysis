@@ -1,0 +1,56 @@
+imax * number of bins
+jmax * number of processes minus 1
+kmax * number of nuisance parameters
+----------------------------------------------------------------------------------------------------------------------------------
+shapes *          sig_reg     ../2016_2020_Dec_15_zjj.root sr1_l/$PROCESS_mva_score_zjj_var1  sr1_l_$SYSTEMATIC/$PROCESS_mva_score_zjj_var1
+shapes *          vjet_reg    ../2016_2020_Dec_15_zjj.root cr_vjets_l/$PROCESS_mva_score_zjj_1bin
+----------------------------------------------------------------------------------------------------------------------------------
+bin          sig_reg  vjet_reg
+observation    -1        -1   
+----------------------------------------------------------------------------------------------------------------------------------
+bin                                            sig_reg  sig_reg   sig_reg   vjet_reg  vjet_reg  vjet_reg    
+process                                        VBS_EWK  DYJets_HT  VBS_QCD  VBS_EWK   DYJets_HT  VBS_QCD
+process                                         0        1         2         0         1         2      
+rate                                           -1       -1        -1        -1        -1        -1     
+---------------------------------------------------------------------------------------------------------------------------------
+CMS_eff_b_mistag_2016               lnN        0.98     0.98      0.98      0.98     0.98     0.98   
+CMS_eff_e_2016                      lnN        1.01     1.01      1.01      1.01     1.01     1.01   
+CMS_eff_m_2016                      lnN        1.01     1.01      1.01      1.01     1.01     1.01   
+CMS_norm_PU_2016                    lnN        1.04     1.04      1.04      1.04     1.04     1.04   
+CMS_norm_met_2016                   lnN        1.02     1.02      1.02      1.02     1.02     1.02   
+lumi_13TeV_2016                     lnN        1.025    1.025     1.025     1.025    1.025    1.025  
+norm_Vjets_2016                     lnN        -        -         -         -        1.1      -      
+#jesTotal                            shape1     1.0      1.0       1.0       -        -        -      
+pdf                                 shape1     1.0      -         1.0       -        -        -      
+qcd                                 shape1     1.0      -         1.0       -        -        -  
+#scale                               shape1     1.0      1.0       1.0       -        -        -    
+#pu                                  shape1     1.0      1.0       1.0       -        -        -    
+L1PF                                shape1     1.0      1.0       1.0       -        -        -    
+jesFlavorQCD                        shape1     1.0      1.0       1.0       -        -        -    
+jesRelativeBal                      shape1     1.0      1.0       1.0       -        -        -    
+jesHF                               shape1     1.0      1.0       1.0       -        -        -    
+jesBBEC1                            shape1     1.0      1.0       1.0       -        -        -    
+jesEC2                              shape1     1.0      1.0       1.0       -        -        -    
+jesAbsolute                         shape1     1.0      1.0       1.0       -        -        -    
+jesBBEC1_Year                       shape1     1.0      1.0       1.0       -        -        -    
+jesEC2_Year                         shape1     1.0      1.0       1.0       -        -        -    
+jesAbsolute_Year                    shape1     1.0      1.0       1.0       -        -        -    
+jesHF_Year                          shape1     1.0      1.0       1.0       -        -        -    
+jesRelativeSample_Year              shape1     1.0      1.0       1.0       -        -        -    
+
+#nuisance    edit    rename    *    sig_reg    pu    PU_2016
+nuisance    edit    rename    *    sig_reg    L1PF    L1PF_2016
+
+nuisance    edit    rename    *    sig_reg    jesBBEC1_Year             jesBBEC1_2016
+nuisance    edit    rename    *    sig_reg    jesEC2_Year               jesEC2_2016
+nuisance    edit    rename    *    sig_reg    jesAbsolute_Year          jesAbsolute_2016
+nuisance    edit    rename    *    sig_reg    jesHF_Year                jesHF_2016
+nuisance    edit    rename    *    sig_reg    jesRelativeSample_Year    jesRelativeSample_2016
+
+nuisance    edit    rename    *    sig_reg    pdf    pdf_2016_zjj
+nuisance    edit    rename    *    sig_reg    qcd    qcd_2016_zjj
+
+sig_reg    autoMCStats    1    0    1
+
+CMS_2016_zjj_vjetnorm    rateParam    *    DYJets_HT    1    [0.7,3] 
+

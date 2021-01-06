@@ -2,7 +2,10 @@
 
 import ROOT
 import numpy as np
+import sys
 import argparse
+import json
+from collections import OrderedDict
 
 parser = argparse.ArgumentParser()
 
@@ -12,6 +15,12 @@ parser.add_argument("--base-dir", dest="base_dir", type=str,
 
 parser.add_argument("--in-dir", dest="in_dir", type=str, default="2018_May11",
                     help="prepared root files dir relative to /store/user/singhr/, default=%(default)s")
+
+parser.add_argument("--systematics", dest="systematics", type=str, default="../systematics_map.json",
+                    help="systematics map of variables, default=%(default)s")
+
+parser.add_argument("--year", dest="year", type=int, default=2018,
+                    help="dataset year, default=%(default)s")
 
 parser.add_argument("--regions", action="append", default=[],
                     help="region to produce hists for, default=%(default)s")
@@ -23,6 +32,18 @@ parser.add_argument("--threads", type=int, default=4,
                     help="RDataFrame MT threads to use, default=%(default)s")
 
 args = parser.parse_args()
+
+# exit if different diboson channels in single run
+diboson_channels = ["zv", "zjj", "wv", "wjj"]
+for _ch in diboson_channels:
+    condition = [_ch in i for i in args.regions]
+    if any(condition) and not all(condition):
+        print("multiple regions should be same diboson channel zv, zjj ...")
+        print("Exiting ...")
+        sys.exit()
+    else:
+        diboson_ch = _ch
+
 
 stopwatch = ROOT.TStopwatch()
 stopwatch.Start()
@@ -56,10 +77,17 @@ samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", WJets_type, DYJets_type
 
 # define weight columns
 #######################
-weight_w = "xs_weight * gen_weight"
-if "2017" in args.in_dir:
-    weight_w = "L1PFWeight * " + weight_w
-weight_z =  "xs_weight * gen_weight * pu_weight * lept1_id_eff_weight * lept2_id_eff_weight"
+weight_w = "sample_tag == \"data_obs\" ? 1.0 : xs_weight * genWeight * puWeight * lep1_idEffWeight * lep1_trigEffWeight" #\
+                #" * vbf1_AK4_puidSF_tight * vbf2_AK4_puidSF_tight"
+
+weight_z =  "sample_tag == \"data_obs\" ? 1.0 : xs_weight * genWeight * puWeight * lep1_idEffWeight * lep1_trigEffWeight" \
+                " * lep2_idEffWeight * lep2_trigEffWeight" #\
+                #" * vbf1_AK4_puidSF_tight * vbf2_AK4_puidSF_tight"
+
+#L1 Prefire Weight
+if (args.year == 2016) or (args.year == 2017):
+    weight_w = weight_w + " * L1PFWeight"
+    weight_z = weight_z + " * L1PFWeight"
 
 if any(x in i for x in ["zv", "zjj"] for i in args.regions):
     total_weight = weight_z
@@ -69,6 +97,15 @@ print("Weight >>> ", total_weight)
 
 list_of_weight_col = {
     "total_weight": total_weight,
+    "total_weight_puUp": total_weight.replace("puWeight", "puWeight_Up"),
+    "total_weight_puDown": total_weight.replace("puWeight", "puWeight_Down"),
+    "total_weight_L1PFUp": total_weight.replace("L1PFWeight", "L1PFWeight_Up"),
+    "total_weight_L1PFDown": total_weight.replace("L1PFWeight", "L1PFWeight_Down"),
+    "total_weight_jetPUIDUp": total_weight.replace("puidSF_tight", "puidSF_tight_Up"),
+    "total_weight_jetPUIDDown": total_weight.replace("puidSF_tight", "puidSF_tight_Down"),
+    "total_weight_btag": total_weight + " * btagWeight_loose",
+    "total_weight_btagUp": total_weight + " * btagWeight_loose_Up",
+    "total_weight_btagDown": total_weight + " * btagWeight_loose_Down",
 }
 
 if any("qcd" in i for i in args.regions):
@@ -94,16 +131,16 @@ for sample_ in samples_name:
 
 # split W + Jets
 w_resolved_split = {
-    "r1": "vbf_jj_Deta < 5 && vbf_j1_pt < 75",
-    "r2": "vbf_jj_Deta >= 5 && vbf_j1_pt < 75",
-    "r3": "vbf_jj_Deta < 4 && vbf_j1_pt >= 75 && vbf_j1_pt <= 150",
-    "r4": "vbf_jj_Deta >= 4 && vbf_j1_pt >= 75 && vbf_j1_pt <= 150",
-    "r5": "vbf_j1_pt > 150"
+    "r1": "vbf_deta < 5 && vbf1_AK4_pt < 75",
+    "r2": "vbf_deta >= 5 && vbf1_AK4_pt < 75",
+    "r3": "vbf_deta < 4 && vbf1_AK4_pt >= 75 && vbf1_AK4_pt <= 150",
+    "r4": "vbf_deta >= 4 && vbf1_AK4_pt >= 75 && vbf1_AK4_pt <= 150",
+    "r5": "vbf1_AK4_pt > 150"
 }
 
 w_boosted_split = {
-    "b1": "vbf_jj_Deta < 5",
-    "b2": "vbf_jj_Deta >= 5"
+    "b1": "vbf_deta < 5",
+    "b2": "vbf_deta >= 5"
 }
 
 if "wjj" in args.regions[0]:
@@ -118,18 +155,18 @@ if ("wjj" in args.regions[0]) or ("wv" in args.regions[0]):
         df_samples[f"{WJets_type}_{i}"] = df_with_weight_cols[-1].Filter(f"sample_tag == \"{WJets_type}\" && {j}")
 
 selections = {}
-selections["el_ch"] = "lept_channel == 1 && fabs(lept1_eta) < 2.5 && !(fabs(lept1_eta) > 1.4442 && fabs(lept1_eta) < 1.566)"
-selections["el2_ch"] = selections["el_ch"].replace("lept1", "lept2")
+selections["el_ch"] = "lep_channel == 1 && fabs(lep1_eta) < 2.5 && !(fabs(lep1_eta) > 1.4442 && fabs(lep1_eta) < 1.566)"
+selections["el2_ch"] = selections["el_ch"].replace("lep1", "lep2")
 
-selections["mu_ch"] = "lept_channel == 0 && fabs(lept1_eta) < 2.4"
-selections["mu2_ch"] = selections["mu_ch"].replace("lept1", "lept2")
+selections["mu_ch"] = "lep_channel == 0 && fabs(lep1_eta) < 2.4"
+selections["mu2_ch"] = selections["mu_ch"].replace("lep1", "lep2")
 
-selections["z_ch"] = "lept1_pt > LEPT1_PT_CUT && lept2_pt > LEPT2_PT_CUT" \
-                     " && lept1_q * lept2_q < 0" \
-                     " && v_m > 75 && v_m < 105"
+selections["z_ch"] = "lep1_pt > LEP1_PT_CUT && lep2_pt > LEP2_PT_CUT" \
+                     " && lep1_q * lep2_q < 0" \
+                     " && dilep_m > 75 && dilep_m < 105"
 
-selections["w_ch"] = "lept1_pt > LEPT1_PT_CUT && pf_met_corr > MET_CUT" \
-                     " && lept2_pt < 0"
+selections["w_ch"] = "lep1_pt > LEP1_PT_CUT && MET > MET_CUT" \
+                     " && lep2_pt < 0"
 
 selections["z_mu_ch"] = selections["z_ch"] + " && " + selections["mu_ch"] + " && " + selections["mu2_ch"]
 selections["z_el_ch"] = selections["z_ch"] + " && " + selections["el_ch"] + " && " + selections["el2_ch"]
@@ -137,41 +174,46 @@ selections["z_el_ch"] = selections["z_ch"] + " && " + selections["el_ch"] + " &&
 selections["w_mu_ch"] = selections["w_ch"] + " && " + selections["mu_ch"]
 selections["w_el_ch"] = selections["w_ch"] + " && " + selections["el_ch"]
 
-selections["vbf_jets"] = "vbf_jj_m > 500" \
-                         " && vbf_j1_pt > 50" \
-                         " && vbf_j2_pt > 50" \
-                         " && vbf_jj_Deta > 2.5"
+selections["vbf_jets"] = "vbf_m > 500" \
+                         " && vbf1_AK4_pt > 50" \
+                         " && vbf2_AK4_pt > 50" \
+                         " && vbf_deta > 2.5" #\
+                         #" && vbf1_AK4_puid_tight == 1 " \
+                         #" && vbf2_AK4_puid_tight == 1 " \
 
-selections["resolved_jets"] = "dijet_pt > 0" \
-                                " && dijet_j2_pt > 30" \
-                                " && dijet_j1_pt > 30" \
-                                " && dijet_m > 65 && dijet_m < 105"
+selections["resolved_jets"] = "bos_AK4AK4_pt > 0" \
+                                " && bos_j1_AK4_pt > 30" \
+                                " && bos_j2_AK4_pt > 30" \
+                                " && bos_AK4AK4_m > 65 && bos_AK4AK4_m < 105"
 
-selections["resolved_jets_sb"] = "dijet_pt > 0" \
-                                " && dijet_j2_pt > 30" \
-                                " && dijet_j1_pt > 30" \
-                                " && ((dijet_m > 40 && dijet_m < 65) || (dijet_m > 105 && dijet_m < 150))"
+selections["resolved_jets_sb"] = "bos_AK4AK4_pt > 0" \
+                                " && bos_j1_AK4_pt > 30" \
+                                " && bos_j1_AK4_pt > 30" \
+                                " && ((bos_AK4AK4_m > 40 && bos_AK4AK4_m < 65) || (bos_AK4AK4_m > 105 && bos_AK4AK4_m < 150))"
 
-selections["boosted_jets"] = "fatjet_pt > 200" \
-                                " && fabs(fatjet_eta) < 2.4" \
-                                " && fatjet_tau21 < 0.55" \
-                                " && fatjet_m > 65 && fatjet_m < 105"
+selections["boosted_jets"] = "bos_PuppiAK8_pt > 200" \
+                                " && fabs(bos_PuppiAK8_eta) < 2.4" \
+                                " && bos_PuppiAK8_tau2tau1 < 0.55" \
+                                " && bos_PuppiAK8_m_sd0_corr > 65 && bos_PuppiAK8_m_sd0_corr < 105"
 
-selections["boosted_jets_sb"] = "fatjet_pt > 200" \
-                                " && fabs(fatjet_eta) < 2.4" \
-                                " && fatjet_tau21 < 0.55" \
-                                " && ((fatjet_m > 40 && fatjet_m < 65) || (fatjet_m > 105 && fatjet_m < 150))"
+selections["boosted_jets_sb"] = "bos_PuppiAK8_pt > 200" \
+                                " && fabs(bos_PuppiAK8_eta) < 2.4" \
+                                " && bos_PuppiAK8_tau2tau1 < 0.55" \
+                                " && ((bos_PuppiAK8_m_sd0_corr > 40 && bos_PuppiAK8_m_sd0_corr < 65) ||" \
+                                      "(bos_PuppiAK8_m_sd0_corr > 105 && bos_PuppiAK8_m_sd0_corr < 150))"
 
 
 ##############
 ### ZJJ
-selections["z_common_m"] = selections["z_mu_ch"].replace("LEPT1_PT_CUT", "35").replace("LEPT2_PT_CUT", "20") \
+selections["z_common_m"] = selections["z_mu_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "20") \
                             + " && " + selections["vbf_jets"] \
-                            + " && nBTagJet_loose == 0"
+                            + " && isAntiIso == 0" #\
+                            #+ " && nBTagJet_loose == 0"
 
-selections["z_common_e"] = selections["z_el_ch"].replace("LEPT1_PT_CUT", "35").replace("LEPT2_PT_CUT", "20") \
+selections["z_common_e"] = selections["z_el_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "20") \
                             + " && " + selections["vbf_jets"] \
-                            + " && nBTagJet_loose == 0"
+                            + " && isAntiIso == 0" #\
+                            #+ " && nBTagJet_loose == 0"
 
 selections["z_common_l"] = "((" + selections["z_common_m"] + ") || (" + selections["z_common_e"] + "))"
 
@@ -180,36 +222,44 @@ selections_regions = {}
 for i in ("m", "e", "l"):
     selections_regions[f"sr_zjj_{i}"] = selections[f"z_common_{i}"] + " && " + selections["resolved_jets"]
 
+    selections_regions[f"sr1_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose == 0"
+
+    selections_regions[f"sr2_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose > 0"
+
     selections_regions[f"cr_vjets_zjj_{i}"] = selections[f"z_common_{i}"] + " && " + selections["resolved_jets_sb"]
 
-    selections_regions[f"cr_top_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+    selections_regions[f"cr_top_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"].replace("nBtag_loose == 0", "nBtag_loose > 0")
 
 
     ### ZV
     selections_regions[f"sr_zv_{i}"] = selections[f"z_common_{i}"] + " && " + selections["boosted_jets"]
 
+    selections_regions[f"sr1_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose == 0"
+
+    selections_regions[f"sr2_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose > 0"
+
     selections_regions[f"cr_vjets_zv_{i}"] = selections[f"z_common_{i}"] + " && " + selections["boosted_jets_sb"]
 
-    selections_regions[f"cr_top_zv_{i}"] = selections_regions[f"sr_zv_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+    selections_regions[f"cr_top_zv_{i}"] = selections_regions[f"sr_zv_{i}"].replace("nBtag_loose == 0", "nBtag_loose > 0")
 
 ##############
 ##############
 ### WJJ
-selections["w_common_m"] = selections["w_mu_ch"].replace("LEPT1_PT_CUT", "35").replace("MET_CUT", "30") \
+selections["w_common_m"] = selections["w_mu_ch"].replace("LEP1_PT_CUT", "35").replace("MET_CUT", "30") \
                             + " && " + selections["vbf_jets"] \
                             + " && isAntiIso == 0" \
-                            + " && boson_centrality > 0.0" \
-                            + " && fabs(zeppenfeld_w_Deta) < 1.0" \
-                            + " && fabs(zeppenfeld_v_Deta) < 1.0" \
-                            + " && nBTagJet_loose == 0" 
+                            + " && bosCent > 0.0" \
+                            + " && fabs(zeppLep_deta) < 1.0" \
+                            + " && fabs(zeppHad_deta) < 1.0" \
+                            + " && nBtag_loose == 0" 
 
-selections["w_common_e"] = selections["w_el_ch"].replace("LEPT1_PT_CUT", "35").replace("MET_CUT", "30") \
+selections["w_common_e"] = selections["w_el_ch"].replace("LEP1_PT_CUT", "35").replace("MET_CUT", "30") \
                             + " && " + selections["vbf_jets"] \
                             + " && isAntiIso == 0" \
-                            + " && boson_centrality > 0.0" \
-                            + " && fabs(zeppenfeld_w_Deta) < 1.0" \
-                            + " && fabs(zeppenfeld_v_Deta) < 1.0" \
-                            + " && nBTagJet_loose == 0"
+                            + " && bosCent > 0.0" \
+                            + " && fabs(zeppLep_deta) < 1.0" \
+                            + " && fabs(zeppHad_deta) < 1.0" \
+                            + " && nBtag_loose == 0"
 
 selections["w_common_l"] = "((" + selections["w_common_m"] + ") || (" + selections["w_common_e"] + "))"
 
@@ -219,7 +269,7 @@ for i in ("m", "e", "l"):
 
     selections_regions[f"cr_vjets_wjj_{i}"] = selections[f"w_common_{i}"] + " && " + selections["resolved_jets_sb"]
 
-    selections_regions[f"cr_top_wjj_{i}"] = selections_regions[f"sr_wjj_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+    selections_regions[f"cr_top_wjj_{i}"] = selections_regions[f"sr_wjj_{i}"].replace("nBtag_loose == 0", "nBtag_loose > 0")
 
     for k, j in w_resolved_split.items():
         selections_regions[f"cr_vjets_{k}_wjj_{i}"] = selections_regions[f"cr_vjets_wjj_{i}"] + " && " + j
@@ -229,32 +279,23 @@ for i in ("m", "e", "l"):
 
     selections_regions[f"cr_vjets_wv_{i}"] = selections[f"w_common_{i}"] + " && " + selections["boosted_jets_sb"]
 
-    selections_regions[f"cr_top_wv_{i}"] = selections_regions[f"sr_wv_{i}"].replace("nBTagJet_loose == 0", "nBTagJet_loose > 0")
+    selections_regions[f"cr_top_wv_{i}"] = selections_regions[f"sr_wv_{i}"].replace("nBtag_loose == 0", "nBtag_loose > 0")
 
     for k, j in w_boosted_split.items():
         selections_regions[f"cr_vjets_{k}_wv_{i}"] = selections_regions[f"cr_vjets_wv_{i}"] + " && " + j
 ##############
 
-# jes sys
+# jes sys, lep pt scale
 # make keys
-
-jes_vars = [
-    "vbf_jj_m",
-    "vbf_j1_pt",
-    "vbf_j2_pt",
-    "dijet_m",
-    "dijet_pt",
-    "dijet_j1_pt",
-    "dijet_j2_pt",
-    "fatjet_pt"
-]
-
+systematics_map = OrderedDict(json.load(open(args.systematics, "r")))
+systematics = tuple(systematics_map[diboson_ch].keys())
+#print(systematics_map)
 
 # list of regions to make systematic hists
 sys_region_list = [
-    "sr_wjj_l", "sr_wv_l", "sr_zjj_l", "sr_zv_l",
-    "sr_wjj_e", "sr_wv_e", "sr_zjj_e", "sr_zv_e",
-    "sr_wjj_m", "sr_wv_m", "sr_zjj_m", "sr_zv_m",
+    "sr_wjj_l", "sr_wv_l", "sr_zjj_l", "sr_zv_l", "sr1_zjj_l", "sr1_zv_l", "sr2_zjj_l", "sr2_zv_l",
+    "sr_wjj_e", "sr_wv_e", "sr_zjj_e", "sr_zv_e", "sr1_zjj_e", "sr1_zv_e", "sr2_zjj_e", "sr2_zv_e",
+    "sr_wjj_m", "sr_wv_m", "sr_zjj_m", "sr_zv_m", "sr1_zjj_m", "sr1_zv_m", "sr2_zjj_m", "sr2_zv_m",
     "cr_vjets_wjj_l", "cr_vjets_wv_l", "cr_vjets_zjj_l", "cr_vjets_zv_l",
     "cr_vjets_wjj_e", "cr_vjets_wv_e", "cr_vjets_zjj_e", "cr_vjets_zv_e",
     "cr_vjets_wjj_m", "cr_vjets_wv_m", "cr_vjets_zjj_m", "cr_vjets_zv_m",
@@ -264,38 +305,36 @@ sys_region_list = [
 ]
 
 
-#jes_vars_W = ["pf_met_corr"] + jes_vars
-jes_vars_W = jes_vars
-jes_vars_Z = jes_vars
-
-
-for jes_sys in ("jesUp", "jesDown"):
-    
+for sys in systematics:
     for region in sys_region_list:
-        
         temp_string = selections_regions[region]
-        
-        jes_var_replace = []
-        if ("wjj" in region) or ("wv" in region):
-            jes_var_replace = jes_vars_W
+        sys_var_replace = systematics_map[diboson_ch][sys]
+        for sys_var in sys_var_replace:
+            temp_string = temp_string.replace(sys_var, f"{sys_var}{sys}")
+        selections_regions[f"{region}{sys}"] =  temp_string
 
-        if ("zjj" in region) or ("zv" in region):
-            jes_var_replace = jes_vars_Z
-
-        for jes_var in jes_var_replace:
-            temp_string = temp_string.replace(jes_var, f"{jes_var}_{jes_sys}")
-    
-        selections_regions[f"{region}_{jes_sys}"] =  temp_string
 
 ##############
 # pdf qcd sys
 # make keys
-
+event_weight_sys = (
+    "puUp", "puDown",
+    "btagUp", "btagDown",
+    "L1PFUp", "L1PFDown",
+    "jetPUIDUp", "jetPUIDDown"
+)
 for pdf_qcd_sys in ("pdfUp", "pdfDown", "qcdUp", "qcdDown"):
-
     for region in sys_region_list:
-
         selections_regions[f"{region}_{pdf_qcd_sys}"] =  selections_regions[region]
+
+##############
+
+##############
+# event weight systematics
+# make keys
+for wgt_sys in event_weight_sys:
+    for region in sys_region_list:
+        selections_regions[f"{region}_{wgt_sys}"] =  selections_regions[region]
 
 ##############
 
@@ -303,51 +342,52 @@ ROOT.TH1.SetDefaultSumw2()
 
 ##############
 hists_models_1D = [
-    (40, 0, 800, "lept1_pt", "lept1_pt"),
-    (20, 0, 400, "lept2_pt", "lept2_pt"),
-    (26, -2.6, 2.6, "lept1_eta", "lept1_eta"),
-    (26, -2.6, 2.6, "lept2_eta", "lept2_eta"),
-    (34, -3.4, 3.4, "lept1_phi", "lept1_phi"),
-    (34, -3.4, 3.4, "lept2_phi", "lept2_phi"),
-    (80, 0, 800, "pf_met_corr", "pf_met_corr"),
-    (34, -3.4, 3.4, "pf_met_corr_phi", "pf_met_corr_phi"),
+    (40, 0, 800, "lep1_pt", "lep1_pt"),
+    (20, 0, 400, "lep2_pt", "lep2_pt"),
+    (16, -2.6, 2.6, "lep1_eta", "lep1_eta"),
+    (16, -2.6, 2.6, "lep2_eta", "lep2_eta"),
+    (20, -3.4, 3.4, "lep1_phi", "lep1_phi"),
+    (20, -3.4, 3.4, "lep2_phi", "lep2_phi"),
+    (80, 0, 400, "MET", "MET"),
+    (20, -3.4, 3.4, "MET_phi", "MET_phi"),
     # ak8 jet
-    (24, 30.0, 160.0, "fatjet_m", "fatjet_m"),
-    (80, 200.0, 2000.0, "fatjet_pt", "fatjet_pt"),
-    (26, -2.6, 2.6, "fatjet_eta", "fatjet_eta"),
-    (34, -3.4, 3.4, "fatjet_phi", "fatjet_phi"),
-    (40, 0.0, 1.0, "fatjet_tau21", "fatjet_tau21"),
+    (24, 30.0, 160.0, "bos_PuppiAK8_m_sd0_corr", "fatjet_m"),
+    (80, 200.0, 1000.0, "bos_PuppiAK8_pt", "fatjet_pt"),
+    (16, -2.6, 2.6, "bos_PuppiAK8_eta", "fatjet_eta"),
+    (20, -3.4, 3.4, "bos_PuppiAK8_phi", "fatjet_phi"),
+    (40, 0.0, 1.0, "bos_PuppiAK8_tau2tau1", "fatjet_tau21"),
     # ak4ak4 jet
-    (24, 30.0, 160.0, "dijet_m", "dijet_m"),
-    (80, 0.0, 800.0, "dijet_pt", "dijet_pt"),
-    (25, -5.0, 5.0, "dijet_eta", "dijet_eta"),
-    (60, 0.0, 600.0, "dijet_j1_pt", "dijet_j1_pt"),
-    (60, 0.0, 600.0, "dijet_j2_pt", "dijet_j2_pt"),
-    (20, -2.5, 2.5, "dijet_j1_eta", "dijet_j1_eta"),
-    (20, -2.5, 2.5, "dijet_j2_eta", "dijet_j2_eta"),
+    (24, 30.0, 160.0, "bos_AK4AK4_m", "dijet_m"),
+    (50, 0.0, 500.0, "bos_AK4AK4_pt", "dijet_pt"),
+    (25, -5.0, 5.0, "bos_AK4AK4_eta", "dijet_eta"),
+    (40, 0.0, 400.0, "bos_j1_AK4_pt", "dijet_j1_pt"),
+    (30, 0.0, 300.0, "bos_j2_AK4_pt", "dijet_j2_pt"),
+    (20, -2.5, 2.5, "bos_j1_AK4_eta", "dijet_j1_eta"),
+    (20, -2.5, 2.5, "bos_j2_AK4_eta", "dijet_j2_eta"),
     # W
-    (50, 0.0, 1000.0, "v_pt", "v_pt"),
-    (40, -4.0, 4.0, "v_eta", "v_eta"),
-    (20, 65, 105.0, "v_m", "v_m"),
-    (20, 0.0, 400.0, "v_mt", "v_mt"),
+    (50, 0.0, 1000.0, "dilep_pt", "v_lep_pt"),
+    (20, -4.0, 4.0, "dilep_eta", "v_lep_eta"),
+    (20, 65, 105.0, "dilep_m", "v_lep_m"),
+    (20, 50.0, 450.0, "dilep_mt", "v_lep_mt"),
     # vbf jets
-    (50, 0.0, 1000.0, "vbf_j1_pt", "vbf_j1_pt"),
-    (30, 0.0, 600.0, "vbf_j2_pt", "vbf_j2_pt"),
-    (51, -5.1, 5.1, "vbf_j1_eta", "vbf_j1_eta"),
-    (51, -5.1, 5.1, "vbf_j2_eta", "vbf_j2_eta"),
-    (16, 2.0, 10.0, "vbf_jj_Deta", "vbf_jj_Deta"),
-    (34, -3.4, 3.4, "vbf_j1_phi", "vbf_j1_phi"),
-    (34, -3.4, 3.4, "vbf_j2_phi", "vbf_j2_phi"),
-    (40, 500.0, 2500.0, "vbf_jj_m", "vbf_jj_m"),
+    (35, 0.0, 700.0, "vbf1_AK4_pt", "vbf_j1_pt"),
+    (20, 0.0, 400.0, "vbf2_AK4_pt", "vbf_j2_pt"),
+    (26, -5.2, 5.2, "vbf1_AK4_eta", "vbf_j1_eta"),
+    (26, -5.2, 5.2, "vbf2_AK4_eta", "vbf_j2_eta"),
+    (16, 2.0, 10.0, "vbf_deta", "vbf_jj_Deta"),
+    (20, -3.4, 3.4, "vbf1_AK4_phi", "vbf_j1_phi"),
+    (20, -3.4, 3.4, "vbf2_AK4_phi", "vbf_j2_phi"),
+    (40, 500.0, 2500.0, "vbf_m", "vbf_jj_m"),
     #
-    (30, 0.0, 6.0, "boson_centrality", "boson_centrality"),
-    (20, -1.0, 1.0, "zeppenfeld_w_Deta", "zeppenfeld_w_Deta"),
-    (20, -1.0, 1.0, "zeppenfeld_v_Deta", "zeppenfeld_v_Deta"),
+    (30, 0.0, 6.0, "bosCent", "boson_centrality"),
+    (20, -1.0, 1.0, "zeppLep_deta", "zeppenfeld_lep_deta"),
+    (20, -1.0, 1.0, "zeppHad_deta", "zeppenfeld_had_deta"),
     # W V system
-    (50, 0, 2500, "vv_m", "vv_m"),
-    (60, 0.0, 600.0, "vv_pt", "vv_pt"),
-    (20, -5.0, 5.0, "vv_eta", "vv_eta"),
-    (34, -3.4, 3.4, "vv_phi", "vv_phi"),
+    (30, 0, 2100, "dibos_m", "vv_m"),
+    (30, 0, 2100, "dibos_mt", "vv_mt"),
+    (25, 0.0, 500.0, "dibos_pt", "vv_pt"),
+    (20, -5.0, 5.0, "dibos_eta", "vv_eta"),
+    (34, -3.4, 3.4, "dibos_phi", "vv_phi"),
     (40, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj"),
     (40, -1.0, 1.0, "mva_score_zjj", "mva_score_zjj"),
     (40, -1.0, 1.0, "mva_score_wv", "mva_score_wv"),
@@ -425,6 +465,8 @@ for region in args.regions:
 
         if "jes" in region:
             hists_models = hists_models_1D_SYS
+        if "scale" in region:
+            hists_models = hists_models_1D_SYS
         elif "pdf" in region:
             hists_models = hists_models_1D_SYS_1
         elif "qcd" in region:
@@ -432,6 +474,30 @@ for region in args.regions:
         else:
             hists_models = hists_models_1D
 
+        # select event for specific region
+        # if different than default
+        if "sr1_z" in region:
+            event_weight = "total_weight_btag"
+        elif "sr2_z" in region:
+            event_weight = "total_weight_btag"
+        elif "puUp" in region:
+            event_weight = "total_weight_puUp"
+        elif "puDown" in region:
+            event_weight = "total_weight_puDown"
+        elif "L1PFUp" in region:
+            event_weight = "total_weight_L1PFUp"
+        elif "L1PFDown" in region:
+            event_weight = "total_weight_L1PFDown"
+        elif "btagUp" in region:
+            event_weight = "total_weight_btagUp"
+        elif "btagDown" in region:
+            event_weight = "total_weight_btagDown"
+        elif "jetPUIDUp" in region:
+            event_weight = "total_weight_jetPUIDUp"
+        elif "jetPUIDDown" in region:
+            event_weight = "total_weight_jetPUIDDown"
+        else:
+            event_weight = "total_weight"
 
         for h_ in hists_models:
 
@@ -442,12 +508,12 @@ for region in args.regions:
                 hist_model = ROOT.RDF.TH1DModel(f"{hist_name}", f"{hist_name}", h_[0], h_[1], h_[2])
 
             histograms_dict[region][hist_name] = \
-                    df_samples_regions[sample_ + region].Histo1D(hist_model, h_[3], "total_weight")
+                    df_samples_regions[sample_ + region].Histo1D(hist_model, h_[3], event_weight)
 
             nPDF = 0
             if ("pdf" in region):
                 if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD"]):
-                    if any(x in args.in_dir for x in ["2016", "2017", "2018"]):
+                    if any(args.year == x for x in [2016, 2017, 2018]):
                         nPDF = 103
 
                 for i in range(nPDF):
@@ -457,15 +523,15 @@ for region in args.regions:
             qcd_weight_order = []
             if ("qcd" in region):
                 if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD"]):
-                    if ("2016" in args.in_dir):
+                    if args.year == 2016:
                         qcd_weight_order = [20, 0, 5, 15, 25, 35, 40]
 
-                    if any(x in args.in_dir for x in ["2017", "2018"]):
+                    if any(args.year == x for x in [2017, 2018]):
                         qcd_weight_order = [4, 0, 1, 3, 5, 7, 8]
 
                 # same code, separate for just-in-case
                 elif any(x in hist_name for x in ["DYJets", "WJets"]):
-                    if any(x in args.in_dir for x in ["2017", "2018"]):
+                    if any(args.year == x for x in [2016, 2017, 2018]):
                         qcd_weight_order = [4, 0, 1, 3, 5, 7, 8]
 
                 for i, j in enumerate(qcd_weight_order):
@@ -517,7 +583,7 @@ for region in histograms_dict:
 
         if ("pdf" in region):
             if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD"]):
-                if ("2016" in args.in_dir) or ("2017" in args.in_dir) or ("2018" in args.in_dir):
+                if any(args.year == x for x in [2016, 2017, 2018]):
                     nbins = histograms_dict_v[region][hist_name].GetNbinsX()
                     for bin_ in range(nbins):
                         sys_pdf = 0.0
@@ -549,7 +615,7 @@ for region in histograms_dict:
 
         elif ("qcd" in region):
             if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD", "DYJets", "WJets"]):
-                if ("2016" in args.in_dir) or ("2017" in args.in_dir) or ("2018" in args.in_dir):
+                if any(args.year == x for x in [2016, 2017, 2018]):
                     nbins = histograms_dict_v[region][hist_name].GetNbinsX()
                     for bin_ in range(nbins):
                         sys_qcd = 0.0

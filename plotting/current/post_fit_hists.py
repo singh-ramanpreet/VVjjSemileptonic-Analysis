@@ -15,7 +15,7 @@ parser.add_argument("--sub-dirname", dest="sub_dirname", type=str, default="sr_l
 
 args = parser.parse_args()
 
-output = f"{args.in_root.rstrip('.root')}_{args.sub_dirname}.root"
+output = f"{args.in_root.rstrip('.root')}.{args.sub_dirname}.root"
 
 in_hist_file = ROOT.TFile.Open(args.in_root)
 h_data_obs = in_hist_file.Get(f"{args.in_sub_dir}/data_obs_{args.var_name}")

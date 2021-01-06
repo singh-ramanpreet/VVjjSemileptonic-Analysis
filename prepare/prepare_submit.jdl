@@ -8,38 +8,39 @@ executable    = run_prepare.sh
 
 transfer_input  = True
 transfer_output = True
-transfer_input_files = run_prepare.sh, setup.tar.gz
+transfer_input_files = run_prepare.sh, $(tar_file)
 
 log_dir = condor_logs
 
-log_filename  = $(log_dir)/$Fn(output_dir)_$(sample_name)_$(sample_i)_$(Cluster)_$(Process)
+log_filename  = $(log_dir)/$Fn(output_dir)_$Fn(sample_name)
 log           = $(log_filename).log
 output        = $(log_filename).out
 error         = $(log_filename).err
 stream_error  = True
 stream_output = True
 
-# uncomment below or input from cmd
-#year = 2018
+# options if not defined set to default
 
-# uncomment below or input from cmd
-#output_dir = XXXmva_Jul20/2018_26Aug2020
-
-# uncomment below or input from cmd
-#eos_path = root://cmseos.fnal.gov//store/user/rsingh/wv_vbs_ntuples
-
-arguments = condor $(year) $(output_dir) $(sample_name) $(sample_i) $(eos_path)
-
-if defined without_mva
-   arguments = condor $(year) $(output_dir) $(sample_name) $(sample_i) $(eos_path) --without-mva
+if !defined tar_file
+  tar_file = setup.tar.gz
 endif
 
-sample_name = $(Item)
-sample_i = $(Step)
+if !defined year
+  year = 2018
+endif
 
-queue 1 in data_obs
-queue 9 in VBS_EWK
-queue 9 in VBS_QCD
-queue 12 in Top
-queue 8 in DYJets_HT
-queue 8 in WJets_HT
+if !defined output_dir
+  output_dir = XXXmva_Jul20/2018_26Aug2020
+endif
+
+if !defined eos_path
+  eos_path = root://cmseos.fnal.gov//store/user/rsingh/wv_vbs_ntuples
+endif
+
+if !defined is_without_mva
+  is_without_mva = No
+endif
+
+arguments = $(tar_file) $(year) $(output_dir) $(sample_name) $(eos_path) $(is_without_mva)
+
+queue sample_name from sample_list/$(year).txt
