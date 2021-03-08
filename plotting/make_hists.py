@@ -178,6 +178,8 @@ selections["vbf_jets"] = "vbf_m > 500" \
                          " && vbf1_AK4_pt > 50" \
                          " && vbf2_AK4_pt > 50" \
                          " && vbf_deta > 2.5" #\
+                         #" && vbf1_AK4_qgid >= 0.0 && vbf1_AK4_qgid <= 1.0" \
+                         #" && vbf2_AK4_qgid >= 0.0 && vbf2_AK4_qgid <= 1.0" #\
                          #" && vbf1_AK4_puid_tight == 1 " \
                          #" && vbf2_AK4_puid_tight == 1 " \
 
@@ -377,6 +379,8 @@ hists_models_1D = [
     (16, 2.0, 10.0, "vbf_deta", "vbf_jj_Deta"),
     (20, -3.4, 3.4, "vbf1_AK4_phi", "vbf_j1_phi"),
     (20, -3.4, 3.4, "vbf2_AK4_phi", "vbf_j2_phi"),
+    (25, 0.0, 1.0, "vbf1_AK4_qgid", "vbf_j1_qgid"),
+    (25, 0.0, 1.0, "vbf2_AK4_qgid", "vbf_j2_qgid"),
     (40, 500.0, 2500.0, "vbf_m", "vbf_jj_m"),
     #
     (30, 0.0, 6.0, "bosCent", "boson_centrality"),
@@ -392,10 +396,14 @@ hists_models_1D = [
     (40, -1.0, 1.0, "mva_score_zjj", "mva_score_zjj"),
     (40, -1.0, 1.0, "mva_score_wv", "mva_score_wv"),
     (40, -1.0, 1.0, "mva_score_zv", "mva_score_zv"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_wjj", "mva_score_wjj_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_zjj", "mva_score_zjj_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_wv", "mva_score_wv_var1"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1]), 0, 0, "mva_score_zv", "mva_score_zv_var1"),
+    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_wjj", "mva_score_wjj_var1"),
+    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_zjj", "mva_score_zjj_var1"),
+    (np.array([-1.0, -0.25, 0.0, 0.2, 0.35, 0.45, 0.55, 0.65, 1.0]), 0, 0, "mva_score_zjj", "mva_score_zjj_var2"),
+    (np.array([-1.0, -0.1, 0.25, 0.45, 0.6, 1.0]), 0, 0, "mva_score_zjj", "mva_score_zjj_var3"),
+    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_wv", "mva_score_wv_var1"),
+    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_zv", "mva_score_zv_var1"),
+    (np.array([-1.0, -0.35, -0.05, 0.15, 0.3, 0.45, 0.6, 0.7, 1.0]), 0, 0, "mva_score_zv", "mva_score_zv_var2"),
+    (np.array([-1.0, -0.15, 0.2, 0.4, 0.65, 1.0]), 0, 0, "mva_score_zv", "mva_score_zv_var3"),
     (1, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj_1bin"),
     (1, -1.0, 1.0, "mva_score_zjj", "mva_score_zjj_1bin"),
     (1, -1.0, 1.0, "mva_score_wv", "mva_score_wv_1bin"),
@@ -422,8 +430,16 @@ hists_models_1D_SYS_1 = []
 hists_SYS_list_1 = [
     "mva_score_wjj_var1",
     "mva_score_zjj_var1",
+    "mva_score_zjj_var2",
+    "mva_score_zjj_var3",
     "mva_score_wv_var1",
     "mva_score_zv_var1",
+    "mva_score_zv_var2",
+    "mva_score_zv_var3",
+    "mva_score_wjj_1bin",
+    "mva_score_zjj_1bin",
+    "mva_score_wv_1bin",
+    "mva_score_zv_1bin",
 ]
 for i in hists_models_1D:
     if len(hists_SYS_list_1) != 0:
