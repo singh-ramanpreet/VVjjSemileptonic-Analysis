@@ -1136,6 +1136,22 @@ if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 
 exec(set_variable_defaults)
+variable = "vbf_j1_qgid"
+title_x = "VBS_{j1} QGL"
+signal_scale_up = 10
+canvas_log_y = False
+if any(variable == i for i in args.vars): exec(plot_mc_data)
+
+
+exec(set_variable_defaults)
+variable = "vbf_j2_qgid"
+title_x = "VBS_{j2} QGL"
+signal_scale_up = 10
+canvas_log_y = False
+if any(variable == i for i in args.vars): exec(plot_mc_data)
+
+
+exec(set_variable_defaults)
 variable = "vbf_jj_m"
 title_x = "m_{jj}"
 units = "GeV"
