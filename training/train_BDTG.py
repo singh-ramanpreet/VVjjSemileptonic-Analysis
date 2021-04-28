@@ -84,7 +84,7 @@ if args.boson == "W":
     df_training_bkg_ = df_training_region.Filter("sample_tag == \"WJets_HT\" || sample_tag == \"Top\"")
 
 if args.boson == "Z":
-    df_training_sig_ = df_training_region.Filter("sample_tag == \"VBS_EWK\"")
+    df_training_sig_ = df_training_region.Filter("sample_tag == \"VBS_EWK\" && is_tZq == false")
     df_training_bkg_ = df_training_region.Filter("sample_tag == \"DYJets_HT\"")
 
 df_training_sig = df_training_sig_.AsNumpy(columns=columns)
