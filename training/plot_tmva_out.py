@@ -137,3 +137,71 @@ os.popen(f"convert -density 150 -antialias {outfilename}.pdf -trim {outfilename}
 #canvas.SaveAs(f"{plots_dir}/{'_'.join(c for c in configs)}_roc.png")
 """
 exec(draw_roc)
+
+draw_sig_vs_bkg_var = """
+CMS_style.cd()
+canvas = ROOT.TCanvas("", "", 600, 600)
+legend = ROOT.TLegend(0.65, 0.82, 0.93, 0.92)
+legend.SetTextFont(42)
+legend.SetBorderSize(1)
+
+f = ROOT.TFile.Open("CONFIG/tmva_output.root")
+
+hs = f.Get("CONFIG/Method_BDT/BDT/VARIABLE__Signal")
+hb = f.Get("CONFIG/Method_BDT/BDT/VARIABLE__Background")
+
+hs.SetLineColor(ROOT.kBlue)
+hb.SetLineColor(ROOT.kRed)
+
+legend.AddEntry(hs, "Signal", "lf")
+legend.AddEntry(hb, "Bkg", "lf")
+
+frame = max(hs, hb, key=lambda x: x.GetMaximum()/x.Integral()).Clone("frame")
+frame.SetMaximum(1.4 * frame.GetMaximum()/frame.Integral())
+frame.SetMinimum(frame.GetMinimum()/frame.Integral())
+frame.SetTitle("CONFIG;VARIABLE;a.u.")
+frame.Draw("axis")
+
+hs.DrawNormalized("hist same")
+hb.DrawNormalized("hist same")
+
+legend.Draw()
+canvas.Draw()
+os.makedirs(f"{plots_dir}", exist_ok=True)
+outname = f"{plots_dir}/CONFIG_VARIABLE"
+canvas.SaveAs(f"{outname}.pdf")
+os.popen(f"convert -density 150 -antialias {outname}.pdf -trim {outname}.png 2> /dev/null")
+"""
+
+for c in configs:
+    var_list = open(f"{c}/variable_list.txt", "r").read().strip().split('\n')
+    for var in var_list:
+        exec(draw_sig_vs_bkg_var.replace("CONFIG", c).replace("VARIABLE", var))
+
+
+draw_correlation = """
+CMS_style.cd()
+CMS_style.SetPadTopMargin(0.03)
+CMS_style.SetPadBottomMargin(0.16)
+CMS_style.SetPadLeftMargin(0.16)
+CMS_style.SetPadRightMargin(0.03)
+
+canvas = ROOT.TCanvas("", "", 600, 600)
+f = ROOT.TFile.Open("CONFIG/tmva_output.root")
+h = f.Get("CONFIG/CorrelationMatrixS")
+h.Draw("col text")
+h.LabelsOption("v")
+h.GetXaxis().SetLabelSize(0.03)
+h.GetXaxis().SetLabelOffset(0.002)
+h.GetYaxis().SetLabelSize(0.03)
+h.GetYaxis().SetLabelOffset(0.001)
+canvas.Draw()
+os.makedirs(f"{plots_dir}", exist_ok=True)
+outname = f"{plots_dir}/CONFIG_CorrelationMatrixS"
+canvas.SaveAs(f"{outname}.pdf")
+os.popen(f"convert -density 150 -antialias {outname}.pdf -trim {outname}.png 2> /dev/null")
+"""
+
+for c in configs:
+    exec(draw_correlation.replace("CONFIG", c))
+    exec(draw_correlation.replace("CONFIG", c).replace("CorrelationMatrixS", "CorrelationMatrixB"))
