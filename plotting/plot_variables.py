@@ -830,8 +830,8 @@ os.popen(f"convert -density 150 -antialias {plot_filename}.pdf -trim {plot_filen
 #
 #
 
+exec(set_variable_defaults)
 if (len(args.vars) == 0):
-    exec(set_variable_defaults)
     f = ROOT.TFile.Open(hist_filename)
     d = f.Get(hists_subdirectory)
     l = d.GetListOfKeys()
@@ -863,6 +863,32 @@ if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 exec(set_variable_defaults)
 variable = f"mva_score_{args.mva_type}_var1"
+title_x = f"MVA Score {args.mva_type}"
+signal_scale_up = 10
+canvas_log_y = False
+if any(variable == i for i in args.vars): exec(plot_mc_data)
+
+scale_y_axis = 50
+upper_pad_min_y = 0.1
+signal_scale_up = 1
+canvas_log_y = True
+if any(variable == i for i in args.vars): exec(plot_mc_data)
+
+exec(set_variable_defaults)
+variable = f"mva_score_{args.mva_type}_var2"
+title_x = f"MVA Score {args.mva_type}"
+signal_scale_up = 10
+canvas_log_y = False
+if any(variable == i for i in args.vars): exec(plot_mc_data)
+
+scale_y_axis = 50
+upper_pad_min_y = 0.1
+signal_scale_up = 1
+canvas_log_y = True
+if any(variable == i for i in args.vars): exec(plot_mc_data)
+
+exec(set_variable_defaults)
+variable = f"mva_score_{args.mva_type}_var3"
 title_x = f"MVA Score {args.mva_type}"
 signal_scale_up = 10
 canvas_log_y = False
@@ -1050,6 +1076,12 @@ title_x = "p^{T}_{Z}" if args.boson == "Z" else "p^{T}_{W}"
 units = "GeV"
 signal_scale_up = 10
 canvas_log_y = False
+if any(variable == i for i in args.vars): exec(plot_mc_data)
+
+scale_y_axis = 50
+upper_pad_min_y = 0.1
+signal_scale_up = 1
+canvas_log_y = True
 if any(variable == i for i in args.vars): exec(plot_mc_data)
 
 

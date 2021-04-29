@@ -126,7 +126,10 @@ for col_name in list_of_weight_col:
 # separate out dataframes by sample tag
 df_samples = {}
 for sample_ in samples_name:
-    df_samples[sample_] = df_with_weight_cols[-1].Filter(f"sample_tag == \"{sample_}\"")
+    if sample_ == "VBS_EWK":
+        df_samples[sample_] = df_with_weight_cols[-1].Filter(f"sample_tag == \"{sample_}\" && is_tZq == false")
+    else:
+        df_samples[sample_] = df_with_weight_cols[-1].Filter(f"sample_tag == \"{sample_}\"")
 
 
 # split W + Jets
@@ -177,9 +180,9 @@ selections["w_el_ch"] = selections["w_ch"] + " && " + selections["el_ch"]
 selections["vbf_jets"] = "vbf_m > 500" \
                          " && vbf1_AK4_pt > 50" \
                          " && vbf2_AK4_pt > 50" \
-                         " && vbf_deta > 2.5" #\
-                         #" && vbf1_AK4_qgid >= 0.0 && vbf1_AK4_qgid <= 1.0" \
-                         #" && vbf2_AK4_qgid >= 0.0 && vbf2_AK4_qgid <= 1.0" #\
+                         " && vbf_deta > 2.5" \
+                         " && vbf1_AK4_qgid >= 0.0 && vbf1_AK4_qgid <= 1.0" \
+                         " && vbf2_AK4_qgid >= 0.0 && vbf2_AK4_qgid <= 1.0" #\
                          #" && vbf1_AK4_puid_tight == 1 " \
                          #" && vbf2_AK4_puid_tight == 1 " \
 
@@ -224,9 +227,9 @@ selections_regions = {}
 for i in ("m", "e", "l"):
     selections_regions[f"sr_zjj_{i}"] = selections[f"z_common_{i}"] + " && " + selections["resolved_jets"]
 
-    selections_regions[f"sr1_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose == 0"
+    #selections_regions[f"sr1_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose == 0"
 
-    selections_regions[f"sr2_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose > 0"
+    #selections_regions[f"sr2_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose > 0"
 
     selections_regions[f"cr_vjets_zjj_{i}"] = selections[f"z_common_{i}"] + " && " + selections["resolved_jets_sb"]
 
@@ -236,9 +239,9 @@ for i in ("m", "e", "l"):
     ### ZV
     selections_regions[f"sr_zv_{i}"] = selections[f"z_common_{i}"] + " && " + selections["boosted_jets"]
 
-    selections_regions[f"sr1_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose == 0"
+    #selections_regions[f"sr1_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose == 0"
 
-    selections_regions[f"sr2_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose > 0"
+    #selections_regions[f"sr2_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose > 0"
 
     selections_regions[f"cr_vjets_zv_{i}"] = selections[f"z_common_{i}"] + " && " + selections["boosted_jets_sb"]
 
@@ -295,9 +298,9 @@ systematics = tuple(systematics_map[diboson_ch].keys())
 
 # list of regions to make systematic hists
 sys_region_list = [
-    "sr_wjj_l", "sr_wv_l", "sr_zjj_l", "sr_zv_l", "sr1_zjj_l", "sr1_zv_l", "sr2_zjj_l", "sr2_zv_l",
-    "sr_wjj_e", "sr_wv_e", "sr_zjj_e", "sr_zv_e", "sr1_zjj_e", "sr1_zv_e", "sr2_zjj_e", "sr2_zv_e",
-    "sr_wjj_m", "sr_wv_m", "sr_zjj_m", "sr_zv_m", "sr1_zjj_m", "sr1_zv_m", "sr2_zjj_m", "sr2_zv_m",
+    "sr_wjj_l", "sr_wv_l", "sr_zjj_l", "sr_zv_l", #"sr1_zjj_l", "sr1_zv_l", "sr2_zjj_l", "sr2_zv_l",
+    "sr_wjj_e", "sr_wv_e", "sr_zjj_e", "sr_zv_e", #"sr1_zjj_e", "sr1_zv_e", "sr2_zjj_e", "sr2_zv_e",
+    "sr_wjj_m", "sr_wv_m", "sr_zjj_m", "sr_zv_m", #"sr1_zjj_m", "sr1_zv_m", "sr2_zjj_m", "sr2_zv_m",
     "cr_vjets_wjj_l", "cr_vjets_wv_l", "cr_vjets_zjj_l", "cr_vjets_zv_l",
     "cr_vjets_wjj_e", "cr_vjets_wv_e", "cr_vjets_zjj_e", "cr_vjets_zv_e",
     "cr_vjets_wjj_m", "cr_vjets_wv_m", "cr_vjets_zjj_m", "cr_vjets_zv_m",
@@ -367,7 +370,7 @@ hists_models_1D = [
     (20, -2.5, 2.5, "bos_j1_AK4_eta", "dijet_j1_eta"),
     (20, -2.5, 2.5, "bos_j2_AK4_eta", "dijet_j2_eta"),
     # W
-    (50, 0.0, 1000.0, "dilep_pt", "v_lep_pt"),
+    (20, 0.0, 800.0, "dilep_pt", "v_lep_pt"),
     (20, -4.0, 4.0, "dilep_eta", "v_lep_eta"),
     (20, 65, 105.0, "dilep_m", "v_lep_m"),
     (20, 50.0, 450.0, "dilep_mt", "v_lep_mt"),
@@ -492,10 +495,10 @@ for region in args.regions:
 
         # select event for specific region
         # if different than default
-        if "sr1_z" in region:
-            event_weight = "total_weight_btag"
-        elif "sr2_z" in region:
-            event_weight = "total_weight_btag"
+        if "sr_z" in region:
+            event_weight = "total_weight"
+        #elif "sr2_z" in region:
+        #    event_weight = "total_weight_btag"
         elif "puUp" in region:
             event_weight = "total_weight_puUp"
         elif "puDown" in region:
