@@ -71,7 +71,7 @@
             {"name": "DYJetsToLL_M-50_HT-70to100_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"   , "xs": 167.33  , "nMC": 10010341.0, "kf": 1.23},
             {"name": "DYJetsToLL_M-50_HT-100to200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"  , "xs": 161.1   , "nMC": 11516746.0, "kf": 1.23},
             {"name": "DYJetsToLL_M-50_HT-200to400_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"  , "xs": 48.66   , "nMC": 10840079.0, "kf": 1.23},
-            {"name": "DYJetsToLL_M-50_HT-400to600_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"  , "xs": 6.968   , "nMC": 46027504.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-400to600_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"  , "xs": 6.968   , "nMC": 18902490.0, "kf": 1.23},
             {"name": "DYJetsToLL_M-50_HT-600to800_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"  , "xs": 1.743   , "nMC": 8826238.0 , "kf": 1.23},
             {"name": "DYJetsToLL_M-50_HT-800to1200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8" , "xs": 0.8052  , "nMC": 3120982.0 , "kf": 1.23},
             {"name": "DYJetsToLL_M-50_HT-1200to2500_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8", "xs": 0.1933  , "nMC": 531566.875, "kf": 1.23},
