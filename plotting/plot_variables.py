@@ -28,7 +28,8 @@ parser.add_argument("--dyjet-opt", type=int, default=0)
 args = parser.parse_args()
 
 if args.blind:
-    blind_data = [("mva_score", -1.0, 1.0), ("vbf_jj_Deta", 0.0, 10.0)]
+    blind_data = [("mva_score", -1.0, 1.0), ("vbf_jj_Deta", 0.0, 10.0),
+                  ("nJet30", 0, 8), ("nBtag_loose", 0, 8)]
 else:
     blind_data = []
 
@@ -166,7 +167,7 @@ if not skip_VBS_QCD:
     h_VBS_QCD_sysUp = h_VBS_QCD.Clone("VBS_QCD_sysUp")
     h_VBS_QCD_sysDown = h_VBS_QCD.Clone("VBS_QCD_sysDown")
 
-    for i in range(h_VBS_QCD.GetNbinsX()):
+    for i in range(1, h_VBS_QCD.GetNbinsX() + 1):
         sysUp = 0.0
         sysDown = 0.0
         for sys in args.sys:
@@ -201,7 +202,7 @@ if not skip_Top:
     h_Top_NormDown = h_Top.Clone("Top_NormDown")
     h_Top_NormDown.Scale(float(1 - args.norm_top))
 
-    for i in range(h_Top.GetNbinsX()):
+    for i in range(1, h_Top.GetNbinsX() + 1):
         sysUp = 0.0
         sysDown = 0.0
         sysUp = add_errors(sysUp, abs(h_Top.GetBinContent(i) - h_Top_NormUp.GetBinContent(i)))
@@ -243,7 +244,7 @@ if not skip_WJets:
         h_WJets_NormDown = h_WJets.Clone("WJets_NormDown")
         h_WJets_NormDown.Scale(float(1 - args.norm_vjet))
 
-        for i in range(h_WJets.GetNbinsX()):
+        for i in range(1, h_WJets.GetNbinsX() + 1):
             sysUp = 0.0
             sysDown = 0.0
             sysUp = add_errors(sysUp, abs(h_WJets.GetBinContent(i) - h_WJets_NormUp.GetBinContent(i)))
@@ -282,7 +283,7 @@ if not skip_WJets:
         h_WJets_b1_NormDown = h_WJets_b1.Clone("WJets_b1_NormDown")
         h_WJets_b1_NormDown.Scale(float(1 - args.norm_vjet))
 
-        for i in range(h_WJets_b1.GetNbinsX()):
+        for i in range(1, h_WJets_b1.GetNbinsX() + 1):
             sysUp = 0.0
             sysDown = 0.0
             sysUp = add_errors(sysUp, abs(h_WJets_b1.GetBinContent(i) - h_WJets_b1_NormUp.GetBinContent(i)))
@@ -320,7 +321,7 @@ if not skip_WJets:
         h_WJets_b2_NormDown = h_WJets_b2.Clone("WJets_b2_NormDown")
         h_WJets_b2_NormDown.Scale(float(1 - args.norm_vjet))
 
-        for i in range(h_WJets_b2.GetNbinsX()):
+        for i in range(1, h_WJets_b2.GetNbinsX() + 1):
             sysUp = 0.0
             sysDown = 0.0
             sysUp = add_errors(sysUp, abs(h_WJets_b2.GetBinContent(i) - h_WJets_b2_NormUp.GetBinContent(i)))
@@ -359,7 +360,7 @@ if not skip_WJets:
         h_WJets_r1_NormDown = h_WJets_r1.Clone("WJets_r1_NormDown")
         h_WJets_r1_NormDown.Scale(float(1 - args.norm_vjet))
 
-        for i in range(h_WJets_r1.GetNbinsX()):
+        for i in range(1, h_WJets_r1.GetNbinsX() + 1):
             sysUp = 0.0
             sysDown = 0.0
             sysUp = add_errors(sysUp, abs(h_WJets_r1.GetBinContent(i) - h_WJets_r1_NormUp.GetBinContent(i)))
@@ -396,7 +397,7 @@ if not skip_WJets:
         h_WJets_r2_NormDown = h_WJets_r2.Clone("WJets_r2_NormDown")
         h_WJets_r2_NormDown.Scale(float(1 - args.norm_vjet))
 
-        for i in range(h_WJets_r2.GetNbinsX()):
+        for i in range(1, h_WJets_r2.GetNbinsX() + 1):
             sysUp = 0.0
             sysDown = 0.0
             sysUp = add_errors(sysUp, abs(h_WJets_r2.GetBinContent(i) - h_WJets_r2_NormUp.GetBinContent(i)))
@@ -433,7 +434,7 @@ if not skip_WJets:
         h_WJets_r3_NormDown = h_WJets_r3.Clone("WJets_r3_NormDown")
         h_WJets_r3_NormDown.Scale(float(1 - args.norm_vjet))
 
-        for i in range(h_WJets_r3.GetNbinsX()):
+        for i in range(1, h_WJets_r3.GetNbinsX() + 1):
             sysUp = 0.0
             sysDown = 0.0
             sysUp = add_errors(sysUp, abs(h_WJets_r3.GetBinContent(i) - h_WJets_r3_NormUp.GetBinContent(i)))
@@ -470,7 +471,7 @@ if not skip_WJets:
         h_WJets_r4_NormDown = h_WJets_r4.Clone("WJets_r4_NormDown")
         h_WJets_r4_NormDown.Scale(float(1 - args.norm_vjet))
 
-        for i in range(h_WJets_r4.GetNbinsX()):
+        for i in range(1, h_WJets_r4.GetNbinsX() + 1):
             sysUp = 0.0
             sysDown = 0.0
             sysUp = add_errors(sysUp, abs(h_WJets_r4.GetBinContent(i) - h_WJets_r4_NormUp.GetBinContent(i)))
@@ -507,7 +508,7 @@ if not skip_WJets:
         h_WJets_r5_NormDown = h_WJets_r5.Clone("WJets_r5_NormDown")
         h_WJets_r5_NormDown.Scale(float(1 - args.norm_vjet))
 
-        for i in range(h_WJets_r5.GetNbinsX()):
+        for i in range(1, h_WJets_r5.GetNbinsX() + 1):
             sysUp = 0.0
             sysDown = 0.0
             sysUp = add_errors(sysUp, abs(h_WJets_r5.GetBinContent(i) - h_WJets_r5_NormUp.GetBinContent(i)))
@@ -552,7 +553,7 @@ if not skip_DYJets:
     h_DYJets_NormDown = h_DYJets.Clone("DYJets_NormDown")
     h_DYJets_NormDown.Scale(float(1 - args.norm_vjet))
 
-    for i in range(h_DYJets.GetNbinsX()):
+    for i in range(1, h_DYJets.GetNbinsX() + 1):
         sysUp = 0.0
         sysDown = 0.0
         sysUp = add_errors(sysUp, abs(h_DYJets.GetBinContent(i) - h_DYJets_NormUp.GetBinContent(i)))
@@ -623,12 +624,13 @@ g_mc_errors_ratio.SetFillStyle(1001)
 g_mc_errors_ratio.SetMarkerStyle(0)
 g_mc_errors_ratio.SetFillColor(ROOT.kGray)
 
-for ibin in range(h_mc_sum.GetNbinsX()):
+for ibin in range(h_mc_sum.GetNbinsX() + 1):
     #print(ibin + 1, h_mc_sum.GetBinError(ibin + 1), g_mc_errors.GetErrorYhigh(ibin), g_mc_errors.GetErrorYlow(ibin))
     if post_fit:
         d_ey_Up = 0.0
         d_ey_Down = 0.0
     else:
+        print(ibin, h_mc_sumUp.GetBinContent(ibin + 1))
         d_ey_Up = abs(h_mc_sumUp.GetBinContent(ibin + 1) - h_mc_sum.GetBinContent(ibin + 1))
         d_ey_Down = abs(h_mc_sumDown.GetBinContent(ibin + 1) - h_mc_sum.GetBinContent(ibin + 1))
     #print(d_ey_Up, d_ey_Down)
@@ -966,6 +968,21 @@ title_x = "#phi_{MET}"
 signal_scale_up = 10
 canvas_log_y = False
 if any(variable == i for i in args.vars): exec(plot_mc_data)
+
+exec(set_variable_defaults)
+variable = "nBtag_loose"
+title_x = "nBtag_loose"
+signal_scale_up = 10
+canvas_log_y = False
+if any(variable == i for i in args.vars): exec(plot_mc_data)
+
+exec(set_variable_defaults)
+variable = "nJet30"
+title_x = "nJet30"
+signal_scale_up = 10
+canvas_log_y = False
+if any(variable == i for i in args.vars): exec(plot_mc_data)
+
 
 exec(set_variable_defaults)
 variable = "fatjet_m"

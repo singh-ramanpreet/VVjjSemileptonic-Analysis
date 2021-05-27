@@ -198,12 +198,12 @@ selections["resolved_jets_sb"] = "bos_AK4AK4_pt > 0" \
 
 selections["boosted_jets"] = "bos_PuppiAK8_pt > 200" \
                                 " && fabs(bos_PuppiAK8_eta) < 2.4" \
-                                " && bos_PuppiAK8_tau2tau1 < 0.55" \
+                                " && bos_PuppiAK8_tau2tau1 < 0.45" \
                                 " && bos_PuppiAK8_m_sd0_corr > 65 && bos_PuppiAK8_m_sd0_corr < 105"
 
 selections["boosted_jets_sb"] = "bos_PuppiAK8_pt > 200" \
                                 " && fabs(bos_PuppiAK8_eta) < 2.4" \
-                                " && bos_PuppiAK8_tau2tau1 < 0.55" \
+                                " && bos_PuppiAK8_tau2tau1 < 0.45" \
                                 " && ((bos_PuppiAK8_m_sd0_corr > 40 && bos_PuppiAK8_m_sd0_corr < 65) ||" \
                                       "(bos_PuppiAK8_m_sd0_corr > 105 && bos_PuppiAK8_m_sd0_corr < 150))"
 
@@ -213,12 +213,12 @@ selections["boosted_jets_sb"] = "bos_PuppiAK8_pt > 200" \
 selections["z_common_m"] = selections["z_mu_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "20") \
                             + " && " + selections["vbf_jets"] \
                             + " && isAntiIso == 0" #\
-                            #+ " && nBTagJet_loose == 0"
+                            #+ " && nBtag_loose == 0"
 
 selections["z_common_e"] = selections["z_el_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "20") \
                             + " && " + selections["vbf_jets"] \
                             + " && isAntiIso == 0" #\
-                            #+ " && nBTagJet_loose == 0"
+                            #+ " && nBtag_loose == 0"
 
 selections["z_common_l"] = "((" + selections["z_common_m"] + ") || (" + selections["z_common_e"] + "))"
 
@@ -355,6 +355,9 @@ hists_models_1D = [
     (20, -3.4, 3.4, "lep2_phi", "lep2_phi"),
     (80, 0, 400, "MET", "MET"),
     (20, -3.4, 3.4, "MET_phi", "MET_phi"),
+    # jets
+    (8, 0, 8, "nBtag_loose", "nBtag_loose"),
+    (8, 0, 8, "nJet30", "nJet30"),
     # ak8 jet
     (24, 30.0, 160.0, "bos_PuppiAK8_m_sd0_corr", "fatjet_m"),
     (80, 200.0, 1000.0, "bos_PuppiAK8_pt", "fatjet_pt"),
@@ -495,8 +498,8 @@ for region in args.regions:
 
         # select event for specific region
         # if different than default
-        if "sr_z" in region:
-            event_weight = "total_weight"
+        if "nBtag_loose" in selections_regions[region]:
+            event_weight = "total_weight_btag"
         #elif "sr2_z" in region:
         #    event_weight = "total_weight_btag"
         elif "puUp" in region:
@@ -604,7 +607,7 @@ for region in histograms_dict:
             if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD"]):
                 if any(args.year == x for x in [2016, 2017, 2018]):
                     nbins = histograms_dict_v[region][hist_name].GetNbinsX()
-                    for bin_ in range(nbins):
+                    for bin_ in range(1, nbins + 1):
                         sys_pdf = 0.0
                         # pdf weight 0, a.k.a central value peaks at 1, not equal to 1 !!
                         bin_content = histograms_dict_v[region][hist_name + "_pdf_0"].GetBinContent(bin_)
@@ -636,7 +639,7 @@ for region in histograms_dict:
             if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD", "DYJets", "WJets"]):
                 if any(args.year == x for x in [2016, 2017, 2018]):
                     nbins = histograms_dict_v[region][hist_name].GetNbinsX()
-                    for bin_ in range(nbins):
+                    for bin_ in range(1, nbins + 1):
                         sys_qcd = 0.0
                         # scale weight is 1 for central, so no need to use separate central hist
                         bin_content = histograms_dict_v[region][hist_name + "_qcd_0"].GetBinContent(bin_)
