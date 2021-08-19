@@ -11,7 +11,7 @@ isWithoutMVA=${6:-No}
 if [[ ${tar_file} == *".tar.gz" ]]
 then
   mkdir -p Analysis
-  tar -xzf setup.tar.gz --strip 1 --directory Analysis
+  tar -xzf ${tar_file} --strip 1 --directory Analysis
   cd Analysis
   source setup/setup.sh
   cd prepare
