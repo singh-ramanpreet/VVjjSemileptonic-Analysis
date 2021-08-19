@@ -27,51 +27,41 @@ mk_outdir.wait()
 cuts = {
     "zv": [
         "!isAntiIso && lep2_pt > 0 && bos_PuppiAK8_pt > 0",
-        "lep1_pt > 25",
+        "lep1_pt > 20",
         "lep2_pt > 20",
-        "lep1_q * lep2_q < 0",
         "(lep1_m > 0.105 && fabs(lep1_eta) < 2.4 && fabs(lep2_eta) < 2.4) || (lep1_m < 0.105 && fabs(lep1_eta) < 2.5 && !(fabs(lep1_eta) > 1.4442 && fabs(lep1_eta) < 1.566) && fabs(lep2_eta) < 2.5 && !(fabs(lep2_eta) > 1.4442 && fabs(lep2_eta) < 1.566))",
-        "dilep_m > 75 && dilep_m < 105",
+        "dilep_m > 76 && dilep_m < 106",
         "bos_PuppiAK8_pt > 200",
         "fabs(bos_PuppiAK8_eta) < 2.4",
-        "bos_PuppiAK8_tau2tau1 < 0.45",
-        "vbf_m > 500",
-        "vbf1_AK4_pt > 50 && vbf2_AK4_pt > 50",
         "vbf_deta > 2.5",
-        "(bos_PuppiAK8_m_sd0_corr > 40 && bos_PuppiAK8_m_sd0_corr < 65) || (bos_PuppiAK8_m_sd0_corr > 105 && bos_PuppiAK8_m_sd0_corr < 150)",
-        "nBtag_loose == 0"
+        "(bos_PuppiAK8_m_sd0_corr > 40 && bos_PuppiAK8_m_sd0_corr < 65) || (bos_PuppiAK8_m_sd0_corr > 105 && bos_PuppiAK8_m_sd0_corr < 150)"
     ],
     "zjj": [
-        "!isAntiIso && lep2_pt > 0 && bos_AK4AK4_pt > 0",
-        "lep1_pt > 25",
+        "!isAntiIso && lep2_pt > 0 && bos_AK4AK4_pt > 0 && bos_PuppiAK8_pt < 0",
+        "lep1_pt > 20",
         "lep2_pt > 20",
-        "lep1_q * lep2_q < 0",
         "(lep1_m > 0.105 && fabs(lep1_eta) < 2.4 && fabs(lep2_eta) < 2.4) || (lep1_m < 0.105 && fabs(lep1_eta) < 2.5 && !(fabs(lep1_eta) > 1.4442 && fabs(lep1_eta) < 1.566) && fabs(lep2_eta) < 2.5 && !(fabs(lep2_eta) > 1.4442 && fabs(lep2_eta) < 1.566))",
-        "dilep_m > 75 && dilep_m < 105",
+        "dilep_m > 76 && dilep_m < 106",
         "bos_j1_AK4_pt > 30 && bos_j2_AK4_pt > 30",
-        "vbf_m > 500",
-        "vbf1_AK4_pt > 50 && vbf2_AK4_pt > 50",
         "vbf_deta > 2.5",
-        "(bos_AK4AK4_m > 40 && bos_AK4AK4_m < 65) || (bos_AK4AK4_m > 105 && bos_AK4AK4_m < 150)",
-        "nBtag_loose == 0"
+        "(bos_AK4AK4_m > 40 && bos_AK4AK4_m < 65) || (bos_AK4AK4_m > 105 && bos_AK4AK4_m < 150)"
     ]
 }
 
 vars_to_print = {
     "zv": [
         "run", "evt",
-        "lep1_pt", "lep1_eta", "lep2_pt", "lep2_eta",
-        "bos_PuppiAK8_pt", "bos_PuppiAK8_eta",
-        "vbf1_AK4_pt", "vbf1_AK4_eta",
-        "vbf2_AK4_pt", "vbf2_AK4_eta"
+        "lep1_pt", "lep2_pt", "lep1_eta", "lep2_eta", "dilep_m",
+        "bos_PuppiAK8_pt", "bos_PuppiAK8_eta", "bos_PuppiAK8_tau2tau1",
+        "vbf1_AK4_pt", "vbf2_AK4_pt", "vbf1_AK4_eta", "vbf2_AK4_eta",
+        "vbf_m", "vbf_deta", "bos_PuppiAK8_m_sd0_corr", "nBtag_loose", "lep1_m"
     ],
     "zjj": [
         "run", "evt",
-        "lep1_pt", "lep1_eta", "lep2_pt", "lep2_eta",
-        "bos_j1_AK4_pt", "bos_j1_AK4_eta",
-        "bos_j2_AK4_pt", "bos_j2_AK4_eta",
-        "vbf1_AK4_pt", "vbf1_AK4_eta",
-        "vbf2_AK4_pt", "vbf2_AK4_eta"
+        "lep1_pt", "lep2_pt", "lep1_eta", "lep2_eta", "dilep_m",
+        "vbf1_AK4_pt", "vbf2_AK4_pt", "vbf1_AK4_eta", "vbf2_AK4_eta",
+        "bos_j1_AK4_pt", "bos_j2_AK4_pt", "bos_j1_AK4_eta", "bos_j2_AK4_eta",
+        "vbf_m", "vbf_deta", "bos_AK4AK4_m", "nBtag_loose", "lep1_m"
     ]
 }
 
@@ -88,9 +78,9 @@ for x in output_csv:
     file_ = ROOT.TFile.Open(args.infile)
     events = file_.Get("Events")
     selected_tree = events.CopyTree(output_csv[x]["cut"])
+    print(selected_tree.GetEntries())
     f = open(output_csv[x]["file"], "w")
     for i,event in enumerate(selected_tree):
         if i == 0:
             print(",".join(output_csv[x]["vars"]), file=f)
         print(",".join([f"{events.__getattr__(v):.2f}" for v in output_csv[x]["vars"]]), file=f)
-        if i > 100: break
