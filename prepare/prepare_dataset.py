@@ -16,7 +16,7 @@ parser.add_argument("--datasets", type=str, default="../datasets_2016.json",
                     help="json file: info of datasets, default=%(default)s")
 
 parser.add_argument("--sample-name", dest="sample_name", type=str, default="all",
-                    help="sample name to process from json file, default=%(default)s")
+                    help="*FIXME* complete path of root file not just sample name, default=%(default)s")
 
 parser.add_argument("--year", type=str, default="2016",
                     help="dataset year, default=%(default)s")

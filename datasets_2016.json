@@ -9,15 +9,15 @@
     "VBS_EWK": {
         "lumi": 35867.06,
         "filelist": [
-            {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"      , "xs": 0.02982, "nMC": 200000.0 },
-            {"name": "WminusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8", "xs": 0.03259, "nMC": 198300.0 }, 
-            {"name": "WminusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"     , "xs": 0.1    , "nMC": 200000.0 },
-            {"name": "WplusTo2JWminusToLNuJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8" , "xs": 0.9107 , "nMC": 1985200.0},
-            {"name": "WplusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"       , "xs": 0.05401, "nMC": 178000.0 },
-            {"name": "WplusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8" , "xs": 0.9114 , "nMC": 1998400.0},
-            {"name": "WplusToLNuWplusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"  , "xs": 0.08793, "nMC": 200000.0 },
-            {"name": "WplusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"      , "xs": 0.1825 , "nMC": 390100.0 },
-            {"name": "ZTo2LZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCUETP8M1_13TeV-madgraph-pythia8"           , "xs": 0.01589, "nMC": 100000.0 }
+            {"name": "WminusTo2JZTo2LJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"      , "xs": 0.02982, "nMC": 590944.0 },
+            {"name": "WminusToLNuWminusTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8", "xs": 0.03259, "nMC": 575518.0 }, 
+            {"name": "WminusToLNuZTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"     , "xs": 0.1    , "nMC": 559984.0 },
+            {"name": "WplusTo2JWminusToLNuJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8" , "xs": 0.9107 , "nMC": 5560462.0},
+            {"name": "WplusTo2JZTo2LJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"       , "xs": 0.05401, "nMC": 579648.0 },
+            {"name": "WplusToLNuWminusTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8" , "xs": 0.9114 , "nMC": 5850776.0},
+            {"name": "WplusToLNuWplusTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"  , "xs": 0.08793, "nMC": 588748.0 },
+            {"name": "WplusToLNuZTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"      , "xs": 0.1825 , "nMC": 1176812.0},
+            {"name": "ZTo2LZTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"           , "xs": 0.01589, "nMC": 288106.0 }
         ]
     },
 

@@ -165,8 +165,7 @@ selections["mu_ch"] = "lep_channel == 0 && fabs(lep1_eta) < 2.4"
 selections["mu2_ch"] = selections["mu_ch"].replace("lep1", "lep2")
 
 selections["z_ch"] = "lep1_pt > LEP1_PT_CUT && lep2_pt > LEP2_PT_CUT" \
-                     " && lep1_q * lep2_q < 0" \
-                     " && dilep_m > 75 && dilep_m < 105"
+                     " && dilep_m > 76 && dilep_m < 106"
 
 selections["w_ch"] = "lep1_pt > LEP1_PT_CUT && MET > MET_CUT" \
                      " && lep2_pt < 0"
@@ -177,45 +176,32 @@ selections["z_el_ch"] = selections["z_ch"] + " && " + selections["el_ch"] + " &&
 selections["w_mu_ch"] = selections["w_ch"] + " && " + selections["mu_ch"]
 selections["w_el_ch"] = selections["w_ch"] + " && " + selections["el_ch"]
 
-selections["vbf_jets"] = "vbf_m > 500" \
-                         " && vbf1_AK4_pt > 50" \
-                         " && vbf2_AK4_pt > 50" \
-                         " && vbf_deta > 2.5" \
-                         " && vbf1_AK4_qgid >= 0.0 && vbf1_AK4_qgid <= 1.0" \
-                         " && vbf2_AK4_qgid >= 0.0 && vbf2_AK4_qgid <= 1.0" #\
-                         #" && vbf1_AK4_puid_tight == 1 " \
-                         #" && vbf2_AK4_puid_tight == 1 " \
+selections["vbf_jets"] = "vbf_deta > 2.5" #\
+#                         " && vbf1_AK4_qgid >= 0.0 && vbf1_AK4_qgid <= 1.0" \
+#                         " && vbf2_AK4_qgid >= 0.0 && vbf2_AK4_qgid <= 1.0"
 
 selections["resolved_jets"] = "bos_AK4AK4_pt > 0" \
-                                " && bos_j1_AK4_pt > 30" \
-                                " && bos_j2_AK4_pt > 30" \
                                 " && bos_AK4AK4_m > 65 && bos_AK4AK4_m < 105"
 
 selections["resolved_jets_sb"] = "bos_AK4AK4_pt > 0" \
-                                " && bos_j1_AK4_pt > 30" \
-                                " && bos_j1_AK4_pt > 30" \
                                 " && ((bos_AK4AK4_m > 40 && bos_AK4AK4_m < 65) || (bos_AK4AK4_m > 105 && bos_AK4AK4_m < 150))"
 
 selections["boosted_jets"] = "bos_PuppiAK8_pt > 200" \
-                                " && fabs(bos_PuppiAK8_eta) < 2.4" \
-                                " && bos_PuppiAK8_tau2tau1 < 0.45" \
                                 " && bos_PuppiAK8_m_sd0_corr > 65 && bos_PuppiAK8_m_sd0_corr < 105"
 
 selections["boosted_jets_sb"] = "bos_PuppiAK8_pt > 200" \
-                                " && fabs(bos_PuppiAK8_eta) < 2.4" \
-                                " && bos_PuppiAK8_tau2tau1 < 0.45" \
                                 " && ((bos_PuppiAK8_m_sd0_corr > 40 && bos_PuppiAK8_m_sd0_corr < 65) ||" \
                                       "(bos_PuppiAK8_m_sd0_corr > 105 && bos_PuppiAK8_m_sd0_corr < 150))"
 
 
 ##############
 ### ZJJ
-selections["z_common_m"] = selections["z_mu_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "20") \
+selections["z_common_m"] = selections["z_mu_ch"].replace("LEP1_PT_CUT", "20").replace("LEP2_PT_CUT", "20") \
                             + " && " + selections["vbf_jets"] \
                             + " && isAntiIso == 0" #\
                             #+ " && nBtag_loose == 0"
 
-selections["z_common_e"] = selections["z_el_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "20") \
+selections["z_common_e"] = selections["z_el_ch"].replace("LEP1_PT_CUT", "20").replace("LEP2_PT_CUT", "20") \
                             + " && " + selections["vbf_jets"] \
                             + " && isAntiIso == 0" #\
                             #+ " && nBtag_loose == 0"
@@ -353,8 +339,8 @@ hists_models_1D = [
     (16, -2.6, 2.6, "lep2_eta", "lep2_eta"),
     (20, -3.4, 3.4, "lep1_phi", "lep1_phi"),
     (20, -3.4, 3.4, "lep2_phi", "lep2_phi"),
-    (80, 0, 400, "MET", "MET"),
-    (20, -3.4, 3.4, "MET_phi", "MET_phi"),
+    #(80, 0, 400, "MET", "MET"),
+    #(20, -3.4, 3.4, "MET_phi", "MET_phi"),
     # jets
     (8, 0, 8, "nBtag_loose", "nBtag_loose"),
     (8, 0, 8, "nJet30", "nJet30"),
@@ -389,30 +375,30 @@ hists_models_1D = [
     (25, 0.0, 1.0, "vbf2_AK4_qgid", "vbf_j2_qgid"),
     (40, 500.0, 2500.0, "vbf_m", "vbf_jj_m"),
     #
-    (30, 0.0, 6.0, "bosCent", "boson_centrality"),
+    #(30, 0.0, 6.0, "bosCent", "boson_centrality"),
     (20, -1.0, 1.0, "zeppLep_deta", "zeppenfeld_lep_deta"),
     (20, -1.0, 1.0, "zeppHad_deta", "zeppenfeld_had_deta"),
     # W V system
     (30, 0, 2100, "dibos_m", "vv_m"),
-    (30, 0, 2100, "dibos_mt", "vv_mt"),
+    #(30, 0, 2100, "dibos_mt", "vv_mt"),
     (25, 0.0, 500.0, "dibos_pt", "vv_pt"),
     (20, -5.0, 5.0, "dibos_eta", "vv_eta"),
     (34, -3.4, 3.4, "dibos_phi", "vv_phi"),
-    (40, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj"),
+    #(40, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj"),
     (40, -1.0, 1.0, "mva_score_zjj", "mva_score_zjj"),
-    (40, -1.0, 1.0, "mva_score_wv", "mva_score_wv"),
+    #(40, -1.0, 1.0, "mva_score_wv", "mva_score_wv"),
     (40, -1.0, 1.0, "mva_score_zv", "mva_score_zv"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_wjj", "mva_score_wjj_var1"),
+    #(np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_wjj", "mva_score_wjj_var1"),
     (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_zjj", "mva_score_zjj_var1"),
     (np.array([-1.0, -0.25, 0.0, 0.2, 0.35, 0.45, 0.55, 0.65, 1.0]), 0, 0, "mva_score_zjj", "mva_score_zjj_var2"),
     (np.array([-1.0, -0.1, 0.25, 0.45, 0.6, 1.0]), 0, 0, "mva_score_zjj", "mva_score_zjj_var3"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_wv", "mva_score_wv_var1"),
+    #(np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_wv", "mva_score_wv_var1"),
     (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_zv", "mva_score_zv_var1"),
     (np.array([-1.0, -0.35, -0.05, 0.15, 0.3, 0.45, 0.6, 0.7, 1.0]), 0, 0, "mva_score_zv", "mva_score_zv_var2"),
     (np.array([-1.0, -0.15, 0.2, 0.4, 0.65, 1.0]), 0, 0, "mva_score_zv", "mva_score_zv_var3"),
-    (1, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj_1bin"),
+    #(1, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj_1bin"),
     (1, -1.0, 1.0, "mva_score_zjj", "mva_score_zjj_1bin"),
-    (1, -1.0, 1.0, "mva_score_wv", "mva_score_wv_1bin"),
+    #(1, -1.0, 1.0, "mva_score_wv", "mva_score_wv_1bin"),
     (1, -1.0, 1.0, "mva_score_zv", "mva_score_zv_1bin")
 ]
 
