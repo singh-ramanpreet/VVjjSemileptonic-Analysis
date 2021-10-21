@@ -27,9 +27,8 @@ do
   output="\$(log_filename).out" \
   error="\$(log_filename).err" \
   transfer_input_files="run_prepare.sh, ${tar_file}" \
-  -append "arguments = $(basename tar_file) ${year} ${output_dir} ${sample_name} ${eos_out_path} ${is_without_mva}" \
+  -append "arguments = $(basename ${tar_file}) ${year} ${output_dir} ${sample_name} ${eos_out_path} ${is_without_mva}" \
   -append "queue 1" \
-  -dump test \
   /dev/null
 done
 
