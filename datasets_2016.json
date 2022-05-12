@@ -48,26 +48,10 @@
             {"name": "ST_s-channel_4f_leptonDecays_13TeV_PSweights-amcatnlo-pythia8"                 , "xs": 3.365 , "nMC": 33572360.0   },
             {"name": "ST_s-channel_4f_hadronicDecays_TuneCP5_PSweights_13TeV-amcatnlo-pythia8"       , "xs": 11.24 , "nMC": 54761756.0   },
             {"name": "ST_s-channel_4f_InclusiveDecays_13TeV-amcatnlo-pythia8"                        , "xs": 10.12 , "nMC": 29561764.0   },
-            {"name": "TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8"                           , "xs": 377.96, "nMC": 21432309760.0},
             {"name": "TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8"                       , "xs": 365.34, "nMC": 32366942208.0},
             {"name": "TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8"                              , "xs": 88.29 , "nMC": 4891619840.0 }
         ]
     },
-    
-    "WJets_HT": {
-        "lumi": 35867.06,
-        "filelist": [
-            {"name": "WJetsToLNu_HT-70To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"   , "xs": 1353.0 , "nMC": 10020533.0, "kf": 1.21},
-            {"name": "WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 1346.0 , "nMC": 78043024.0, "kf": 1.21},
-            {"name": "WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 360.1  , "nMC": 38984320.0, "kf": 1.21},
-            {"name": "WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 48.8   , "nMC": 7687800.0 , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"  , "xs": 12.07  , "nMC": 18687480.0, "kf": 1.21},
-            {"name": "WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8" , "xs": 5.497  , "nMC": 7830536.0 , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", "xs": 1.329  , "nMC": 6872441.0 , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8" , "xs": 0.03209, "nMC": 2637821.0 , "kf": 1.21}
-        ]
-    },
-
     "DYJets_HT": {
         "lumi": 35867.06,
         "filelist": [

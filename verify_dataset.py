@@ -65,7 +65,7 @@ for key in samples_dict:
         print("Sample: ", sample["name"])
         print("XS: ", xs)
         print("k-factor: ", kf)
-        print("nMC(in json): ", nMC)
+        print("nMC(in json):   ", nMC)
         print("nMC(from hist): ", nMC_from_hist)
     print("====================================================================")
 

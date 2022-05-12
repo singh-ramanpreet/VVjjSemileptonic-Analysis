@@ -41,27 +41,12 @@
         "filelist": [
             {"name": "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8"                   , "xs": 365.34, "nMC": 90424811520.0 },
             {"name": "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8"                          , "xs": 86.99 , "nMC": 4635769344.0  },
-            {"name": "TTToHadronic_TuneCP5_13TeV-powheg-pythia8"                       , "xs": 377.96, "nMC": 102734004224.0},
             {"name": "ST_s-channel_antitop_leptonDecays_13TeV-PSweights_powheg-pythia" , "xs": 1.33  , "nMC": 3476320.0     },
             {"name": "ST_s-channel_top_leptonDecays_13TeV-PSweights_powheg-pythia"     , "xs": 2.13  , "nMC": 12929918.0    },
             {"name": "ST_t-channel_antitop_5f_TuneCP5_13TeV-powheg-pythia8"            , "xs": 27.19 , "nMC": 326172576.0   },
             {"name": "ST_t-channel_top_5f_TuneCP5_13TeV-powheg-pythia8"                , "xs": 45.7  , "nMC": 815051136.0   },
             {"name": "ST_tW_DS_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8", "xs": 12.04 , "nMC": 170525440.0   },
             {"name": "ST_tW_DS_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8"    , "xs": 12.04 , "nMC": 170711072.0   }
-        ]
-    },
-
-    "WJets_HT": {
-        "lumi": 59740.0,
-        "filelist": [
-            {"name": "WJetsToLNu_HT-70To100_TuneCP5_13TeV-madgraphMLM-pythia8"   , "xs": 1292.0  , "nMC": 28054964.0, "kf": 1.21},
-            {"name": "WJetsToLNu_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 1395.0  , "nMC": 29385684.0, "kf": 1.21},
-            {"name": "WJetsToLNu_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 407.9   , "nMC": 25415130.0, "kf": 1.21},
-            {"name": "WJetsToLNu_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 57.48   , "nMC": 5913598.0 , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-600To800_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 12.87   , "nMC": 19690764.0, "kf": 1.21},
-            {"name": "WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8" , "xs": 5.366   , "nMC": 8357922.5 , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8", "xs": 1.074   , "nMC": 7567070.5 , "kf": 1.21},
-            {"name": "WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8" , "xs": 0.008001, "nMC": 3189396.0 , "kf": 1.21}
         ]
     },
 
