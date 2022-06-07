@@ -5,6 +5,7 @@ import numpy as np
 import sys
 import argparse
 import json
+import copy
 from collections import OrderedDict
 
 parser = argparse.ArgumentParser()
@@ -35,15 +36,17 @@ args = parser.parse_args()
 
 # exit if different diboson channels in single run
 diboson_channels = ["zv", "zjj", "wv", "wjj"]
+multiple_channels = True
 for _ch in diboson_channels:
     condition = [_ch in i for i in args.regions]
-    if any(condition) and not all(condition):
-        print("multiple regions should be same diboson channel zv, zjj ...")
-        print("Exiting ...")
-        sys.exit()
-    else:
+    if all(condition):
         diboson_ch = _ch
+        multiple_channels = False
 
+if multiple_channels:
+    print("multiple regions should be same diboson channel zv, zjj ...")
+    print("Exiting ...")
+    sys.exit()
 
 stopwatch = ROOT.TStopwatch()
 stopwatch.Start()
@@ -54,6 +57,7 @@ print(f"Using {nThreads} Threads")
 df = ROOT.RDataFrame("Events", f"{args.base_dir}/{args.in_dir}/*.root")
 count = df.Count()
 total_entries = count.GetValue()
+column_names = df.GetColumnNames()
 
 # progress bar
 ROOT.gInterpreter.ProcessLine("""
@@ -72,7 +76,8 @@ ROOT.gInterpreter.ProcessLine("""
 
 WJets_type = "WJets_HT"
 DYJets_type = "DYJets_HT"
-samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", WJets_type, DYJets_type]
+#samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", WJets_type, DYJets_type]
+samples_name = ["data_obs", "VBS_EWK", "VBS_QCD", "Top", DYJets_type]
 
 
 # define weight columns
@@ -81,16 +86,157 @@ weight_w = "sample_tag == \"data_obs\" ? 1.0 : xs_weight * genWeight * puWeight 
                 #" * vbf1_AK4_puidSF_tight * vbf2_AK4_puidSF_tight"
 
 weight_z =  "sample_tag == \"data_obs\" ? 1.0 : xs_weight * genWeight * puWeight * lep1_idEffWeight * lep1_trigEffWeight" \
-                " * lep2_idEffWeight * lep2_trigEffWeight" #\
-                #" * vbf1_AK4_puidSF_tight * vbf2_AK4_puidSF_tight"
+                " * lep2_idEffWeight * lep2_trigEffWeight" \
+                " * vbf1_AK4_puidSF_tight * vbf2_AK4_puidSF_tight"
 
 #L1 Prefire Weight
 if (args.year == 2016) or (args.year == 2017):
     weight_w = weight_w + " * L1PFWeight"
     weight_z = weight_z + " * L1PFWeight"
 
+# applying Zpt bin fitting on DYjet
+fit_scaling = " * 1.0"
+if args.year == 2016:
+    if diboson_ch == "zv":
+        fit_scaling = " * (sample_tag == \"DYJets_HT\" ?" \
+                             "lep_channel == 0 ? " \
+                               "dilep_pt > 0 && dilep_pt < 80 ? 1.03 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 ? 1.03 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 ? 0.88 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 ? 1.15 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 ? 0.82 " \
+                               ": dilep_pt > 400 && dilep_pt < 480 ? 0.70 " \
+                               ": dilep_pt > 480 ? 0.56 " \
+                               ": 1.0 " \
+                             ": lep_channel == 1 ? " \
+                                "dilep_pt > 0 && dilep_pt < 80 ? 0.91 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 ? 1.00 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 ? 1.04 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 ? 0.83 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 ? 0.73 " \
+                                ": dilep_pt > 400 && dilep_pt < 480 ? 0.62 " \
+                                ": dilep_pt > 480 ? 0.40 " \
+                                ": 1.0 " \
+                             ": 1.0 " \
+                           ": 1.0)"
+    if diboson_ch == "zjj":
+        fit_scaling = " * (sample_tag == \"DYJets_HT\" ?" \
+                             "lep_channel == 0 ? " \
+                               "dilep_pt > 0 && dilep_pt < 80 ? 1.19 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 ? 1.12 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 ? 1.13 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 ? 1.14 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 ? 1.08 " \
+                               ": dilep_pt > 400 && dilep_pt < 480 ? 1.06 " \
+                               ": dilep_pt > 480 ? 0.81 " \
+                               ": 1.0 " \
+                             ": lep_channel == 1 ? " \
+                                "dilep_pt > 0 && dilep_pt < 80 ? 1.11 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 ? 1.07 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 ? 1.14 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 ? 0.93 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 ? 1.07 " \
+                                ": dilep_pt > 400 && dilep_pt < 480 ? 1.02 " \
+                                ": dilep_pt > 480 ? 0.84 " \
+                                ": 1.0 " \
+                             ": 1.0 " \
+                           ": 1.0)"
+if args.year == 2017:
+    if diboson_ch == "zv":
+        fit_scaling = " * (sample_tag == \"DYJets_HT\" ?" \
+                             "lep_channel == 0 ? " \
+                               "dilep_pt > 0 && dilep_pt < 80 ? 1.02 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 ? 0.84 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 ? 0.80 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 ? 0.93 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 ? 0.85 " \
+                               ": dilep_pt > 400 && dilep_pt < 480 ? 0.84 " \
+                               ": dilep_pt > 480 ? 0.76 " \
+                               ": 1.0 " \
+                             ": lep_channel == 1 ? " \
+                                "dilep_pt > 0 && dilep_pt < 80 ? 0.92 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 ? 0.83 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 ? 0.82 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 ? 0.99 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 ? 1.23 " \
+                                ": dilep_pt > 400 && dilep_pt < 480 ? 0.91 " \
+                                ": dilep_pt > 480 ? 0.45 " \
+                                ": 1.0 " \
+                             ": 1.0 " \
+                           ": 1.0)"
+    if diboson_ch == "zjj":
+        fit_scaling = " * (sample_tag == \"DYJets_HT\" ?" \
+                             "lep_channel == 0 ? " \
+                               "dilep_pt > 0 && dilep_pt < 80 ? 1.41 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 ? 1.22 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 ? 1.09 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 ? 1.05 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 ? 0.89 " \
+                               ": dilep_pt > 400 && dilep_pt < 480 ? 0.95 " \
+                               ": dilep_pt > 480 ? 0.71 " \
+                               ": 1.0 " \
+                             ": lep_channel == 1 ? " \
+                                "dilep_pt > 0 && dilep_pt < 80 ? 1.34 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 ? 1.14 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 ? 0.99 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 ? 0.95 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 ? 1.01 " \
+                                ": dilep_pt > 400 && dilep_pt < 480 ? 1.06 " \
+                                ": dilep_pt > 480 ? 0.72 " \
+                                ": 1.0 " \
+                             ": 1.0 " \
+                           ": 1.0)"
+if args.year == 2018:
+    if diboson_ch == "zv":
+        fit_scaling = " * (sample_tag == \"DYJets_HT\" ?" \
+                             "lep_channel == 0 ? " \
+                               "dilep_pt > 0 && dilep_pt < 80 ? 1.01 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 ? 0.81 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 ? 0.68 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 ? 0.76 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 ? 0.76 " \
+                               ": dilep_pt > 400 && dilep_pt < 480 ? 0.67 " \
+                               ": dilep_pt > 480 ? 0.68 " \
+                               ": 1.0 " \
+                             ": lep_channel == 1 ? " \
+                                "dilep_pt > 0 && dilep_pt < 80 ? 0.86 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 ? 0.86 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 ? 0.75 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 ? 0.73 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 ? 0.70 " \
+                                ": dilep_pt > 400 && dilep_pt < 480 ? 0.67 " \
+                                ": dilep_pt > 480 ? 0.64 " \
+                                ": 1.0 " \
+                             ": 1.0 " \
+                           ": 1.0)"
+    if diboson_ch == "zjj":
+        fit_scaling = " * (sample_tag == \"DYJets_HT\" ?" \
+                             "lep_channel == 0 ? " \
+                               "dilep_pt > 0 && dilep_pt < 80 ? 1.19 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 ? 1.06 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 ? 0.92 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 ? 0.86 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 ? 0.74 " \
+                               ": dilep_pt > 400 && dilep_pt < 480 ? 0.63 " \
+                               ": dilep_pt > 480 ? 0.61 " \
+                               ": 1.0 " \
+                             ": lep_channel == 1 ? " \
+                                "dilep_pt > 0 && dilep_pt < 80 ? 1.08 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 ? 0.98 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 ? 0.89 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 ? 0.80 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 ? 0.75 " \
+                                ": dilep_pt > 400 && dilep_pt < 480 ? 0.70 " \
+                                ": dilep_pt > 480 ? 0.72 " \
+                                ": 1.0 " \
+                             ": 1.0 " \
+                           ": 1.0)"
+do_dyjets_scaling = False
+if not do_dyjets_scaling:
+    fit_scaling = " * 1.0"
+
 if any(x in i for x in ["zv", "zjj"] for i in args.regions):
-    total_weight = weight_z
+    total_weight = weight_z + fit_scaling
 else:
     total_weight = weight_w
 print("Weight >>> ", total_weight)
@@ -176,15 +322,21 @@ selections["z_el_ch"] = selections["z_ch"] + " && " + selections["el_ch"] + " &&
 selections["w_mu_ch"] = selections["w_ch"] + " && " + selections["mu_ch"]
 selections["w_el_ch"] = selections["w_ch"] + " && " + selections["el_ch"]
 
-selections["vbf_jets"] = "vbf_deta > 2.5" #\
-#                         " && vbf1_AK4_qgid >= 0.0 && vbf1_AK4_qgid <= 1.0" \
-#                         " && vbf2_AK4_qgid >= 0.0 && vbf2_AK4_qgid <= 1.0"
+selections["vbf_jets"] = "vbf_deta > 2.5" \
+                          " && vbf1_AK4_puid_tight > 0 && vbf2_AK4_puid_tight > 0" \
+                          " && vbf1_AK4_pt > 30 && vbf2_AK4_pt > 30" \
+                          " && vbf1_AK4_qgid >= 0.0 && vbf1_AK4_qgid <= 1.0" \
+                          " && vbf2_AK4_qgid >= 0.0 && vbf2_AK4_qgid <= 1.0"
 
 selections["resolved_jets"] = "bos_AK4AK4_pt > 0" \
-                                " && bos_AK4AK4_m > 65 && bos_AK4AK4_m < 105"
+                                " && bos_AK4AK4_m > 65 && bos_AK4AK4_m < 105" \
+                                " && bos_j1_AK4_pt > 30 && bos_j2_AK4_pt > 30" \
+                                " && abs(bos_j1_AK4_eta) < 2.4 && abs(bos_j2_AK4_eta) < 2.4"
 
 selections["resolved_jets_sb"] = "bos_AK4AK4_pt > 0" \
-                                " && ((bos_AK4AK4_m > 40 && bos_AK4AK4_m < 65) || (bos_AK4AK4_m > 105 && bos_AK4AK4_m < 150))"
+                                " && ((bos_AK4AK4_m > 40 && bos_AK4AK4_m < 65) || (bos_AK4AK4_m > 105 && bos_AK4AK4_m < 150))" \
+                                " && bos_j1_AK4_pt > 30 && bos_j2_AK4_pt > 30" \
+                                " && abs(bos_j1_AK4_eta) < 2.4 && abs(bos_j2_AK4_eta) < 2.4"
 
 selections["boosted_jets"] = "bos_PuppiAK8_pt > 200" \
                                 " && bos_PuppiAK8_m_sd0_corr > 65 && bos_PuppiAK8_m_sd0_corr < 105"
@@ -196,12 +348,12 @@ selections["boosted_jets_sb"] = "bos_PuppiAK8_pt > 200" \
 
 ##############
 ### ZJJ
-selections["z_common_m"] = selections["z_mu_ch"].replace("LEP1_PT_CUT", "20").replace("LEP2_PT_CUT", "20") \
+selections["z_common_m"] = selections["z_mu_ch"].replace("LEP1_PT_CUT", "30").replace("LEP2_PT_CUT", "20") \
                             + " && " + selections["vbf_jets"] \
                             + " && isAntiIso == 0" #\
                             #+ " && nBtag_loose == 0"
 
-selections["z_common_e"] = selections["z_el_ch"].replace("LEP1_PT_CUT", "20").replace("LEP2_PT_CUT", "20") \
+selections["z_common_e"] = selections["z_el_ch"].replace("LEP1_PT_CUT", "30").replace("LEP2_PT_CUT", "20") \
                             + " && " + selections["vbf_jets"] \
                             + " && isAntiIso == 0" #\
                             #+ " && nBtag_loose == 0"
@@ -294,16 +446,15 @@ sys_region_list = [
     "cr_top_wjj_e", "cr_top_wv_e", "cr_top_zjj_e", "cr_top_zv_e",
     "cr_top_wjj_m", "cr_top_wv_m", "cr_top_zjj_m", "cr_top_zv_m",
 ]
-
-
-for sys in systematics:
+print(diboson_ch)
+for sys_ in systematics:
     for region in sys_region_list:
+        if diboson_ch not in region: continue
         temp_string = selections_regions[region]
-        sys_var_replace = systematics_map[diboson_ch][sys]
+        sys_var_replace = systematics_map[diboson_ch][sys_]
         for sys_var in sys_var_replace:
-            temp_string = temp_string.replace(sys_var, f"{sys_var}{sys}")
-        selections_regions[f"{region}{sys}"] =  temp_string
-
+            temp_string = temp_string.replace(sys_var, f"{sys_var}{sys_}")
+        selections_regions[f"{region}{sys_}"] =  temp_string
 
 ##############
 # pdf qcd sys
@@ -350,6 +501,11 @@ hists_models_1D = [
     (16, -2.6, 2.6, "bos_PuppiAK8_eta", "fatjet_eta"),
     (20, -3.4, 3.4, "bos_PuppiAK8_phi", "fatjet_phi"),
     (40, 0.0, 1.0, "bos_PuppiAK8_tau2tau1", "fatjet_tau21"),
+    #(40, 0.0, 1.0, "bos_PuppiAK8_deepTag_WvsQCD", "fatjet_deepTag_WvsQCD"),
+    #(40, 0.0, 1.0, "bos_PuppiAK8_deepTag_ZvsQCD", "fatjet_deepTag_ZvsQCD"),
+    #(40, 0.0, 1.0, "bos_PuppiAK8_deepTagMD_WvsQCD", "fatjet_deepTagMD_WvsQCD"),
+    #(40, 0.0, 1.0, "bos_PuppiAK8_deepTagMD_ZvsQCD", "fatjet_deepTagMD_ZvsQCD"),
+    #(40, 0.0, 1.0, "bos_PuppiAK8_deepTagMD_ZbbvsQCD", "fatjet_deepTagMD_ZbbvsQCD"),
     # ak4ak4 jet
     (24, 30.0, 160.0, "bos_AK4AK4_m", "dijet_m"),
     (50, 0.0, 500.0, "bos_AK4AK4_pt", "dijet_pt"),
@@ -400,6 +556,10 @@ hists_models_1D = [
     (1, -1.0, 1.0, "mva_score_zjj", "mva_score_zjj_1bin"),
     #(1, -1.0, 1.0, "mva_score_wv", "mva_score_wv_1bin"),
     (1, -1.0, 1.0, "mva_score_zv", "mva_score_zv_1bin")
+]
+
+hists_models_2D = [
+    #(20, 0.0, 800.0, "dilep_pt", 40, 30.0, 430.0, "vbf2_AK4_pt", "v_lep_pt_vbf_j2_pt"),
 ]
 
 # for jes systematic, if needs to keep it low
@@ -472,15 +632,32 @@ for region in args.regions:
 
 
         if "jes" in region:
-            hists_models = hists_models_1D_SYS
+            hists_models = copy.deepcopy(hists_models_1D_SYS)
+            for i in range(len(hists_models)):
+                h = list(hists_models[i])
+                sys_ = region.split("_")[-1]
+                if f"{h[3]}_{sys_}" in column_names:
+                    h[3] = f"{h[3]}_{sys_}"
+                    hists_models[i] = tuple(h)
+            hists_models_2D = []
         if "scale" in region:
-            hists_models = hists_models_1D_SYS
+            hists_models = copy.deepcopy(hists_models_1D_SYS)
+            for i in range(len(hists_models)):
+                h = list(hists_models[i])
+                sys_ = region.split("_")[-1]
+                if f"{h[3]}_{sys_}" in column_names:
+                    h[3] = f"{h[3]}_{sys_}"
+                    hists_models[i] = tuple(h)
+            hists_models_2D = []
         elif "pdf" in region:
-            hists_models = hists_models_1D_SYS_1
+            hists_models = copy.deepcopy(hists_models_1D_SYS_1)
+            hists_models_2D = []
         elif "qcd" in region:
-            hists_models = hists_models_1D_SYS_2
+            hists_models = copy.deepcopy(hists_models_1D_SYS_2)
+            hists_models_2D = []
         else:
-            hists_models = hists_models_1D
+            hists_models = copy.deepcopy(hists_models_1D)
+            hists_models_2D = copy.deepcopy(hists_models_2D)
 
         # select event for specific region
         # if different than default
@@ -530,7 +707,7 @@ for region in args.regions:
 
             qcd_weight_order = []
             if ("qcd" in region):
-                if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD"]):
+                if any(x in hist_name for x in ["VBS_QCD"]):
                     if args.year == 2016:
                         qcd_weight_order = [20, 0, 5, 15, 25, 35, 40]
 
@@ -538,7 +715,7 @@ for region in args.regions:
                         qcd_weight_order = [4, 0, 1, 3, 5, 7, 8]
 
                 # same code, separate for just-in-case
-                elif any(x in hist_name for x in ["DYJets", "WJets"]):
+                elif any(x in hist_name for x in ["VBS_EWK", "DYJets", "WJets"]):
                     if any(args.year == x for x in [2016, 2017, 2018]):
                         qcd_weight_order = [4, 0, 1, 3, 5, 7, 8]
 
@@ -546,10 +723,24 @@ for region in args.regions:
                     histograms_dict[region][hist_name + f"_qcd_{i}"] = \
                         df_samples_regions[sample_ + region].Histo1D(hist_model, h_[3], f"total_weight_qcd_{j}")
 
+        for h_ in hists_models_2D:
+
+            hist_name_2D = sample_ + "_" + h_[8]
+            hist_model_2D = ROOT.RDF.TH2DModel(f"{hist_name_2D}", f"{hist_name_2D}", h_[0], h_[1], h_[2], h_[4], h_[5], h_[6])
+            histograms_dict[region][hist_name_2D] = \
+                    df_samples_regions[sample_ + region].Histo2D(hist_model_2D, h_[3], h_[7], event_weight)
+
 
 def merge_overflow_bin(hist):
-    n = hist.GetNbinsX()
-    hist.SetBinContent(n, hist.GetBinContent(n) + hist.GetBinContent(n + 1))
+    nx = hist.GetNbinsX()
+    ny = hist.GetNbinsY()
+    if type(hist) == ROOT.TH1D:
+        hist.SetBinContent(nx, hist.GetBinContent(nx) + hist.GetBinContent(nx + 1))
+    elif type(hist) == ROOT.TH2D:
+        for iy in range(1, ny + 1):
+            hist.SetBinContent(nx, iy, hist.GetBinContent(nx, iy) + hist.GetBinContent(nx + 1, iy))
+        for ix in range(1, nx + 1):
+            hist.SetBinContent(ix, ny, hist.GetBinContent(ix, ny) + hist.GetBinContent(ix, ny + 1))
 
 
 # start the event loop
@@ -572,7 +763,6 @@ for region in histograms_dict:
         print(region, hist_name)
         histograms_dict_v[region][hist_name] = histograms_dict[region][hist_name].GetValue()
         merge_overflow_bin(histograms_dict_v[region][hist_name])
-
 
     t_directory = region
     for i in ("zv", "zjj", "wv", "wjj"):
@@ -637,10 +827,10 @@ for region in histograms_dict:
 
 
                         nominal_bin_content = histograms_dict_v[region][hist_name].GetBinContent(bin_)
-                        if "Up" in region:
-                            histograms_dict_v[region][hist_name].SetBinContent(bin_, nominal_bin_content + sys_qcd)
-                        if "Down" in region:
-                            histograms_dict_v[region][hist_name].SetBinContent(bin_, nominal_bin_content - sys_qcd)
+                        if "Up" in region and nominal_bin_content != 0.0:
+                            histograms_dict_v[region][hist_name].SetBinContent(bin_, nominal_bin_content + (sys_qcd/nominal_bin_content))
+                        if "Down" in region and nominal_bin_content != 0.0:
+                            histograms_dict_v[region][hist_name].SetBinContent(bin_, nominal_bin_content - (sys_qcd/nominal_bin_content))
 
                 histograms_dict_v[region][hist_name].Write()
 
