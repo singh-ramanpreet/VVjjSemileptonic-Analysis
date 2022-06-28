@@ -653,8 +653,18 @@ hists_models_1D = [
 if diboson_ch == "zjj":
     hists_models_1D.append((20, 0.0, 2000, "ht_resolved", "ht_resolved"))
 
+#hists_models_1D = [
+#    (np.array([-1.0, -0.25, 0.0, 0.2, 0.35, 0.45, 0.55, 0.65, 1.0]), 0, 0, "mva_score_zjj", "mva_score_zjj_var2"),
+#    (1, -1.0, 1.0, "mva_score_zjj", "mva_score_zjj_1bin"),
+#    (np.array([-1.0, -0.35, -0.05, 0.15, 0.3, 0.45, 0.6, 0.7, 1.0]), 0, 0, "mva_score_zv", "mva_score_zv_var2"),
+#    (1, -1.0, 1.0, "mva_score_zv", "mva_score_zv_1bin")
+#]
+#hists_models_1D = []
+
 hists_models_2D = [
     #(20, 0.0, 800.0, "dilep_pt", 40, 30.0, 430.0, "vbf2_AK4_pt", "v_lep_pt_vbf_j2_pt"),
+    #(20, 0.0, 800.0, "dilep_pt", 22, 40.0, 150.0, "bos_PuppiAK8_m_sd0_corr", "v_lep_pt_fatjet_m"),
+    #(20, 0.0, 800.0, "dilep_pt", 22, 40.0, 150.0, "bos_AK4AK4_m", "v_lep_pt_fatjet_m"),
 ]
 
 # for jes systematic, if needs to keep it low
@@ -675,17 +685,17 @@ for i in hists_models_1D:
 # for pdf systematic, if needs to keep it low
 hists_models_1D_SYS_1 = []
 hists_SYS_list_1 = [
-    "mva_score_wjj_var1",
-    "mva_score_zjj_var1",
+#    "mva_score_wjj_var1",
+#    "mva_score_zjj_var1",
     "mva_score_zjj_var2",
-    "mva_score_zjj_var3",
-    "mva_score_wv_var1",
-    "mva_score_zv_var1",
+#    "mva_score_zjj_var3",
+#    "mva_score_wv_var1",
+#    "mva_score_zv_var1",
     "mva_score_zv_var2",
-    "mva_score_zv_var3",
-    "mva_score_wjj_1bin",
+#    "mva_score_zv_var3",
+#    "mva_score_wjj_1bin",
     "mva_score_zjj_1bin",
-    "mva_score_wv_1bin",
+#    "mva_score_wv_1bin",
     "mva_score_zv_1bin",
 ]
 for i in hists_models_1D:

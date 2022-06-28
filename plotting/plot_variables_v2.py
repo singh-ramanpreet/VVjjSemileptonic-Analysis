@@ -42,7 +42,7 @@ def make_config(args, variable="lep1_pt", **kwargs):
         "lower_graph_max_y": 2.0,
         "lower_graph_min_y": 0.0,
         "lower_graph_ndivisions_y": 404,
-        "lower_graph_title_y": "#frac{Data}{MC}",
+        "lower_graph_title_y": "#frac{Data}{Tot. Bkg.}",
         "legend_position": [0.42, 0.75, 0.95, 0.9],
         "legend_columns": 2,
         "legend_fill_style": 0,
@@ -281,7 +281,7 @@ class plot:
         self.stacked_obj_errors_ratio.SetMarkerStyle(0)
         self.stacked_obj_errors_ratio.SetFillColor(ROOT.kGray)
 
-        self.legend.AddEntry(ROOT.nullptr, f"Total MC ({self.stacked_sum.Integral():.2f})", "f")
+        self.legend.AddEntry(ROOT.nullptr, f"Total Bkg. ({self.stacked_sum.Integral():.2f})", "f")
         self.legend.AddEntry(self.stacked_obj_errors, "PostFit Unc." if self.postfit else "Stat + Sys Unc.", "f")
 
         for i in range(self.stacked_sum.GetNbinsX()):

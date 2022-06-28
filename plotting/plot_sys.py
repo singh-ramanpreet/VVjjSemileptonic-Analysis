@@ -23,9 +23,30 @@ canvas = ROOT.TCanvas("", "", 600, 600)
 legend = ROOT.TLegend(0.6, 0.8, 0.89, 0.89)
 
 root_file = ROOT.TFile.Open(f"{args.histfile}")
-h_nom = root_file.Get(f"{args.directory}/{args.variable}")
-h_Up = root_file.Get(f"{args.directory}_{args.systematic}Up/{args.variable}")
-h_Down = root_file.Get(f"{args.directory}_{args.systematic}Down/{args.variable}")
+
+if "Total" in args.variable:
+    t_var_ = args.variable.split("=")[0]
+    vars_ = args.variable.split("=")[1].split("+")
+    args.variable = t_var_
+
+    for i, var in enumerate(vars_):
+        print(var)
+        if i == 0:
+            h_nom = root_file.Get(f"{args.directory}/{var}")
+            h_Up = root_file.Get(f"{args.directory}_{args.systematic}Up/{var}")
+            h_Down = root_file.Get(f"{args.directory}_{args.systematic}Down/{var}")
+            h_nom.SetTitle(h_nom.GetTitle().replace(var, args.variable))
+        else:
+            h_nom.Add(root_file.Get(f"{args.directory}/{var}"))
+            h_Up.Add(root_file.Get(f"{args.directory}_{args.systematic}Up/{var}"))
+            h_Down.Add(root_file.Get(f"{args.directory}_{args.systematic}Down/{var}"))
+            #for j in range(1, h_Up_.GetNbinsX() + 1):
+            #    h_Up.SetBinContent(j, ROOT.TMath.Sqrt(h_Up.GetBinContent(j)**2 + h_Up_.GetBinContent(j)**2))
+            #    h_Down.SetBinContent(j, ROOT.TMath.Sqrt(h_Down.GetBinContent(j)**2 + h_Down_.GetBinContent(j)**2))
+else:
+    h_nom = root_file.Get(f"{args.directory}/{args.variable}")
+    h_Up = root_file.Get(f"{args.directory}_{args.systematic}Up/{args.variable}")
+    h_Down = root_file.Get(f"{args.directory}_{args.systematic}Down/{args.variable}")
 
 if h_nom != None:
     h_nom.SetStats(0)
@@ -54,8 +75,8 @@ ratio_plot.SetH2DrawOpt("hist")
 ratio_plot.Draw()
 
 ratio_plot.GetLowerRefGraph().SetLineColor(h_Up.GetLineColor())
-ratio_plot.GetLowerRefGraph().SetMinimum(0.0)
-ratio_plot.GetLowerRefGraph().SetMaximum(1.5)
+#ratio_plot.GetLowerRefGraph().SetMinimum(0.6)
+#ratio_plot.GetLowerRefGraph().SetMaximum(1.1)
 ratio_plot.GetLowYaxis().SetNdivisions(410)
 
 lower_pad = ratio_plot.GetLowerPad()
@@ -74,7 +95,7 @@ legend.Draw()
 canvas.Draw()
 
 if args.output == "":
-    out_dir = f"{args.histfile.replace('.root', '')}/{args.directory}"
+    out_dir = f"{args.histfile.replace('.root', '')}/{args.directory}_sys"
     os.makedirs(out_dir, exist_ok=True)
     plot_filename = f"{out_dir}/{args.variable}_{args.systematic}"
     canvas.SaveAs(f"{plot_filename}.pdf")
