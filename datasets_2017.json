@@ -53,14 +53,14 @@
     "DYJets_HT": {
         "lumi": 41530.0,
         "filelist": [
-            {"name": "DYJetsToLL_M-50_HT-70to100_TuneCP5_13TeV-madgraphMLM-pythia8"   , "xs": 167.33  , "nMC": 9333543.0 },
-            {"name": "DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 161.1   , "nMC": 11180126.0},
-            {"name": "DYJetsToLL_M-50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 48.66   , "nMC": 11896758.0},
-            {"name": "DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 6.968   , "nMC": 10174800.0},
-            {"name": "DYJetsToLL_M-50_HT-600to800_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 1.743   , "nMC": 8691608.0 },
-            {"name": "DYJetsToLL_M-50_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8" , "xs": 0.8052  , "nMC": 3089712.0 },
-            {"name": "DYJetsToLL_M-50_HT-1200to2500_TuneCP5_13TeV-madgraphMLM-pythia8", "xs": 0.1933  , "nMC": 616923.0  },
-            {"name": "DYJetsToLL_M-50_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8" , "xs": 0.003468, "nMC": 401334.0  }
+            {"name": "DYJetsToLL_M-50_HT-70to100_TuneCP5_13TeV-madgraphMLM-pythia8"   , "xs": 167.33  , "nMC": 9333543.0 , "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 161.1   , "nMC": 11180126.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 48.66   , "nMC": 11896758.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 6.968   , "nMC": 10174800.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-600to800_TuneCP5_13TeV-madgraphMLM-pythia8"  , "xs": 1.743   , "nMC": 8691608.0 , "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8" , "xs": 0.8052  , "nMC": 3089712.0 , "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-1200to2500_TuneCP5_13TeV-madgraphMLM-pythia8", "xs": 0.1933  , "nMC": 616923.0  , "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8" , "xs": 0.003468, "nMC": 401334.0  , "kf": 1.23}
         ]
     }
 }
