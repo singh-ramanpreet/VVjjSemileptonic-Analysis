@@ -30,13 +30,7 @@ then
     --mva-var-list trainings/zv_variable_list.txt \
     --mva-name zjj \
     --mva-xml trainings/zjj_weights.xml \
-    --mva-var-list trainings/zjj_variable_list.txt \
-    --mva-name wv \
-    --mva-xml trainings/wv_weights.xml \
-    --mva-var-list trainings/wv_variable_list.txt \
-    --mva-name wjj \
-    --mva-xml trainings/wjj_weights.xml \
-    --mva-var-list trainings/wjj_variable_list.txt
+    --mva-var-list trainings/zjj_variable_list.txt
 
 else
   echo "Running without MVA"
@@ -46,7 +40,6 @@ else
     --year ${year} \
     --output ${output}
 fi
-
 
 if [[ ${tar_file} == *".tar.gz" ]]
 then
