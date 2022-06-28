@@ -44,6 +44,7 @@ if args.rebin != 1:
 
 draw_mva = """
 CMS_style.cd()
+CMS_style.SetLabelSize(0.042, "XYZ")
 canvas = ROOT.TCanvas("", "", 600, 600)
 legend = ROOT.TLegend(0.55, 0.8, 0.93, 0.92, f"{c}")
 legend.SetNColumns(3)
@@ -105,6 +106,7 @@ for c in configs:
 
 draw_roc = """
 CMS_style.cd()
+CMS_style.SetLabelSize(0.042, "XYZ")
 canvas = ROOT.TCanvas()
 frame = canvas.DrawFrame(0.0, 0.0, 1.0, 1.0, ";Sig Eff.;Bkg Eff.")
 frame.Draw()
@@ -140,6 +142,7 @@ exec(draw_roc)
 
 draw_sig_vs_bkg_var = """
 CMS_style.cd()
+CMS_style.SetLabelSize(0.042, "XYZ")
 canvas = ROOT.TCanvas("", "", 600, 600)
 legend = ROOT.TLegend(0.65, 0.82, 0.93, 0.92)
 legend.SetTextFont(42)
@@ -159,7 +162,8 @@ legend.AddEntry(hb, "Bkg", "lf")
 frame = max(hs, hb, key=lambda x: x.GetMaximum()/x.Integral()).Clone("frame")
 frame.SetMaximum(1.4 * frame.GetMaximum()/frame.Integral())
 frame.SetMinimum(frame.GetMinimum()/frame.Integral())
-frame.SetTitle("CONFIG;VARIABLE;a.u.")
+frame.GetXaxis().SetNdivisions(X_NDIVISIONS)
+frame.SetTitle("CONFIG;X_TITLE;a.u.")
 frame.Draw("axis")
 
 hs.DrawNormalized("hist same")
@@ -176,7 +180,53 @@ os.popen(f"convert -density 150 -antialias {outname}.pdf -trim {outname}.png 2> 
 for c in configs:
     var_list = open(f"{c}/variable_list.txt", "r").read().strip().split('\n')
     for var in var_list:
-        exec(draw_sig_vs_bkg_var.replace("CONFIG", c).replace("VARIABLE", var))
+      x_title = var
+      x_ndivisions = "510"
+      if "zv" in c:
+        if var == "vbf_m":
+          x_title = "m_{JJ}^{VBS} [GeV]"
+          x_ndivisions = "505"
+        if var == "dibos_m":
+          x_title = "m_{VV} [GeV]"
+          x_ndivisions = "510"
+        if var == "vbf1_AK4_qgid":
+          x_title = "QGL (j_{1}^{VBS})"
+          x_ndivisions = "510"
+        if var == "vbf2_AK4_qgid":
+          x_title = "QGL (j_{2}^{VBS})"
+          x_ndivisions = "510"
+        if var == "zeppLep_deta":
+          x_title = "Z_{V}^{*}"
+          x_ndivisions = "505"
+      if "zjj" in c:
+        if var == "vbf_m":
+          x_title = "m_{JJ}^{VBS} [GeV]"
+          x_ndivisions = "505"
+        if var == "dibos_m":
+          x_title = "m_{VV} [GeV]"
+          x_ndivisions = "505"
+        if var == "ht_resolved":
+          x_title = "HT^{*} [GeV]"
+          x_ndivisions = "505"
+        if var == "lep2_eta":
+          x_title = "#eta_{lep2}"
+          x_ndivisions = "510"
+        if var == "vbf1_AK4_qgid":
+          x_title = "QGL (j_{1}^{VBS})"
+          x_ndivisions = "510"
+        if var == "vbf2_AK4_qgid":
+          x_title = "QGL (j_{2}^{VBS})"
+          x_ndivisions = "510"
+        if var == "zeppLep_deta":
+          x_title = "Z_{V}^{*}"
+          x_ndivisions = "505"
+      exec(
+        draw_sig_vs_bkg_var \
+        .replace("CONFIG", c) \
+        .replace("VARIABLE", var) \
+        .replace("X_TITLE", x_title) \
+        .replace("X_NDIVISIONS", x_ndivisions)
+      )
 
 
 draw_correlation = """
