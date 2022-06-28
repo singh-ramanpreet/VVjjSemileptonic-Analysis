@@ -10,7 +10,7 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--datasets", type=str, default="datasets_2016.json",
+parser.add_argument("--datasets", type=str, default="../datasets_2016.json",
                     help="json file: info of datasets, default=%(default)s")
 
 parser.add_argument("--location", type=str, default="/store/user/rsingh/wv_vbs_ntuples/WVJJTree_2021_Mar_07/2016",
@@ -39,7 +39,7 @@ cuts = {
         "dilep_m > 75 && dilep_m < 105",
         "bos_PuppiAK8_pt > 200",
         "fabs(bos_PuppiAK8_eta) < 2.4",
-        "bos_PuppiAK8_tau2tau1 < 0.55",
+        "bos_PuppiAK8_tau2tau1 < 0.45",
         "vbf_m > 500",
         "vbf1_AK4_pt > 50 && vbf2_AK4_pt > 50",
         "vbf_deta > 2.5",

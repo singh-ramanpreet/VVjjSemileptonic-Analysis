@@ -126,7 +126,10 @@ for col_name in list_of_weight_col:
 # separate out dataframes by sample tag
 df_samples = {}
 for sample_ in samples_name:
-    df_samples[sample_] = df_with_weight_cols[-1].Filter(f"sample_tag == \"{sample_}\"")
+    if sample_ == "VBS_EWK":
+        df_samples[sample_] = df_with_weight_cols[-1].Filter(f"sample_tag == \"{sample_}\" && is_tZq == false")
+    else:
+        df_samples[sample_] = df_with_weight_cols[-1].Filter(f"sample_tag == \"{sample_}\"")
 
 
 # split W + Jets
@@ -162,8 +165,7 @@ selections["mu_ch"] = "lep_channel == 0 && fabs(lep1_eta) < 2.4"
 selections["mu2_ch"] = selections["mu_ch"].replace("lep1", "lep2")
 
 selections["z_ch"] = "lep1_pt > LEP1_PT_CUT && lep2_pt > LEP2_PT_CUT" \
-                     " && lep1_q * lep2_q < 0" \
-                     " && dilep_m > 75 && dilep_m < 105"
+                     " && dilep_m > 76 && dilep_m < 106"
 
 selections["w_ch"] = "lep1_pt > LEP1_PT_CUT && MET > MET_CUT" \
                      " && lep2_pt < 0"
@@ -174,48 +176,35 @@ selections["z_el_ch"] = selections["z_ch"] + " && " + selections["el_ch"] + " &&
 selections["w_mu_ch"] = selections["w_ch"] + " && " + selections["mu_ch"]
 selections["w_el_ch"] = selections["w_ch"] + " && " + selections["el_ch"]
 
-selections["vbf_jets"] = "vbf_m > 500" \
-                         " && vbf1_AK4_pt > 50" \
-                         " && vbf2_AK4_pt > 50" \
-                         " && vbf_deta > 2.5" #\
-                         #" && vbf1_AK4_qgid >= 0.0 && vbf1_AK4_qgid <= 1.0" \
-                         #" && vbf2_AK4_qgid >= 0.0 && vbf2_AK4_qgid <= 1.0" #\
-                         #" && vbf1_AK4_puid_tight == 1 " \
-                         #" && vbf2_AK4_puid_tight == 1 " \
+selections["vbf_jets"] = "vbf_deta > 2.5" #\
+#                         " && vbf1_AK4_qgid >= 0.0 && vbf1_AK4_qgid <= 1.0" \
+#                         " && vbf2_AK4_qgid >= 0.0 && vbf2_AK4_qgid <= 1.0"
 
 selections["resolved_jets"] = "bos_AK4AK4_pt > 0" \
-                                " && bos_j1_AK4_pt > 30" \
-                                " && bos_j2_AK4_pt > 30" \
                                 " && bos_AK4AK4_m > 65 && bos_AK4AK4_m < 105"
 
 selections["resolved_jets_sb"] = "bos_AK4AK4_pt > 0" \
-                                " && bos_j1_AK4_pt > 30" \
-                                " && bos_j1_AK4_pt > 30" \
                                 " && ((bos_AK4AK4_m > 40 && bos_AK4AK4_m < 65) || (bos_AK4AK4_m > 105 && bos_AK4AK4_m < 150))"
 
 selections["boosted_jets"] = "bos_PuppiAK8_pt > 200" \
-                                " && fabs(bos_PuppiAK8_eta) < 2.4" \
-                                " && bos_PuppiAK8_tau2tau1 < 0.55" \
                                 " && bos_PuppiAK8_m_sd0_corr > 65 && bos_PuppiAK8_m_sd0_corr < 105"
 
 selections["boosted_jets_sb"] = "bos_PuppiAK8_pt > 200" \
-                                " && fabs(bos_PuppiAK8_eta) < 2.4" \
-                                " && bos_PuppiAK8_tau2tau1 < 0.55" \
                                 " && ((bos_PuppiAK8_m_sd0_corr > 40 && bos_PuppiAK8_m_sd0_corr < 65) ||" \
                                       "(bos_PuppiAK8_m_sd0_corr > 105 && bos_PuppiAK8_m_sd0_corr < 150))"
 
 
 ##############
 ### ZJJ
-selections["z_common_m"] = selections["z_mu_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "20") \
+selections["z_common_m"] = selections["z_mu_ch"].replace("LEP1_PT_CUT", "20").replace("LEP2_PT_CUT", "20") \
                             + " && " + selections["vbf_jets"] \
                             + " && isAntiIso == 0" #\
-                            #+ " && nBTagJet_loose == 0"
+                            #+ " && nBtag_loose == 0"
 
-selections["z_common_e"] = selections["z_el_ch"].replace("LEP1_PT_CUT", "25").replace("LEP2_PT_CUT", "20") \
+selections["z_common_e"] = selections["z_el_ch"].replace("LEP1_PT_CUT", "20").replace("LEP2_PT_CUT", "20") \
                             + " && " + selections["vbf_jets"] \
                             + " && isAntiIso == 0" #\
-                            #+ " && nBTagJet_loose == 0"
+                            #+ " && nBtag_loose == 0"
 
 selections["z_common_l"] = "((" + selections["z_common_m"] + ") || (" + selections["z_common_e"] + "))"
 
@@ -224,9 +213,9 @@ selections_regions = {}
 for i in ("m", "e", "l"):
     selections_regions[f"sr_zjj_{i}"] = selections[f"z_common_{i}"] + " && " + selections["resolved_jets"]
 
-    selections_regions[f"sr1_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose == 0"
+    #selections_regions[f"sr1_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose == 0"
 
-    selections_regions[f"sr2_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose > 0"
+    #selections_regions[f"sr2_zjj_{i}"] = selections_regions[f"sr_zjj_{i}"] + " && " + "nBtag_loose > 0"
 
     selections_regions[f"cr_vjets_zjj_{i}"] = selections[f"z_common_{i}"] + " && " + selections["resolved_jets_sb"]
 
@@ -236,9 +225,9 @@ for i in ("m", "e", "l"):
     ### ZV
     selections_regions[f"sr_zv_{i}"] = selections[f"z_common_{i}"] + " && " + selections["boosted_jets"]
 
-    selections_regions[f"sr1_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose == 0"
+    #selections_regions[f"sr1_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose == 0"
 
-    selections_regions[f"sr2_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose > 0"
+    #selections_regions[f"sr2_zv_{i}"] = selections_regions[f"sr_zv_{i}"] + " && " + "nBtag_loose > 0"
 
     selections_regions[f"cr_vjets_zv_{i}"] = selections[f"z_common_{i}"] + " && " + selections["boosted_jets_sb"]
 
@@ -295,9 +284,9 @@ systematics = tuple(systematics_map[diboson_ch].keys())
 
 # list of regions to make systematic hists
 sys_region_list = [
-    "sr_wjj_l", "sr_wv_l", "sr_zjj_l", "sr_zv_l", "sr1_zjj_l", "sr1_zv_l", "sr2_zjj_l", "sr2_zv_l",
-    "sr_wjj_e", "sr_wv_e", "sr_zjj_e", "sr_zv_e", "sr1_zjj_e", "sr1_zv_e", "sr2_zjj_e", "sr2_zv_e",
-    "sr_wjj_m", "sr_wv_m", "sr_zjj_m", "sr_zv_m", "sr1_zjj_m", "sr1_zv_m", "sr2_zjj_m", "sr2_zv_m",
+    "sr_wjj_l", "sr_wv_l", "sr_zjj_l", "sr_zv_l", #"sr1_zjj_l", "sr1_zv_l", "sr2_zjj_l", "sr2_zv_l",
+    "sr_wjj_e", "sr_wv_e", "sr_zjj_e", "sr_zv_e", #"sr1_zjj_e", "sr1_zv_e", "sr2_zjj_e", "sr2_zv_e",
+    "sr_wjj_m", "sr_wv_m", "sr_zjj_m", "sr_zv_m", #"sr1_zjj_m", "sr1_zv_m", "sr2_zjj_m", "sr2_zv_m",
     "cr_vjets_wjj_l", "cr_vjets_wv_l", "cr_vjets_zjj_l", "cr_vjets_zv_l",
     "cr_vjets_wjj_e", "cr_vjets_wv_e", "cr_vjets_zjj_e", "cr_vjets_zv_e",
     "cr_vjets_wjj_m", "cr_vjets_wv_m", "cr_vjets_zjj_m", "cr_vjets_zv_m",
@@ -350,8 +339,11 @@ hists_models_1D = [
     (16, -2.6, 2.6, "lep2_eta", "lep2_eta"),
     (20, -3.4, 3.4, "lep1_phi", "lep1_phi"),
     (20, -3.4, 3.4, "lep2_phi", "lep2_phi"),
-    (80, 0, 400, "MET", "MET"),
-    (20, -3.4, 3.4, "MET_phi", "MET_phi"),
+    #(80, 0, 400, "MET", "MET"),
+    #(20, -3.4, 3.4, "MET_phi", "MET_phi"),
+    # jets
+    (8, 0, 8, "nBtag_loose", "nBtag_loose"),
+    (8, 0, 8, "nJet30", "nJet30"),
     # ak8 jet
     (24, 30.0, 160.0, "bos_PuppiAK8_m_sd0_corr", "fatjet_m"),
     (80, 200.0, 1000.0, "bos_PuppiAK8_pt", "fatjet_pt"),
@@ -367,7 +359,7 @@ hists_models_1D = [
     (20, -2.5, 2.5, "bos_j1_AK4_eta", "dijet_j1_eta"),
     (20, -2.5, 2.5, "bos_j2_AK4_eta", "dijet_j2_eta"),
     # W
-    (50, 0.0, 1000.0, "dilep_pt", "v_lep_pt"),
+    (20, 0.0, 800.0, "dilep_pt", "v_lep_pt"),
     (20, -4.0, 4.0, "dilep_eta", "v_lep_eta"),
     (20, 65, 105.0, "dilep_m", "v_lep_m"),
     (20, 50.0, 450.0, "dilep_mt", "v_lep_mt"),
@@ -383,30 +375,30 @@ hists_models_1D = [
     (25, 0.0, 1.0, "vbf2_AK4_qgid", "vbf_j2_qgid"),
     (40, 500.0, 2500.0, "vbf_m", "vbf_jj_m"),
     #
-    (30, 0.0, 6.0, "bosCent", "boson_centrality"),
+    #(30, 0.0, 6.0, "bosCent", "boson_centrality"),
     (20, -1.0, 1.0, "zeppLep_deta", "zeppenfeld_lep_deta"),
     (20, -1.0, 1.0, "zeppHad_deta", "zeppenfeld_had_deta"),
     # W V system
     (30, 0, 2100, "dibos_m", "vv_m"),
-    (30, 0, 2100, "dibos_mt", "vv_mt"),
+    #(30, 0, 2100, "dibos_mt", "vv_mt"),
     (25, 0.0, 500.0, "dibos_pt", "vv_pt"),
     (20, -5.0, 5.0, "dibos_eta", "vv_eta"),
     (34, -3.4, 3.4, "dibos_phi", "vv_phi"),
-    (40, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj"),
+    #(40, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj"),
     (40, -1.0, 1.0, "mva_score_zjj", "mva_score_zjj"),
-    (40, -1.0, 1.0, "mva_score_wv", "mva_score_wv"),
+    #(40, -1.0, 1.0, "mva_score_wv", "mva_score_wv"),
     (40, -1.0, 1.0, "mva_score_zv", "mva_score_zv"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_wjj", "mva_score_wjj_var1"),
+    #(np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_wjj", "mva_score_wjj_var1"),
     (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_zjj", "mva_score_zjj_var1"),
     (np.array([-1.0, -0.25, 0.0, 0.2, 0.35, 0.45, 0.55, 0.65, 1.0]), 0, 0, "mva_score_zjj", "mva_score_zjj_var2"),
     (np.array([-1.0, -0.1, 0.25, 0.45, 0.6, 1.0]), 0, 0, "mva_score_zjj", "mva_score_zjj_var3"),
-    (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_wv", "mva_score_wv_var1"),
+    #(np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_wv", "mva_score_wv_var1"),
     (np.array([-1.0, -0.3, -0.15, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]), 0, 0, "mva_score_zv", "mva_score_zv_var1"),
     (np.array([-1.0, -0.35, -0.05, 0.15, 0.3, 0.45, 0.6, 0.7, 1.0]), 0, 0, "mva_score_zv", "mva_score_zv_var2"),
     (np.array([-1.0, -0.15, 0.2, 0.4, 0.65, 1.0]), 0, 0, "mva_score_zv", "mva_score_zv_var3"),
-    (1, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj_1bin"),
+    #(1, -1.0, 1.0, "mva_score_wjj", "mva_score_wjj_1bin"),
     (1, -1.0, 1.0, "mva_score_zjj", "mva_score_zjj_1bin"),
-    (1, -1.0, 1.0, "mva_score_wv", "mva_score_wv_1bin"),
+    #(1, -1.0, 1.0, "mva_score_wv", "mva_score_wv_1bin"),
     (1, -1.0, 1.0, "mva_score_zv", "mva_score_zv_1bin")
 ]
 
@@ -492,10 +484,10 @@ for region in args.regions:
 
         # select event for specific region
         # if different than default
-        if "sr1_z" in region:
+        if "nBtag_loose" in selections_regions[region]:
             event_weight = "total_weight_btag"
-        elif "sr2_z" in region:
-            event_weight = "total_weight_btag"
+        #elif "sr2_z" in region:
+        #    event_weight = "total_weight_btag"
         elif "puUp" in region:
             event_weight = "total_weight_puUp"
         elif "puDown" in region:
@@ -601,7 +593,7 @@ for region in histograms_dict:
             if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD"]):
                 if any(args.year == x for x in [2016, 2017, 2018]):
                     nbins = histograms_dict_v[region][hist_name].GetNbinsX()
-                    for bin_ in range(nbins):
+                    for bin_ in range(1, nbins + 1):
                         sys_pdf = 0.0
                         # pdf weight 0, a.k.a central value peaks at 1, not equal to 1 !!
                         bin_content = histograms_dict_v[region][hist_name + "_pdf_0"].GetBinContent(bin_)
@@ -633,7 +625,7 @@ for region in histograms_dict:
             if any(x in hist_name for x in ["VBS_EWK", "VBS_QCD", "DYJets", "WJets"]):
                 if any(args.year == x for x in [2016, 2017, 2018]):
                     nbins = histograms_dict_v[region][hist_name].GetNbinsX()
-                    for bin_ in range(nbins):
+                    for bin_ in range(1, nbins + 1):
                         sys_qcd = 0.0
                         # scale weight is 1 for central, so no need to use separate central hist
                         bin_content = histograms_dict_v[region][hist_name + "_qcd_0"].GetBinContent(bin_)

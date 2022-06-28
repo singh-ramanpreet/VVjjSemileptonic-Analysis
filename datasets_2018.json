@@ -9,15 +9,15 @@
     "VBS_EWK": {
         "lumi": 59740.0,
         "filelist": [
-            {"name": "WminusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"      , "xs": 0.02982, "nMC": 584787.0    },
-            {"name": "WminusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8", "xs": 0.03259, "nMC": 565831.5    }, 
-            {"name": "WminusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"     , "xs": 0.1    , "nMC": 566998.5625 },
-            {"name": "WplusTo2JWminusToLNuJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8" , "xs": 0.9107 , "nMC": 5742718.0   },
-            {"name": "WplusTo2JZTo2LJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"       , "xs": 0.05401, "nMC": 566355.8125 },
-            {"name": "WplusToLNuWminusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8" , "xs": 0.9114 , "nMC": 5744633.5   },
-            {"name": "WplusToLNuWplusTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"  , "xs": 0.08793, "nMC": 588277.125  },
-            {"name": "WplusToLNuZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"      , "xs": 0.1825 , "nMC": 1156414.625 },
-            {"name": "ZTo2LZTo2JJJ_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"           , "xs": 0.01589, "nMC": 297179.84375}
+            {"name": "WminusTo2JZTo2LJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"      , "xs": 0.02982, "nMC": 592587.5625 },
+            {"name": "WminusToLNuWminusTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8", "xs": 0.03259, "nMC": 586787.3125 }, 
+            {"name": "WminusToLNuZTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"     , "xs": 0.1    , "nMC": 592679.9375 },
+            {"name": "WplusTo2JWminusToLNuJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8" , "xs": 0.9107 , "nMC": 5964358.5   },
+            {"name": "WplusTo2JZTo2LJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"       , "xs": 0.05401, "nMC": 598523.9375 },
+            {"name": "WplusToLNuWminusTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8" , "xs": 0.9114 , "nMC": 5967137.5   },
+            {"name": "WplusToLNuWplusTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"  , "xs": 0.08793, "nMC": 598692.0    },
+            {"name": "WplusToLNuZTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"      , "xs": 0.1825 , "nMC": 1196999.875 },
+            {"name": "ZTo2LZTo2JJJ_dipoleRecoil_EWK_LO_SM_MJJ100PTJ10_TuneCP5_13TeV-madgraph-pythia8"           , "xs": 0.01589, "nMC": 297577.125  }
         ]
     },
 
@@ -71,7 +71,7 @@
             {"name": "DYJetsToLL_M-50_HT-70to100_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"   , "xs": 167.33  , "nMC": 10010341.0, "kf": 1.23},
             {"name": "DYJetsToLL_M-50_HT-100to200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"  , "xs": 161.1   , "nMC": 11516746.0, "kf": 1.23},
             {"name": "DYJetsToLL_M-50_HT-200to400_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"  , "xs": 48.66   , "nMC": 10840079.0, "kf": 1.23},
-            {"name": "DYJetsToLL_M-50_HT-400to600_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"  , "xs": 6.968   , "nMC": 46027504.0, "kf": 1.23},
+            {"name": "DYJetsToLL_M-50_HT-400to600_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"  , "xs": 6.968   , "nMC": 18902490.0, "kf": 1.23},
             {"name": "DYJetsToLL_M-50_HT-600to800_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8"  , "xs": 1.743   , "nMC": 8826238.0 , "kf": 1.23},
             {"name": "DYJetsToLL_M-50_HT-800to1200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8" , "xs": 0.8052  , "nMC": 3120982.0 , "kf": 1.23},
             {"name": "DYJetsToLL_M-50_HT-1200to2500_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8", "xs": 0.1933  , "nMC": 531566.875, "kf": 1.23},
