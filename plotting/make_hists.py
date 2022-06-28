@@ -167,23 +167,69 @@ if args.year == 2017:
     if diboson_ch == "zjj":
         fit_scaling = " * (sample_tag == \"DYJets_HT\" ?" \
                              "lep_channel == 0 ? " \
-                               "dilep_pt > 0 && dilep_pt < 80 ? 1.41 " \
-                               ": dilep_pt > 80 && dilep_pt < 160 ? 1.22 " \
-                               ": dilep_pt > 160 && dilep_pt < 240 ? 1.09 " \
-                               ": dilep_pt > 240 && dilep_pt < 320 ? 1.05 " \
-                               ": dilep_pt > 320 && dilep_pt < 400 ? 0.89 " \
-                               ": dilep_pt > 400 && dilep_pt < 480 ? 0.95 " \
-                               ": dilep_pt > 480 ? 0.71 " \
-                               ": 1.0 " \
-                             ": lep_channel == 1 ? " \
-                                "dilep_pt > 0 && dilep_pt < 80 ? 1.34 " \
-                                ": dilep_pt > 80 && dilep_pt < 160 ? 1.14 " \
-                                ": dilep_pt > 160 && dilep_pt < 240 ? 0.99 " \
-                                ": dilep_pt > 240 && dilep_pt < 320 ? 0.95 " \
-                                ": dilep_pt > 320 && dilep_pt < 400 ? 1.01 " \
-                                ": dilep_pt > 400 && dilep_pt < 480 ? 1.06 " \
-                                ": dilep_pt > 480 ? 0.72 " \
+                                "dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.62 " \
+                                ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 1.32 " \
+                                ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 1.27 " \
+                                ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 1.08 " \
+                                ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 250 ? 0.76 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.40 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 1.18 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 1.02 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.95 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 250 ? 0.68 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.27 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 1.04 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.99 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.92 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 250 ? 1.04 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.15 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 1.03 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 1.05 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 1.10 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 250 ? 0.67 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.80 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.88 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.96 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.90 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 250 ? 1.21 " \
+                                ": dilep_pt > 400 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.84 " \
+                                ": dilep_pt > 400 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.87 " \
+                                ": dilep_pt > 400 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.89 " \
+                                ": dilep_pt > 400 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.92 " \
+                                ": dilep_pt > 400 && vbf2_AK4_pt > 250 ? 0.59 " \
                                 ": 1.0 " \
+                             ": lep_channel == 1 ? " \
+                               "dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.66 " \
+                               ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 1.24 " \
+                               ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 1.03 " \
+                               ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.85 " \
+                               ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 250 ? 1.13 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.37 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 1.10 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.96 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.85 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 250 ? 0.89 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.09 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.98 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 1.00 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.72 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 250 ? 0.82 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.95 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.88 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 1.26 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.95 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 250 ? 0.52 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.26 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.95 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 1.08 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.68 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 250 ? 0.58 " \
+                               ": dilep_pt > 400 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.98 " \
+                               ": dilep_pt > 400 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.98 " \
+                               ": dilep_pt > 400 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.74 " \
+                               ": dilep_pt > 400 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.97 " \
+                               ": dilep_pt > 400 && vbf2_AK4_pt > 250 ? 0.29 " \
+                               ": 1.0 " \
                              ": 1.0 " \
                            ": 1.0)"
 if args.year == 2018:
@@ -212,26 +258,72 @@ if args.year == 2018:
     if diboson_ch == "zjj":
         fit_scaling = " * (sample_tag == \"DYJets_HT\" ?" \
                              "lep_channel == 0 ? " \
-                               "dilep_pt > 0 && dilep_pt < 80 ? 1.19 " \
-                               ": dilep_pt > 80 && dilep_pt < 160 ? 1.06 " \
-                               ": dilep_pt > 160 && dilep_pt < 240 ? 0.92 " \
-                               ": dilep_pt > 240 && dilep_pt < 320 ? 0.86 " \
-                               ": dilep_pt > 320 && dilep_pt < 400 ? 0.74 " \
-                               ": dilep_pt > 400 && dilep_pt < 480 ? 0.63 " \
-                               ": dilep_pt > 480 ? 0.61 " \
+                               "dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.32 " \
+                               ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 1.19 " \
+                               ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 1.05 " \
+                               ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.95 " \
+                               ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 250 ? 0.70 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.15 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 1.06 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 1.01 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.97 " \
+                               ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 250 ? 0.61 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.94 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.94 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.82 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.91 " \
+                               ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 250 ? 0.59 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.87 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.89 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.88 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.77 " \
+                               ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 250 ? 0.61 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.81 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.71 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.73 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.89 " \
+                               ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 250 ? 0.56 " \
+                               ": dilep_pt > 400 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.60 " \
+                               ": dilep_pt > 400 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.56 " \
+                               ": dilep_pt > 400 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.55 " \
+                               ": dilep_pt > 400 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.91 " \
+                               ": dilep_pt > 400 && vbf2_AK4_pt > 250 ? 0.41 " \
                                ": 1.0 " \
                              ": lep_channel == 1 ? " \
-                                "dilep_pt > 0 && dilep_pt < 80 ? 1.08 " \
-                                ": dilep_pt > 80 && dilep_pt < 160 ? 0.98 " \
-                                ": dilep_pt > 160 && dilep_pt < 240 ? 0.89 " \
-                                ": dilep_pt > 240 && dilep_pt < 320 ? 0.80 " \
-                                ": dilep_pt > 320 && dilep_pt < 400 ? 0.75 " \
-                                ": dilep_pt > 400 && dilep_pt < 480 ? 0.70 " \
-                                ": dilep_pt > 480 ? 0.72 " \
+                                "dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.10 " \
+                                ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 1.10 " \
+                                ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 1.02 " \
+                                ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.87 " \
+                                ": dilep_pt > 0 && dilep_pt < 80 && vbf2_AK4_pt > 250 ? 0.87 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 1.02 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.99 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.96 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.89 " \
+                                ": dilep_pt > 80 && dilep_pt < 160 && vbf2_AK4_pt > 250 ? 0.83 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.92 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.96 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.83 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.61 " \
+                                ": dilep_pt > 160 && dilep_pt < 240 && vbf2_AK4_pt > 250 ? 0.37 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.78 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.88 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.68 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.47 " \
+                                ": dilep_pt > 240 && dilep_pt < 320 && vbf2_AK4_pt > 250 ? 0.70 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.71 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.77 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.63 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.84 " \
+                                ": dilep_pt > 320 && dilep_pt < 400 && vbf2_AK4_pt > 250 ? 0.73 " \
+                                ": dilep_pt > 400 && vbf2_AK4_pt > 30 && vbf2_AK4_pt < 50 ? 0.68 " \
+                                ": dilep_pt > 400 && vbf2_AK4_pt > 50 && vbf2_AK4_pt < 100 ? 0.63 " \
+                                ": dilep_pt > 400 && vbf2_AK4_pt > 100 && vbf2_AK4_pt < 150 ? 0.97 " \
+                                ": dilep_pt > 400 && vbf2_AK4_pt > 150 && vbf2_AK4_pt < 250 ? 0.41 " \
+                                ": dilep_pt > 400 && vbf2_AK4_pt > 250 ? 0.33 " \
                                 ": 1.0 " \
                              ": 1.0 " \
                            ": 1.0)"
-do_dyjets_scaling = False
+do_dyjets_scaling = True
 if not do_dyjets_scaling:
     fit_scaling = " * 1.0"
 
@@ -557,6 +649,9 @@ hists_models_1D = [
     #(1, -1.0, 1.0, "mva_score_wv", "mva_score_wv_1bin"),
     (1, -1.0, 1.0, "mva_score_zv", "mva_score_zv_1bin")
 ]
+
+if diboson_ch == "zjj":
+    hists_models_1D.append((20, 0.0, 2000, "ht_resolved", "ht_resolved"))
 
 hists_models_2D = [
     #(20, 0.0, 800.0, "dilep_pt", 40, 30.0, 430.0, "vbf2_AK4_pt", "v_lep_pt_vbf_j2_pt"),

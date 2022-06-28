@@ -1,32 +1,31 @@
 #!/bin/bash
 
-work_dir="hists_output"
-output_tag="2021-05-12_binfix"
+output_tag=${1}
+work_dir=${2:-"hists_output"}
+base_dir=${3:-"root://cmseos.fnal.gov//store/"}
+rel_dir=${4:-"prepare"}
+year_1=${5}
+year_2=${6}
+year_3=${7}
 tar_file=${output_tag}.tar.gz
 
-base_dir="root://cmseos.fnal.gov//store/user/singhr/wv_vbs_ntuples"
-rel_dir="mva_2021_Apr_27"
-
-#run_on_years=("2016")
-run_on_years=("2016" "2017" "2018")
+run_on_years=("$year_1" "$year_2" "$year_3")
 
 run_on_channels=("zv" "zjj")
 
-#run_on_main_regions=("sr")
 run_on_main_regions=("sr" "cr_vjets")
+#run_on_main_regions=("cr_vjets")
 
 mkdir -p ${work_dir}
 pushd ${work_dir}
 
 # make sandbox
 check_tar=false
-if [[ -f ${tar_file} ]]
-then
+if [[ -f ${tar_file} ]]; then
   echo "${tar_file} already exists."
   read -r -p "Do you want to overwrite ${tar_file}? [y/N] " response
   response=${response,,}
-  if [[ "$response" =~ ^(yes|y)$ ]]
-  then
+  if [[ "$response" =~ ^(yes|y)$ ]]; then
     check_tar=true
   else
     echo "=> Exiting"
@@ -38,7 +37,7 @@ fi
 
 $check_tar && $ANALYSIS_BASE/tools/make_tar.sh ${tar_file}
 
-regions=(\
+full_list_regions=(\
   "X_l.X_m.X_e" \
   "X_e_pdfUp" \
   "X_m_pdfUp" \
@@ -86,38 +85,41 @@ regions=(\
   "X_l_jetPUIDDown"
 )
 
-for channel in ${run_on_channels[*]}
-do
-  for year in ${run_on_years[*]}
-  do
+#full_list_regions=(\
+#  "X_l.X_m.X_e" \
+#)
+
+regions=${full_list_regions[*]}
+
+for channel in ${run_on_channels[*]}; do
+  for year in ${run_on_years[*]}; do
   outTag=${output_tag}_${year}
   in_dir=${rel_dir}/${year}
 
-    for main_region in ${run_on_main_regions[*]}
-    do
+    for main_region in ${run_on_main_regions[*]}; do
       to_replace=${main_region}_${channel}
       region_list="("
       for region_ in ${regions[*]}; do region_list="${region_list}${region_//X/${to_replace}}, "; done
       region_list=${region_list::-2}")"
-    done
 
-    condor_submit \
-      universe=vanilla \
-      executable=../run_make_hists.sh \
-      transfer_input=True \
-      transfer_output=True \
-      stream_error=True \
-      stream_output=True \
-      log_filename="../condor_logs/\$(hist_file)" \
-      log="/dev/null" \
-      output="\$(log_filename).out" \
-      error="\$(log_filename).err" \
-      transfer_input_files="../run_make_hists.sh, ${tar_file}" \
-      transfer_output_files="\$(hist_file).root" \
-      -append "arguments = ${tar_file} \$(reg) ${year} ${base_dir} ${in_dir} 8 \$(hist_file).root" \
-      -append "hist_file = hists_${outTag}_\$(reg)" \
-      -append "queue 1 reg in ${region_list}" \
-      /dev/null
+      condor_submit \
+        universe=vanilla \
+        executable=../run_make_hists.sh \
+        transfer_input=True \
+        transfer_output=True \
+        stream_error=True \
+        stream_output=True \
+        log_filename="../condor_logs/\$(hist_file)" \
+        log="/dev/null" \
+        output="\$(log_filename).out" \
+        error="\$(log_filename).err" \
+        transfer_input_files="../run_make_hists.sh, ${tar_file}" \
+        transfer_output_files="\$(hist_file).root" \
+        -append "arguments = ${tar_file} \$(reg) ${year} ${base_dir} ${in_dir} 0 \$(hist_file).root" \
+        -append "hist_file = hists_${outTag}_\$(reg)" \
+        -append "queue 1 reg in ${region_list}" \
+        /dev/null
+    done
   done
 done
 

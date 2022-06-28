@@ -23,7 +23,7 @@ h_VBS_EWK = in_hist_file.Get(f"{args.in_sub_dir}/VBS_EWK_{args.var_name}")
 h_VBS_QCD = in_hist_file.Get(f"{args.in_sub_dir}/VBS_QCD_{args.var_name}")
 h_Top = in_hist_file.Get(f"{args.in_sub_dir}/Top_{args.var_name}")
 h_DYJets = in_hist_file.Get(f"{args.in_sub_dir}/DYJets_HT_{args.var_name}")
-h_WJets = in_hist_file.Get(f"{args.in_sub_dir}/WJets_HT_{args.var_name}")
+#h_WJets = in_hist_file.Get(f"{args.in_sub_dir}/WJets_HT_{args.var_name}")
 
 h_Total_Bkg = h_VBS_EWK.Clone(f"Total_Bkg_{args.var_name}")
 n_bins = h_VBS_EWK.GetNbinsX()
@@ -35,7 +35,7 @@ fit_VBS_EWK = in_fit_file.Get(f"{args.fit_sub_dir}/VBS_EWK")
 fit_VBS_QCD = in_fit_file.Get(f"{args.fit_sub_dir}/VBS_QCD")
 fit_Top = in_fit_file.Get(f"{args.fit_sub_dir}/Top")
 fit_DYJets = in_fit_file.Get(f"{args.fit_sub_dir}/DYJets_HT")
-fit_WJets = in_fit_file.Get(f"{args.fit_sub_dir}/WJets_HT")
+#fit_WJets = in_fit_file.Get(f"{args.fit_sub_dir}/WJets_HT")
 fit_Total_Bkg = in_fit_file.Get(f"{args.fit_sub_dir}/total_background")
 
 h_data_obs.Reset()
@@ -44,7 +44,7 @@ h_VBS_EWK.Reset()
 h_VBS_QCD.Reset()
 h_Top.Reset()
 h_DYJets.Reset()
-h_WJets.Reset()
+#h_WJets.Reset()
 h_Total_Bkg.Reset()
 
 for i in range(1, n_bins + 1):
@@ -65,9 +65,9 @@ for i in range(1, n_bins + 1):
         h_DYJets.SetBinContent(i, fit_DYJets.GetBinContent(i))
         h_DYJets.SetBinError(i, fit_DYJets.GetBinError(i))
 
-    if type(fit_WJets) != ROOT.TObject:
-        h_WJets.SetBinContent(i, fit_WJets.GetBinContent(i))
-        h_WJets.SetBinError(i, fit_WJets.GetBinError(i))
+#    if type(fit_WJets) != ROOT.TObject:
+#        h_WJets.SetBinContent(i, fit_WJets.GetBinContent(i))
+#        h_WJets.SetBinError(i, fit_WJets.GetBinError(i))
     
     h_Total_Bkg.SetBinContent(i, fit_Total_Bkg.GetBinContent(i))
     h_Total_Bkg.SetBinError(i, fit_Total_Bkg.GetBinError(i))
@@ -82,7 +82,7 @@ h_VBS_EWK.Write()
 h_VBS_QCD.Write()
 h_Top.Write()
 h_DYJets.Write()
-h_WJets.Write()
+#h_WJets.Write()
 h_Total_Bkg.Write()
 
 out_hist_file.cd()

@@ -2,7 +2,7 @@ imax * number of bins
 jmax * number of processes minus 1
 kmax * number of nuisance parameters
 ----------------------------------------------------------------------------------------------------------------------------------
-shapes *    sig_reg     ../2021-04-28_2016_zjj.root sr_l/$PROCESS_mva_score_zjj_var1 sr_l_$SYSTEMATIC/$PROCESS_mva_score_zjj_var1
+shapes *    sig_reg     ../datacard_2016_zjj.root sr_l/$PROCESS_mva_score_zjj_var2 sr_l_$SYSTEMATIC/$PROCESS_mva_score_zjj_var2
 ----------------------------------------------------------------------------------------------------------------------------------
 bin          sig_reg
 observation    -1      
@@ -12,10 +12,8 @@ process                                        VBS_EWK  DYJets_HT  VBS_QCD   Top
 process                                         0        1         2          3     
 rate                                           -1       -1        -1         -1     
 ------------------------------------------------------------------------------------
-CMS_eff_b_mistag_2016               lnN        0.98     0.98      0.98     0.98    
 CMS_eff_e_2016                      lnN        1.01     1.01      1.01     1.01    
 CMS_eff_m_2016                      lnN        1.01     1.01      1.01     1.01    
-CMS_norm_PU_2016                    lnN        1.04     1.04      1.04     1.04    
 lumi_13TeV_2016                     lnN        1.025    1.025     1.025    1.025       
 pdf                                 shape     1.0      -         1.0      -     
 qcd                                 shape     1.0      -         1.0      -       

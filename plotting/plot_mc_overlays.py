@@ -150,12 +150,13 @@ class plot:
         maxY = 0
         for h in self.overlays:
             if self.overlays[h]["obj"] != ROOT.TObject:
+                self.overlays[h]["obj"].SetTitle(f";{self.config['title_x']};{self.config['title_y']}")
                 sum_ = self.overlays[h]["obj"].GetSumOfWeights()
                 self.overlays[h]["obj"].Scale(1.0/sum_)
                 maxY_ = self.overlays[h]["obj"].GetMaximum()
                 if maxY_ >= maxY:
                     maxY = maxY_
-                    self.overlays[h]["obj"].SetMaximum(3*maxY)
+                    self.overlays[h]["obj"].SetMaximum(2.5*maxY)
                 self.overlays[h]["obj"].Draw("hist same")                
         self.legend.Draw()
 
@@ -190,7 +191,7 @@ if __name__ == "__main__":
         variables = args.var
 
     for var in variables:
-        plot_filename = f"{out_dir}/{var}"
+        plot_filename = f"{out_dir}/{var}_mc"
         title_x = var
         units = ""
         title_y = ""
@@ -208,10 +209,8 @@ if __name__ == "__main__":
                 if "mva_score" in var and "zjj" not in var: continue
 
         if var == "v_lep_pt":
-            title_x="p^{T}_{lep1}"
+            title_x="p^{T}_{%s}" % args.boson
             units="GeV"
-            do_log = True
-            upper_pad_min_y = 0.01
 
         print(f"=> {args.rootfile} --- {args.sub_dir} --- {var}")
         config = make_config(args, variable=var, title_x=title_x, units=units, title_y=title_y, plot_filename=plot_filename)

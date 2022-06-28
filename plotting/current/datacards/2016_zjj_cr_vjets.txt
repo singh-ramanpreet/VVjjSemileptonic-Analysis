@@ -1,0 +1,21 @@
+imax * number of bins
+jmax * number of processes minus 1
+kmax * number of nuisance parameters
+-----------------------------------------------------------------------------------
+shapes  *  mva  ../datacard_2016_zjj.root  cr_vjets_l/$PROCESS_mva_score_zjj_1bin
+-----------------------------------------------------------------------------------
+bin          mva
+observation  -1   
+-----------------------------------------------------------------------------------
+bin                                            mva      mva        mva      mva    
+process                                        VBS_EWK  DYJets_HT  VBS_QCD  Top    
+process                                         0        1         2        3      
+rate                                           -1       -1        -1       -1      
+-----------------------------------------------------------------------------------
+CMS_eff_e_2016                      lnN        1.01     1.01      1.01     1.01    
+CMS_eff_m_2016                      lnN        1.01     1.01      1.01     1.01    
+lumi_13TeV_2016                     lnN        1.025    1.025     1.025    1.025       
+
+*  autoMCStats 10 0 1
+
+CMS_2016_zjj_vjetnorm  rateParam * DYJets_HT 1.0 [0.5,1.5]

@@ -95,7 +95,7 @@ def make_config(args, variable="lep1_pt", **kwargs):
             "VBS_EWK": {
                 "name": f"{args.sub_dir}/#NAME#_{variable}",
                 "legend": "VBS EWK #SCALE# (#INTEGRAL#)",
-                "scale": 10,
+                "scale": 20,
                 "legend_style": "l",
                 "line_color": ROOT.kBlack,
                 "line_style": ROOT.kDashed
@@ -260,13 +260,15 @@ class plot:
             if self.overlays[h]["scale"] == 1:
                 self.overlays[h]["legend"] = self.overlays[h]["legend"].replace(" #SCALE#", "")
             else:
-                self.overlays[h]["obj"].Scale(self.overlays[h]["scale"])
                 self.overlays[h]["legend"] = self.overlays[h]["legend"].replace(" #SCALE#", f" x{self.overlays[h]['scale']}")
 
             if self.overlays[h]["obj"].GetEntries() != 0.0:
                 self.legend.AddEntry(self.overlays[h]["obj"],
                                 self.overlays[h]["legend"].replace("#INTEGRAL#", f"{self.overlays[h]['obj'].Integral():.2f}"),
                                 self.overlays[h]["legend_style"])
+
+            if self.overlays[h]["scale"] != 1:
+                self.overlays[h]["obj"].Scale(self.overlays[h]["scale"])
 
         self.stacked_obj_errors = ROOT.TGraphAsymmErrors(self.stacked_sum.Clone("sum_errors"))
         self.stacked_obj_errors.SetFillStyle(3145)
@@ -345,8 +347,8 @@ class plot:
                     cms_text_location="inside left",
                     cms_pos_y_scale=0.9,
                     draw_extra_text=True,
-                    extra_text_location="inside left right",
-                    extra_text="#scale[1.0]{Preliminary}",
+                    extra_text_location="inside left below",
+                    extra_text="#scale[1.0]{Work in Progress}",
                     extra_text_pos_y_scale=0.95,
                     draw_lumi_text=True,
                     lumi_text=self.config["lumi_text"]
@@ -434,8 +436,8 @@ class plot:
                     cms_text_location="inside left",
                     cms_pos_y_scale=0.95,
                     draw_extra_text=True,
-                    extra_text_location="inside left right",
-                    extra_text="#scale[1.2]{Preliminary}",
+                    extra_text_location="inside left below",
+                    extra_text="#scale[1.2]{Work in Progress}",
                     extra_text_pos_x_scale=1.0,
                     extra_text_pos_y_scale=1.0,
                     draw_lumi_text=True,
@@ -467,8 +469,9 @@ if __name__ == "__main__":
         variables = []
         for i in l:
             name_ = i.GetName()
-            if "data_obs_" in name_:
-                variables.append(name_.replace("data_obs_", ""))
+            if i.GetClassName() == "TH1D":
+                if "data_obs_" in name_:
+                    variables.append(name_.replace("data_obs_", ""))
     else:
         variables = args.var
 
@@ -491,7 +494,7 @@ if __name__ == "__main__":
                 if "mva_score" in var and "zjj" not in var: continue
 
         if var == "v_lep_pt":
-            title_x="p^{T}_{lep1}"
+            title_x="p^{T}_{Z}"
             units="GeV"
             do_log = True
             upper_pad_min_y = 0.01
@@ -503,8 +506,13 @@ if __name__ == "__main__":
 
         print(f"=> {args.rootfile} --- {args.sub_dir} --- {var}")
         config = make_config(args, variable=var, title_x=title_x, units=units, title_y=title_y, plot_filename=plot_filename)
+        if args.mva_type == "zv":
+            config["overlays"]["VBS_EWK"]["scale"] = 30
+        if args.mva_type == "zjj":
+            config["overlays"]["VBS_EWK"]["scale"] = 100
         plot(config).draw()
         if do_log:
+            config = make_config(args, variable=var, title_x=title_x, units=units, title_y=title_y, plot_filename=plot_filename)
             config["canvas_log_y"] = True
             config["overlays"]["VBS_EWK"]["scale"] = 1
             config["scale_y_axis"] = 50
